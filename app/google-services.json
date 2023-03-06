@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "295470441833",
+    "project_id": "mindmaster-9b361",
+    "storage_bucket": "mindmaster-9b361.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:295470441833:android:5d1c3845cd07c634ddc9f8",
+        "android_client_info": {
+          "package_name": "com.miguelrodriguez19.mindmaster"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "295470441833-bcjhcrf9t0qjo8to7tb4ktv339e031sk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDg1U1KMzD4ZQMZzv_N7xMSKywvbPzmCWc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "295470441833-bcjhcrf9t0qjo8to7tb4ktv339e031sk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
