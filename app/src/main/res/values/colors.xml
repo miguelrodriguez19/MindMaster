@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="primaryColor">#4a75e6</color>
+    <color name="blue_light_200">#65cccc</color>
+    <color name="blue_ribbon_500">#1B4CFF</color>
+    <color name="purple_blue_700">#4501FF</color>
+    <color name="red_bittersweet">#ff6b6b</color>
+    <color name="orange">#E87E21</color>
+    <color name="orange_light_200">#ffa64d</color>
+    <color name="yellow_kournikova">#ffe66d</color>
+    <color name="green_mantis">#76b852</color>
+    <color name="gray_scorpion">#5e5e5e</color>
+
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
@@ -7,5 +18,5 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="primaryColor">#4a75e6</color>
+
 </resources>
