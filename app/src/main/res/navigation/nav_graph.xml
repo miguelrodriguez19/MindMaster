@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/logInFragment">
+
+    <fragment
+        android:id="@+id/logInFragment"
+        android:name="com.miguelrodriguez19.mindmaster.welcome.LogInFragment"
+        android:label="fragment_log_in"
+        tools:layout="@layout/fragment_log_in" />
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.miguelrodriguez19.mindmaster.welcome.SignUpFragment"
+        android:label="fragment_sign_up"
+        tools:layout="@layout/fragment_sign_up" />
+    <fragment
+        android:id="@+id/calendarFragment"
+        android:name="com.miguelrodriguez19.mindmaster.calendar.CalendarFragment"
+        android:label="fragment_calendar"
+        tools:layout="@layout/fragment_calendar" />
+    <fragment
+        android:id="@+id/diaryFragment"
+        android:name="com.miguelrodriguez19.mindmaster.diary.DiaryFragment"
+        android:label="fragment_diary"
+        tools:layout="@layout/fragment_diary" />
+    <fragment
+        android:id="@+id/passwordsFragment"
+        android:name="com.miguelrodriguez19.mindmaster.passwords.PasswordsFragment"
+        android:label="fragment_passwords"
+        tools:layout="@layout/fragment_passwords" />
+    <fragment
+        android:id="@+id/expensesFragment"
+        android:name="com.miguelrodriguez19.mindmaster.expenses.ExpensesFragment"
+        android:label="fragment_expenses"
+        tools:layout="@layout/fragment_expenses" />
+</navigation>

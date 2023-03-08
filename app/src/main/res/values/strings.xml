@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Mind Master</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hint_email">Email<font fgcolor='#C80000'>*</font></string>
+    <string name="hint_password">Password<font fgcolor='#C80000'>*</font></string>
+    <string name="or">or</string>
+    <string name="log_in">Log In</string>
+    <string name="google">Google</string>
+    <string name="facebook">Facebook</string>
+    <string name="forgotten_password">Forgotten password?</string>
+    <string name="sign_up">Sign Up</string>
 </resources>
