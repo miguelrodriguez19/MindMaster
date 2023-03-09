@@ -32,8 +32,8 @@
                 style="main_titles"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Mind \nMaster"
-                android:textColor="@color/gray_scorpion"
+                android:text="@string/mind_master_logo"
+                android:textColor="@color/gray_scorpion_200"
                 android:textSize="20sp" />
 
 
@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/giv_productivity"
             android:layout_centerHorizontal="true"
-            android:text="Welcome!" />
+            android:text="@string/welcome" />
 
         <LinearLayout
             android:id="@+id/ll_login_form"
@@ -68,9 +68,8 @@
                 style="@style/secondary_titles"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
                 android:text="@string/log_in"
-                android:textColor="#18264A" />
+                android:textColor="@color/gray_dark_700" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_email"
@@ -82,7 +81,7 @@
                 app:boxCornerRadiusTopEnd="5dp"
                 app:boxCornerRadiusTopStart="5dp"
                 app:startIconDrawable="@drawable/ic_email_24"
-                app:startIconTint="@color/primaryColor">
+                app:startIconTint="@color/gray_dove_500">
 
                 <EditText
                     android:id="@+id/txt_email_logIn"
@@ -106,7 +105,7 @@
                 app:boxCornerRadiusTopStart="5dp"
                 app:endIconMode="password_toggle"
                 app:startIconDrawable="@drawable/ic_lock_24"
-                app:startIconTint="@color/primaryColor">
+                app:startIconTint="@color/gray_dove_500">
 
                 <EditText
                     android:id="@+id/txt_password_logIn"
@@ -146,7 +145,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/or"
-                android:textColor="@color/blue_cello_900" />
+                android:textColor="@color/gray_dark_700" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -201,7 +200,7 @@
                     style="@style/body_large"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Have an account?"
+                    android:text="@string/dont_have_an_account"
                     android:textColor="@color/blue_cello_900" />
 
                 <Button

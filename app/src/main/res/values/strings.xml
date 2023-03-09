@@ -1,12 +1,27 @@
 <resources>
     <string name="app_name">Mind Master</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="hint_email">Email<font fgcolor='#C80000'>*</font></string>
-    <string name="hint_password">Password<font fgcolor='#C80000'>*</font></string>
+    <string name="mind_master_logo">Mind \nMaster</string>
     <string name="or">or</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Forms -->
+    <string name="welcome">Welcome!</string>
     <string name="log_in">Log In</string>
-    <string name="google">Google</string>
-    <string name="facebook">Facebook</string>
-    <string name="forgotten_password">Forgotten password?</string>
     <string name="sign_up">Sign Up</string>
+    <string name="hint_name">Name<font fgcolor='#C80000'>*</font></string>
+    <string name="hint_surname">Surname</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_email_">Email<font fgcolor='#C80000'>*</font></string>
+    <string name="hint_phone">Phone<font fgcolor='#C80000'>*</font></string>
+    <string name="hint_dateBirthdate">Birthdate<font fgcolor='#C80000'>*</font></string>
+    <string name="hint_password">Password</string>
+    <string name="hint_password_">Password<font fgcolor='#C80000'>*</font></string>
+    <string name="hint_repeatPassword">Repeat password<font fgcolor='#C80000'>*</font></string>
+    <string name="terms_conditions">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</string>
+    <string name="forgotten_password">Forgotten password?</string>
+    <string name="have_an_account">Have an account?</string>
+    <string name="dont_have_an_account">Don\'t have an account?</string>
+    <string name="facebook">Facebook</string>
+    <string name="google">Google</string>
+
+
 </resources>
