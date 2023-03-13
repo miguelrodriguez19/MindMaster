@@ -29,7 +29,12 @@
     <string name="google">Google</string>
     <string name="join_now">Join now!</string>
 
+
     <!-- Calendar and Diary -->
+    <string name="your_events_calendar">Your Events</string>
 
 
+    <!-- Expenses -->
+    <string name="monthly">"Monthly "</string>
+    <string name="annual">"Annual "</string>
 </resources>

@@ -5,29 +5,27 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.CalendarView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.miguelrodriguez19.mindmaster.databinding.FragmentCalendarBinding
 import java.text.SimpleDateFormat
 import java.util.*
 
 class CalendarFragment : Fragment() {
+    private val TAG = "CalendarFragment"
     private var _binding: FragmentCalendarBinding? = null
     private val binding get() = _binding!!
-    private lateinit var monthYearText: TextView
-    private lateinit var btnNextMonth: Button
-    private lateinit var btnBackMonth: Button
-    private lateinit var calendarRecyclerView: RecyclerView
-    private lateinit var adapter: CalendarAdapter
-    private lateinit var selectedDate: Calendar
-    private lateinit var userLocale: Locale
-    private val monthDays = ArrayList<String>()
-    private lateinit var dateFormatter: SimpleDateFormat
-    private val TAG = "CalendarFragment"
+    private lateinit var tvSelectedDateEvents: TextView
+    private lateinit var tvCountOfEvents: TextView
+    private lateinit var calendarView: CalendarView
+    private lateinit var rvCalendarEvents: RecyclerView
+    private lateinit var adapter: CalendarEventsAdapter
+    private lateinit var pbLoading: View
+    var data = arrayListOf("Examen de Mates", "Examen de Lengua","Examen de Ingles", "Examen de Historia", "Examen de Fisica")
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,75 +39,46 @@ class CalendarFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val rvDaysOfMonth = binding.calendarRecyclerView
-        val mLayoutManager = GridLayoutManager(context, 7)
-        rvDaysOfMonth.layoutManager = mLayoutManager
-
-        // TODO("Tener en cuenta el idioma establecido")
-        userLocale = Locale.US
-        dateFormatter = SimpleDateFormat("MMMM yyyy", userLocale)
-
         initWidgets()
-        selectedDate = Calendar.getInstance()
-        setMonthView()
+        val mLayoutManager = StaggeredGridLayoutManager(1, 1)
+        rvCalendarEvents.layoutManager = mLayoutManager
 
-        btnBackMonth.setOnClickListener {
-            goToBackMonth()
+        adapter = CalendarEventsAdapter(data){ title ->
+            Log.i(TAG, "onViewCreated - event: $title")
         }
-        btnNextMonth.setOnClickListener {
-            goToForwardMonth()
+
+        rvCalendarEvents.adapter = adapter
+
+        calendarView.setOnDateChangeListener { view, year, month, dayOfMonth ->
+            val selectedDate = Calendar.getInstance()
+            selectedDate.set(year, month, dayOfMonth)
+            val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+            val formattedDate = dateFormat.format(selectedDate.time)
+            tvSelectedDateEvents.text = formattedDate
         }
+
+        pbLoading.visibility = View.GONE
 
     }
 
     private fun initWidgets() {
-        btnBackMonth = binding.btnBackMonth
-        btnNextMonth = binding.btnNextMonth
-        calendarRecyclerView = binding.calendarRecyclerView
-        monthYearText = binding.monthYearTV
-    }
+        calendarView = binding.calendarView
+        tvSelectedDateEvents = binding.tvSelectedDateEvents
+        tvCountOfEvents = binding.tvCountOfEvents
+        rvCalendarEvents = binding.rvEvents
+        pbLoading = binding.pbLoading
 
-    private fun setMonthView() {
-        monthYearText.text = monthYearFromDate(selectedDate)
-        monthDays.clear()
-
-        val daysInMonth: Int = selectedDate.getActualMaximum(Calendar.DAY_OF_MONTH)
-        val firstOfMonth = Calendar.getInstance()
-
-        firstOfMonth.timeInMillis = selectedDate.timeInMillis
-        firstOfMonth.set(Calendar.DAY_OF_MONTH, 1)
-
-        val dayOfWeek = firstOfMonth.get(Calendar.DAY_OF_WEEK)
-        for (i in 1..35) {
-            if (i <= dayOfWeek - 1 || i > daysInMonth + dayOfWeek - 1) {
-                monthDays.add("")
-            } else {
-                monthDays.add((i - dayOfWeek + 1).toString())
-            }
-        }
-
-        val mLayoutManager = GridLayoutManager(context, 7)
-        calendarRecyclerView.layoutManager = mLayoutManager
-        //Creamos el adapter y lo vinculamos con el recycler
-        adapter = CalendarAdapter(requireContext(), monthYearFromDate(selectedDate), monthDays) {
-            Log.i(TAG, it)
-        }
-        calendarRecyclerView.adapter = adapter
+        tvSelectedDateEvents.text = getCurrentDate()
+        tvCountOfEvents.text = data.size.toString()
 
     }
 
-    private fun monthYearFromDate(date: Calendar): String {
-        return dateFormatter.format(date.time)
-    }
-
-    private fun goToForwardMonth() {
-        selectedDate.add(Calendar.MONTH, 1)
-        setMonthView()
-    }
-
-    private fun goToBackMonth() {
-        selectedDate.add(Calendar.MONTH, -1)
-        setMonthView()
+    private fun getCurrentDate(): CharSequence? {
+        val calendar = Calendar.getInstance()
+        val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
+        val month = calendar.get(Calendar.MONTH) + 1
+        val year = calendar.get(Calendar.YEAR)
+        return String.format("%02d-%02d-%04d", dayOfMonth, month, year)
     }
 
     override fun onDestroyView() {
