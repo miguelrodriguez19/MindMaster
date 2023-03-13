@@ -29,7 +29,6 @@ class SignUpFragment : Fragment() {
     private lateinit var btnGoogle: ExtendedFloatingActionButton
     private lateinit var btnFacebook: ExtendedFloatingActionButton
     private lateinit var btnLogIn: Button
-    private lateinit var btnBack: ImageButton
     private lateinit var checkTerms: CheckBox
 
     override fun onCreateView(
@@ -43,14 +42,10 @@ class SignUpFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (requireActivity() as AppCompatActivity).supportActionBar?.hide()
+        (requireActivity() as AppCompatActivity).supportActionBar?.show()
         initBindingElements()
 
         btnLogIn.setOnClickListener {
-            findNavController().popBackStack()
-        }
-
-        btnBack.setOnClickListener {
             findNavController().popBackStack()
         }
     }
@@ -68,7 +63,6 @@ class SignUpFragment : Fragment() {
         btnFacebook = binding.efabFacebook
         checkTerms = binding.checkbox
         btnLogIn = binding.btnLogin
-        btnBack = binding.btnBack
     }
 
     override fun onDestroyView() {

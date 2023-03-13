@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/calendarFragment"
+        android:icon="@drawable/ic_calendar_month_24"
+        android:title="@string/calendar"/>
+    <item
+        android:id="@+id/diaryFragment"
+        android:icon="@drawable/ic_book_24"
+        android:title="@string/diary"/>
+    <item
+        android:id="@+id/expensesFragment"
+        android:icon="@drawable/ic_money_24"
+        android:title="@string/expenses"/>
+    <item
+        android:id="@+id/passwordsFragment"
+        android:icon="@drawable/ic_password_24"
+        android:title="@string/passwords"/>
+</menu>

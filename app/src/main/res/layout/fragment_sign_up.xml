@@ -21,19 +21,6 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <ImageButton
-                android:id="@+id/btn_back"
-                style="@style/body_large"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="start|center"
-                android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:scaleType="fitStart"
-                android:src="@drawable/ic_arrow_back_24"
-                app:tint="@color/gray_dove_500" />
-
-
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -66,16 +53,16 @@
             style="@style/main_titles"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/ll_logo"
-            android:layout_centerHorizontal="true"
-            android:text="@string/sign_up"
+            android:layout_alignParentStart="true"
+            android:layout_alignBottom="@id/ll_logo"
+            android:text="@string/join_now"
             android:textColor="@color/orange" />
 
         <LinearLayout
             android:id="@+id/ll_signUp_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_signUp_title"
+            android:layout_below="@id/ll_logo"
             android:gravity="center"
             android:orientation="vertical">
 

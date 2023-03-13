@@ -38,12 +38,25 @@ class LogInFragment : Fragment() {
         (requireActivity() as AppCompatActivity).supportActionBar?.hide()
         initBindingElements()
 
+        btnLogIn.setOnClickListener {
+            if (checkLogIn()){
+                val action = LogInFragmentDirections.actionLogInFragmentToCalendarFragment()
+                findNavController().navigate(action)
+            }
+        }
+
         btnSignUp.setOnClickListener {
             val action = LogInFragmentDirections.actionLogInFragmentToSignUpFragment()
             findNavController().navigate(action)
         }
 
 
+    }
+
+    private fun checkLogIn(): Boolean {
+        // Comprobar campos ...
+
+        return true
     }
 
     private fun initBindingElements() {
