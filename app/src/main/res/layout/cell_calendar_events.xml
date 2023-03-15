@@ -12,7 +12,6 @@
         android:id="@+id/view"
         android:layout_width="2dp"
         android:layout_height="50dp"
-        android:layout_centerHorizontal="true"
         android:background="@color/gray_dove_500"
         app:layout_constraintEnd_toEndOf="@+id/civ_colorTag"
         app:layout_constraintStart_toStartOf="@+id/civ_colorTag" />

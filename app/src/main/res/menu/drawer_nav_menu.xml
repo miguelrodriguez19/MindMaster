@@ -7,13 +7,13 @@
     <item
         android:id="@+id/diaryFragment"
         android:icon="@drawable/ic_book_24"
-        android:title="@string/diary"/>
+        android:title="@string/schedule"/>
     <item
         android:id="@+id/expensesFragment"
         android:icon="@drawable/ic_money_24"
-        android:title="@string/expenses"/>
+        android:title="@string/expenses_manager"/>
     <item
         android:id="@+id/passwordsFragment"
         android:icon="@drawable/ic_password_24"
-        android:title="@string/passwords"/>
+        android:title="@string/passwords_manager"/>
 </menu>

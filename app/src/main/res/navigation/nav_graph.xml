@@ -40,16 +40,25 @@
     <fragment
         android:id="@+id/diaryFragment"
         android:name="com.miguelrodriguez19.mindmaster.diary.DiaryFragment"
-        android:label="@string/diary"
+        android:label="@string/schedule"
         tools:layout="@layout/fragment_diary" />
     <fragment
         android:id="@+id/passwordsFragment"
         android:name="com.miguelrodriguez19.mindmaster.passwords.PasswordsFragment"
-        android:label="@string/passwords"
+        android:label="@string/passwords_manager"
         tools:layout="@layout/fragment_passwords" />
     <fragment
         android:id="@+id/expensesFragment"
         android:name="com.miguelrodriguez19.mindmaster.expenses.ExpensesFragment"
-        android:label="@string/expenses"
-        tools:layout="@layout/fragment_expenses" />
+        android:label="@string/expenses_manager"
+        tools:layout="@layout/fragment_expenses" >
+        <action
+            android:id="@+id/action_expensesFragment_to_allMovementsFragment"
+            app:destination="@id/allMovementsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/allMovementsFragment"
+        android:name="com.miguelrodriguez19.mindmaster.expenses.AllMovementsFragment"
+        android:label="fragment_all_movements"
+        tools:layout="@layout/fragment_all_movements" />
 </navigation>

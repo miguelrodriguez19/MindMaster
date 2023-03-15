@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     tools:context=".calendar.CalendarFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
     <CalendarView
         android:id="@+id/calendarView"
@@ -94,7 +99,7 @@
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="10dp"
                     android:elevation="3dp"
-                    android:text="@string/your_events_calendar"
+                    android:text="@string/planned_events"
                     android:textColor="@color/white"
                     android:textSize="15sp" />
 
@@ -105,7 +110,7 @@
             android:id="@+id/rv_events"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="@+id/ll_yourEvents"
+            app:layout_constraintEnd_toEndOf="@+id/ll_selectedDate"
             app:layout_constraintStart_toStartOf="@+id/cardview_events"
             app:layout_constraintTop_toBottomOf="@+id/cardview_events"
             tools:itemCount="3"
@@ -118,7 +123,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         app:icon="@drawable/ic_add_24"
-        app:iconTint="@color/white_magnolia"
+        app:iconTint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -131,4 +136,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/calendarView" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

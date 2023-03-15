@@ -7,9 +7,9 @@
     <string name="log_in">Log In</string>
     <string name="sign_up">Sign Up</string>
     <string name="calendar">Calendar</string>
-    <string name="diary">Diary</string>
-    <string name="expenses">Expenses Manager</string>
-    <string name="passwords">Passwords Manager</string>
+    <string name="schedule">Schedule</string>
+    <string name="expenses_manager">Expenses Manager</string>
+    <string name="passwords_manager">Passwords Manager</string>
 
     <!-- Forms -->
     <string name="hint_name">Name<font fgcolor='#C80000'>*</font></string>
@@ -20,6 +20,7 @@
     <string name="hint_dateBirthdate">Birthdate<font fgcolor='#C80000'>*</font></string>
     <string name="hint_password">Password</string>
     <string name="hint_password_">Password<font fgcolor='#C80000'>*</font></string>
+    <string name="hint_search">Search here …</string>
     <string name="hint_repeatPassword">Repeat password<font fgcolor='#C80000'>*</font></string>
     <string name="terms_conditions">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</string>
     <string name="forgotten_password">Forgotten password?</string>
@@ -31,10 +32,24 @@
 
 
     <!-- Calendar and Diary -->
-    <string name="your_events_calendar">Your Events</string>
+    <string name="planned_events">Planned events</string>
+    <string name="upcoming_events">Upcoming events</string>
 
 
     <!-- Expenses -->
     <string name="monthly">"Monthly "</string>
     <string name="annual">"Annual "</string>
+    <string name="incomes">Incomes</string>
+    <string name="expenses">Expenses</string>
+    <string name="incomesAndExpenses">Incomes and expenses</string>
+    <string name="movements">Movements</string>
+    <string name="movement">Movement</string>
+    <string name="latest_movements">Latest movements:</string>
+    <string name="add_income">Add income</string>
+    <string name="add_expense">Add expense</string>
+    <string name="see_all_movements">See all movements</string>
+
+
+    <!-- Passwords -->
+    <string name="group">Group</string>
 </resources>

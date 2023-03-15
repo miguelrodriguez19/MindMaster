@@ -8,17 +8,17 @@
     <color name="red_bittersweet_200">#ff6b6b</color>
     <color name="red_error_500">#BF3320</color>
     <color name="orange_light_200">#ffa64d</color>
-    <color name="orange">#E97A19</color>
-    <color name="orange_dark_700">#4A2E18</color>
+    <color name="orange">#E88024</color>
+    <color name="orange_dark_700">#A65D24</color>
     <color name="yellow_kournikova">#ffe66d</color>
     <color name="green_mantis_200">#76b852</color>
     <color name="green_jade_500">#4fb071</color>
     <color name="green_hooker_700">#496f5d</color>
     <color name="gray_scorpion_200">#5e5e5e</color>
-    <color name="gray_dove_500">#676767</color>
+    <color name="gray_dove_500">#717171</color>
     <color name="gray_dark_700">#393939</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="white_magnolia">#efe9f4</color>
+    <color name="white_magnolia">#DBDBDB</color>
     <color name="black">#FF000000</color>
 
 </resources>

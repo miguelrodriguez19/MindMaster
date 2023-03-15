@@ -17,5 +17,9 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">16dp</item>
     </style>
-
+    <style name="textfieldsWithoutBorder" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">#00FFFFFF</item>
+        <item name="colorControlActivated">#5C5C5C</item>
+        <item name="boxBackgroundColor">@android:color/transparent</item>
+    </style>
 </resources>
