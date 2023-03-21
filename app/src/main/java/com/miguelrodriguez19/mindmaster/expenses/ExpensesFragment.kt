@@ -9,12 +9,12 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.miguelrodriguez19.mindmaster.R
-import com.miguelrodriguez19.mindmaster.calendar.CalendarEventsAdapter
 import com.miguelrodriguez19.mindmaster.databinding.FragmentExpensesBinding
 import com.miguelrodriguez19.mindmaster.models.MonthMovementsResponse
 import kotlin.collections.ArrayList
@@ -24,11 +24,12 @@ class ExpensesFragment : Fragment() {
     private var _binding: FragmentExpensesBinding? = null
     private val binding get() = _binding!!
     private lateinit var rvLastMovements: RecyclerView
-    private lateinit var adapter: LastMovementsAdapter
+    private lateinit var lastMovementsAdapter: LastMovementsAdapter
     private lateinit var pbLoading: View
     private lateinit var btnSeeAllMovements: Button
     private lateinit var btnAddExpense: ExtendedFloatingActionButton
     private lateinit var btnAddIncome: ExtendedFloatingActionButton
+    private lateinit var pageAdapter: ViewPagerAdapter
     var data = arrayListOf(
         MonthMovementsResponse.Movement(1, "2022-01-01", "Movimiento 1.1", 100f, "income"),
         MonthMovementsResponse.Movement(2, "2022-01-02", "Movimiento 1.2", -50f, "expense"),
@@ -47,13 +48,14 @@ class ExpensesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initWidgets()
+        initTabs()
         // Related to recycler view
         val mLayoutManager = StaggeredGridLayoutManager(1, 1)
         rvLastMovements.layoutManager = mLayoutManager
-        adapter = LastMovementsAdapter(data) { movement ->
+        lastMovementsAdapter = LastMovementsAdapter(data) { movement ->
             Log.i(TAG, "onViewCreated - event: ${movement.title}")
         }
-        rvLastMovements.adapter = adapter
+        rvLastMovements.adapter = lastMovementsAdapter
 
         // On CLick Listeners
         btnSeeAllMovements.setOnClickListener {
@@ -71,6 +73,14 @@ class ExpensesFragment : Fragment() {
 
     }
 
+    private fun initTabs() {
+        pageAdapter = ViewPagerAdapter(childFragmentManager)
+        pageAdapter.addFragment(PieChartFragment(), resources.getString(R.string.monthly))
+        pageAdapter.addFragment(BarsChartFragment(), resources.getString(R.string.annual))
+        binding.viewPagerGraphs.adapter = pageAdapter
+        binding.tlTabsGraph.setupWithViewPager(binding.viewPagerGraphs)
+    }
+
     private fun initWidgets() {
         rvLastMovements = binding.rvLatestMovements
         pbLoading = binding.pbLoading
@@ -78,18 +88,6 @@ class ExpensesFragment : Fragment() {
         btnAddExpense = binding.efabAddExpense
         btnAddIncome = binding.efabAddIncome
 
-        val adapter = TabsFragmentAdapter(
-            parentFragmentManager,
-            FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
-        )
-        adapter.addItem(PieChartFragment(), resources.getString(R.string.monthly))
-        adapter.addItem(BarsChartFragment(), resources.getString(R.string.annual))
-
-        val viewPager = binding.viewPagerGraphs
-        viewPager.adapter = adapter
-
-        val tabsGraphLayout = binding.tlTabsGraph
-        tabsGraphLayout.setupWithViewPager(viewPager)
     }
 
     override fun onDestroyView() {
@@ -98,26 +96,14 @@ class ExpensesFragment : Fragment() {
     }
 }
 
-class TabsFragmentAdapter(fm: FragmentManager, behavior: Int) :
-    FragmentPagerAdapter(fm, behavior) {
-
-    private val listFragment: MutableList<Fragment> = ArrayList()
-    private val tittleList: MutableList<String> = ArrayList()
-
-    fun addItem(fragment: Fragment, title: String) {
-        listFragment.add(fragment)
-        tittleList.add(title)
-    }
-
-    override fun getCount(): Int {
-        return listFragment.size
-    }
-
-    override fun getItem(position: Int): Fragment {
-        return listFragment[position]
-    }
-
-    override fun getPageTitle(position: Int): CharSequence {
-        return tittleList[position]
+class ViewPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
+    private val mFrgmentList = ArrayList<Fragment>()
+    private val mFrgmentTitleList = ArrayList<String>()
+    override fun getCount() = mFrgmentList.size
+    override fun getItem(position: Int) = mFrgmentList[position]
+    override fun getPageTitle(position: Int) = mFrgmentTitleList[position]
+    fun addFragment(fragment: Fragment, title: String) {
+        mFrgmentList.add(fragment)
+        mFrgmentTitleList.add(title)
     }
 }
