@@ -18,18 +18,23 @@
         android:fontFamily="@font/popings_regular_400"
         android:text="Date"
         android:layout_marginBottom="3dp"
+        android:textAlignment="textEnd"
         android:textSize="13sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_movementTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_movementsDate"
         android:fontFamily="@font/popings_medium_500"
         android:text="Title"
         android:textSize="17sp"
+        android:layout_marginEnd="16dp"
+        android:maxLines="2"
+        android:ellipsize="end"
+        app:layout_constraintEnd_toStartOf="@+id/tv_movementsAmount"
         app:layout_constraintStart_toStartOf="@+id/tv_movementsDate"
         app:layout_constraintTop_toBottomOf="@+id/tv_movementsDate" />
 

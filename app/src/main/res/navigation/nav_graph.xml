@@ -59,6 +59,6 @@
     <fragment
         android:id="@+id/allMovementsFragment"
         android:name="com.miguelrodriguez19.mindmaster.expenses.AllMovementsFragment"
-        android:label="fragment_all_movements"
+        android:label="@string/all_movements"
         tools:layout="@layout/fragment_all_movements" />
 </navigation>

@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.toColorInt
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
@@ -39,12 +40,11 @@ class PieChartFragment : Fragment() {
 
         list.add(PieEntry(100f, getString(R.string.incomes)))
         list.add(PieEntry(60f, getString(R.string.expenses)))
-
         val pieDataSet = PieDataSet(list, "")
 
         pieDataSet.setColors(ResourcesCompat.getColor(resources, R.color.green_jade_500, null))
         pieDataSet.addColor(ResourcesCompat.getColor(resources, R.color.red_bittersweet_200, null))
-        pieDataSet.valueTextColor = Color.BLACK
+        pieDataSet.valueTextColor = Color.WHITE
         pieDataSet.valueTextSize = 15f
 
         val pieData = PieData(pieDataSet)

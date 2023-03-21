@@ -48,6 +48,16 @@ class SignUpFragment : Fragment() {
         btnLogIn.setOnClickListener {
             findNavController().popBackStack()
         }
+
+        btnSignUp.setOnClickListener {
+            if (checkFields()){
+                findNavController().popBackStack()
+            }
+        }
+    }
+
+    private fun checkFields(): Boolean {
+        return true
     }
 
     private fun initBindingElements() {

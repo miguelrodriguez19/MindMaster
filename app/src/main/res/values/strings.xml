@@ -10,6 +10,7 @@
     <string name="schedule">Schedule</string>
     <string name="expenses_manager">Expenses Manager</string>
     <string name="passwords_manager">Passwords Manager</string>
+    <string name="all_movements">All Movements</string>
 
     <!-- Forms -->
     <string name="hint_name">Name<font fgcolor='#C80000'>*</font></string>
@@ -37,16 +38,16 @@
 
 
     <!-- Expenses -->
-    <string name="monthly">"Monthly "</string>
-    <string name="annual">"Annual "</string>
+    <string name="monthly">Monthly</string>
+    <string name="annual">Annual</string>
+    <string name="income">Income</string>
+    <string name="expense">Expense</string>
     <string name="incomes">Incomes</string>
     <string name="expenses">Expenses</string>
     <string name="incomesAndExpenses">Incomes and expenses</string>
     <string name="movements">Movements</string>
     <string name="movement">Movement</string>
     <string name="latest_movements">Latest movements:</string>
-    <string name="add_income">Add income</string>
-    <string name="add_expense">Add expense</string>
     <string name="see_all_movements">See all movements</string>
 
 

@@ -7,7 +7,7 @@
     tools:context=".expenses.AllMovementsFragment">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/materialCardView"
+        android:id="@+id/mcv_cardSearchView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:cardCornerRadius="8dp"
@@ -21,7 +21,7 @@
             android:id="@+id/searchView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:iconifiedByDefault="true"
+            app:iconifiedByDefault="false"
             app:queryBackground="@android:color/transparent"
             app:queryHint="@string/hint_search" />
 
@@ -32,25 +32,27 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="75dp"
         android:layout_marginTop="0dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:paddingBottom="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/materialCardView"
+        app:layout_constraintTop_toBottomOf="@+id/mcv_cardSearchView"
         tools:itemCount="5"
         tools:listitem="@layout/cell_day_all_movements" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/btn_addMovement"
+        android:layout_margin="20dp"
+        android:backgroundTint="@color/primaryColor"
         android:text="@string/movement"
         android:textColor="@color/white"
         app:icon="@drawable/ic_add_24"
-        android:backgroundTint="@color/primaryColor"
         app:iconTint="@color/white"
-        android:layout_margin="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
