@@ -11,7 +11,7 @@ import com.miguelrodriguez19.mindmaster.databinding.CellDayAllMovementsBinding
 import com.miguelrodriguez19.mindmaster.models.MonthMovementsResponse
 
 
-class AllMovementsAdapter(private val data: ArrayList<MonthMovementsResponse>) :
+class AllMovementsAdapter(var data: ArrayList<MonthMovementsResponse>) :
     RecyclerView.Adapter<AllMovementsAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.cell_day_all_movements, parent, false)

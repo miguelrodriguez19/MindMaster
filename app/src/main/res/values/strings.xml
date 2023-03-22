@@ -53,4 +53,12 @@
 
     <!-- Passwords -->
     <string name="group">Group</string>
+    <string name="username_label">Username:</string>
+    <string name="email_label">Email:</string>
+    <string name="password_label">Password:</string>
+    <string name="google_sign_up_type">Google Sign Up</string>
+    <string name="facebook_sign_up_type">Facebook Sign Up</string>
+    <string name="username_copied">Username copied</string>
+    <string name="email_copied">Email copied</string>
+    <string name="password_copied">Password copied</string>
 </resources>

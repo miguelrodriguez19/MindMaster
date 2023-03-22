@@ -1,19 +1,15 @@
 package com.miguelrodriguez19.mindmaster.expenses
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentAllMovementsBinding
-import com.miguelrodriguez19.mindmaster.databinding.FragmentDiaryBinding
 import com.miguelrodriguez19.mindmaster.models.MonthMovementsResponse
 
 class AllMovementsFragment : Fragment() {
@@ -25,6 +21,7 @@ class AllMovementsFragment : Fragment() {
     private lateinit var rvAllMovements: RecyclerView
     private lateinit var adapter : AllMovementsAdapter
     var data: ArrayList<MonthMovementsResponse> = ArrayList()
+    private var dataFiltered: ArrayList<MonthMovementsResponse> = ArrayList()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,7 +36,36 @@ class AllMovementsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initWidget()
 
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                newText?.let { search(it) }
+                return true
+            }
+        })
     }
+
+    private fun search(text: String) {
+        val filteredData = ArrayList<MonthMovementsResponse>()
+        for (item in data) {
+            val filteredMovements = ArrayList<MonthMovementsResponse.Movement>()
+            for (movement in item.movementsList) {
+                if (movement.title.contains(text, true) || movement.date.contains(text, true)) {
+                    filteredMovements.add(movement)
+                }
+            }
+            if (filteredMovements.isNotEmpty()) {
+                filteredData.add(MonthMovementsResponse(item.codMonthMovement, item.date, filteredMovements.toList()))
+            }
+        }
+        adapter.data = filteredData
+        adapter.notifyDataSetChanged()
+    }
+
+
 
     private fun initWidget() {
         createFakeData()
@@ -51,6 +77,7 @@ class AllMovementsFragment : Fragment() {
         rvAllMovements.layoutManager = mLayoutManager
 
         adapter = AllMovementsAdapter(data)
+        dataFiltered.addAll(data)
 
         rvAllMovements.adapter = adapter
     }

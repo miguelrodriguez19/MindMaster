@@ -15,6 +15,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/tv_accountSubTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/popings_regular_400"
+        android:text="Sub tittle"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_accountTitle" />
+
     <ImageButton
         android:id="@+id/btn_moreOptions"
         android:layout_width="wrap_content"
@@ -36,7 +47,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_accountTitle">
+        app:layout_constraintTop_toBottomOf="@+id/tv_accountSubTitle">
 
         <TextView
             android:id="@+id/tv_username"
@@ -45,7 +56,7 @@
             android:layout_marginEnd="5dp"
             android:layout_marginBottom="3dp"
             android:fontFamily="@font/popings_regular_400"
-            android:text="Username: "
+            android:text="@string/username_label"
             android:textSize="13sp" />
 
         <EditText
@@ -87,7 +98,7 @@
             android:layout_marginEnd="5dp"
             android:layout_marginBottom="3dp"
             android:fontFamily="@font/popings_regular_400"
-            android:text="Email: "
+            android:text="@string/email_label"
             android:textSize="13sp" />
 
         <EditText
@@ -113,6 +124,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_password"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="-15dp"
@@ -129,7 +141,7 @@
             android:layout_marginEnd="5dp"
             android:layout_marginBottom="3dp"
             android:fontFamily="@font/popings_regular_400"
-            android:text="Password: "
+            android:text="@string/password_label"
             android:textSize="13sp" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -140,7 +152,7 @@
             app:endIconMode="password_toggle">
 
             <EditText
-                android:id="@+id/txt_password"
+                android:id="@+id/et_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/popings_regular_400"
@@ -165,5 +177,28 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/ll_note"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center|start"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_password">
+
+
+        <EditText
+            android:id="@+id/et_note"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:fontFamily="@font/popings_regular_400"
+            android:inputType="none"
+            android:text="Nota de ejemplo"
+            android:textSize="13sp"
+            android:theme="@style/textfieldsWithoutBorder" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
