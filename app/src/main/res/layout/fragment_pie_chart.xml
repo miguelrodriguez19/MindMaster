@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="250dp"
     android:padding="10dp"
-    android:background="@color/white_magnolia"
+    android:background="@color/white"
     tools:context=".expenses.PieChartFragment">
 
     <com.github.mikephil.charting.charts.PieChart

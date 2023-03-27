@@ -11,6 +11,10 @@
     <string name="expenses_manager">Expenses Manager</string>
     <string name="passwords_manager">Passwords Manager</string>
     <string name="all_movements">All Movements</string>
+    <string name="settings">Settings</string>
+    <string name="management_settings">Management Settings</string>
+    <string name="account">Account</string>
+    <string name="help_faqs">Help &amp; FAQs</string>
 
     <!-- Forms -->
     <string name="hint_name">Name<font fgcolor='#C80000'>*</font></string>
@@ -35,6 +39,9 @@
     <!-- Calendar and Diary -->
     <string name="planned_events">Planned events</string>
     <string name="upcoming_events">Upcoming events</string>
+    <string name="event">Event</string>
+    <string name="reminder">Reminder</string>
+    <string name="task">Task</string>
 
 
     <!-- Expenses -->

@@ -117,14 +117,43 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        <com.getbase.floatingactionbutton.FloatingActionsMenu
+            android:id="@+id/famb_addMenu"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_margin="20dp"
+            app:fab_addButtonColorNormal="@color/primaryColor"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_addEvent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            app:icon="@drawable/ic_add_24"
-            app:iconTint="@color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:fab_colorNormal="@color/blue_primary_light_200"
+            app:fab_icon="@drawable/ic_calendar_today_24"
+            app:fab_size="mini"
+            app:fab_title="@string/event" />
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_addReminder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/blue_primary_light_200"
+            app:fab_icon="@drawable/ic_reminder_24"
+            app:fab_size="mini"
+            app:fab_title="@string/reminder" />
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_addTask"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/blue_primary_light_200"
+            app:fab_icon="@drawable/ic_task_24"
+            app:fab_size="mini"
+            app:fab_title="@string/task" />
+
+        </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
         <ProgressBar
             android:id="@+id/pb_loading"

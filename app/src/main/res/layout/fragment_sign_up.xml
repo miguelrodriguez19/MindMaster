@@ -53,8 +53,8 @@
             style="@style/main_titles"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
             android:layout_alignBottom="@id/ll_logo"
+            android:layout_alignParentStart="true"
             android:text="@string/join_now"
             android:textColor="@color/orange" />
 
@@ -222,13 +222,14 @@
                     android:minEms="6" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
             <CheckBox
                 android:id="@+id/checkbox"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:checked="false"
-                android:textColor="@color/gray_dark_700"
-                android:text="@string/terms_conditions" />
+                android:text="@string/terms_conditions"
+                android:textColor="@color/gray_dark_700" />
 
             <TextView
                 android:id="@+id/tv_error"
@@ -262,7 +263,10 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp">
 
                 <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                     android:id="@+id/efab_google"

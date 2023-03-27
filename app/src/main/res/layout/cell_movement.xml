@@ -27,7 +27,6 @@
         android:id="@+id/tv_movementTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_movementsDate"
         android:fontFamily="@font/popings_medium_500"
         android:text="Title"
         android:textSize="17sp"

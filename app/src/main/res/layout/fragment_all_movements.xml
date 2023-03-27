@@ -43,17 +43,32 @@
         tools:itemCount="5"
         tools:listitem="@layout/cell_day_all_movements" />
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/famb_addMenu"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_margin="20dp"
+        app:fab_addButtonColorNormal="@color/primaryColor"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+    <com.getbase.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_addIncome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/btn_addMovement"
-        android:layout_margin="20dp"
-        android:backgroundTint="@color/primaryColor"
-        android:text="@string/movement"
-        android:textColor="@color/white"
-        app:icon="@drawable/ic_add_24"
-        app:iconTint="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:fab_colorNormal="@color/blue_primary_light_200"
+        app:fab_icon="@drawable/ic_money_24"
+        app:fab_size="mini"
+        app:fab_title="@string/income" />
 
+    <com.getbase.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_addExpense"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:fab_colorNormal="@color/blue_primary_light_200"
+        app:fab_icon="@drawable/ic_shopping_cart_24"
+        app:fab_size="mini"
+        app:fab_title="@string/expense" />
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
 </androidx.constraintlayout.widget.ConstraintLayout>

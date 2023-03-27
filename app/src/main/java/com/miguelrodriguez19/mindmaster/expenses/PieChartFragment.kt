@@ -54,8 +54,8 @@ class PieChartFragment : Fragment() {
         pieChart.description.text = ""
 
         pieChart.centerText = ""
-        pieChart.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.white_magnolia, null))
-        pieChart.setHoleColor(ResourcesCompat.getColor(resources, R.color.white_magnolia, null))
+        pieChart.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.white, null))
+        pieChart.setHoleColor(ResourcesCompat.getColor(resources, R.color.white, null))
         pieChart.animateY(200)
 
 

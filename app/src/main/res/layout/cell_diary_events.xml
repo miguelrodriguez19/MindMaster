@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
+    android:orientation="horizontal"
+    android:id="@+id/cl_eventArea"
+    android:padding="6dp"
+    android:layout_marginTop="3dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/civ_colorTag"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:elevation="1dp"
+        android:src="@color/orange"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_eventType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/popings_regular_400"
+        android:text="Type"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_eventTitle"
+        app:layout_constraintStart_toStartOf="@+id/tv_eventTitle" />
+
+    <TextView
+        android:id="@+id/tv_eventTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/popings_medium_500"
+        android:text="Title child"
+        android:textSize="15sp"
+        android:layout_marginStart="10dp"
+        app:layout_constraintStart_toEndOf="@+id/civ_colorTag"
+        app:layout_constraintTop_toTopOf="@+id/civ_colorTag" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
