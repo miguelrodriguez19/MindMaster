@@ -64,7 +64,6 @@ class SignUpFragment : Fragment() {
         etName = binding.txtName
         etSurname = binding.txtSurname
         etEmail = binding.txtEmail
-        etPhone = binding.txtPhone
         etBirthdate = binding.txtDateBirthdate
         etPassword = binding.etPassword
         etRepeatPassword = binding.txtRepeatPassword

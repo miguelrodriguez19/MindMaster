@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cl_eventArea"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="3dp"
     android:background="@android:color/transparent"
     android:orientation="horizontal"
-    android:id="@+id/cl_eventArea"
-    android:padding="6dp"
-    android:layout_marginTop="3dp">
+    android:padding="6dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/civ_colorTag"
@@ -32,10 +32,10 @@
         android:id="@+id/tv_eventTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         android:fontFamily="@font/popings_medium_500"
         android:text="Title child"
         android:textSize="15sp"
-        android:layout_marginStart="10dp"
         app:layout_constraintStart_toEndOf="@+id/civ_colorTag"
         app:layout_constraintTop_toTopOf="@+id/civ_colorTag" />
 

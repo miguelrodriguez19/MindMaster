@@ -48,6 +48,8 @@
         android:layout_width="250dp"
         android:layout_height="250dp"
         android:layout_margin="20dp"
+        app:fab_addButtonColorPressed="@color/blue_ribbon_500"
+
         app:fab_addButtonColorNormal="@color/primaryColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">

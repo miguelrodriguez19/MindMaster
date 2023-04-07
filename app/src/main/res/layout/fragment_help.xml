@@ -1,14 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".settings.HelpFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:clipToPadding="false"
+        android:padding="16dp">
 
-</FrameLayout>
+        <TextView
+            style="@style/main_titles"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="@string/need_help"
+            android:textSize="25sp" />
+
+        <TextView
+            style="@style/body_large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="@string/descripting_message_for_help" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_goToWebsite"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/go_to_our_website"
+            android:textAlignment="textStart"
+            android:fontFamily="@font/popings_medium_500"
+            android:textAllCaps="false"
+            android:textSize="17sp"
+            app:icon="@drawable/ic_language_24" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_emailUs"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/email_us"
+            android:textAlignment="textStart"
+            android:fontFamily="@font/popings_medium_500"
+            android:textAllCaps="false"
+            android:textSize="17sp"
+            app:icon="@drawable/ic_email_24" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_termsAndConditions"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/terms_and_conditions"
+            android:textAlignment="textStart"
+            android:fontFamily="@font/popings_medium_500"
+            android:textAllCaps="false"
+            android:textSize="17sp"
+            app:icon="@drawable/ic_feed_24"
+            android:layout_marginBottom="10dp"/>
+
+        <TextView
+            style="@style/secondary_titles"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="FAQs"
+            android:textSize="25sp" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/mcv_cardSearchView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="12dp"
+            app:cardUseCompatPadding="false">
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/searchView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:iconifiedByDefault="false"
+                app:queryBackground="@android:color/transparent"
+                app:queryHint="@string/find_question"
+                android:layout_marginBottom="4dp"/>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_faqs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:isScrollContainer="false"
+            android:layout_marginTop="16dp"
+            tools:itemCount="5"
+            tools:listitem="@layout/cell_faq" />
+    </LinearLayout>
+
+</ScrollView>

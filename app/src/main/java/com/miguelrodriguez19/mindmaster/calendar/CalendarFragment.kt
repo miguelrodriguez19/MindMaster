@@ -1,5 +1,6 @@
 package com.miguelrodriguez19.mindmaster.calendar
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,8 +13,10 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.miguelrodriguez19.mindmaster.databinding.FragmentCalendarBinding
+import com.miguelrodriguez19.mindmaster.models.*
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class CalendarFragment : Fragment() {
     private val TAG = "CalendarFragment"
@@ -25,7 +28,7 @@ class CalendarFragment : Fragment() {
     private lateinit var rvCalendarEvents: RecyclerView
     private lateinit var adapter: CalendarEventsAdapter
     private lateinit var pbLoading: View
-    var data = arrayListOf("Examen de Mates", "Examen de Lengua","Examen de Ingles", "Examen de Historia", "Examen de Fisica")
+    var data = ArrayList<AbstractEvents>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,11 +43,12 @@ class CalendarFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initWidgets()
+        createFakeData()
         val mLayoutManager = StaggeredGridLayoutManager(1, 1)
         rvCalendarEvents.layoutManager = mLayoutManager
 
-        adapter = CalendarEventsAdapter(data){ title ->
-            Log.i(TAG, "onViewCreated - event: $title")
+        adapter = CalendarEventsAdapter(requireContext(), data){ item ->
+            Log.i(TAG, "onViewCreated - event: ${item.title}")
         }
 
         rvCalendarEvents.adapter = adapter
@@ -59,6 +63,53 @@ class CalendarFragment : Fragment() {
 
         pbLoading.visibility = View.GONE
 
+    }
+
+    private fun createFakeData() {
+        data.clear()
+        data.add(
+            Event(
+                cod ="1",
+                title = "Birthday Party",
+                start_time = "2022-05-21T19:00:00",
+                end_time = "2022-05-21T19:00:00",
+                location = "123 Main St.",
+                description = "Celebrate Jane's 30th birthday",
+                participants = listOf("Jane", "John", "Samantha"),
+                category = "Celebration",
+                repetition = Repetition.ONCE,
+                color_tag = "#F44336",
+                type = EventType.EVENT
+            )
+        )
+
+        data.add(
+            Reminder(
+                cod = "2",
+                title = "Meeting with Manager",
+                reminder_time = "2022-05-23T10:00:00",
+                description = "Discuss project progress",
+                category = "Work",
+                color_tag = "#4CAF50",
+                type = EventType.REMINDER
+            )
+        )
+
+        data.add(
+            Task(
+                cod = "3",
+                title = "Finish Report",
+                due_date = "2022-05-25",
+                description = "Complete final report for project",
+                priority = Priority.HIGH,
+                status = Status.IN_PROGRESS,
+                category = "Work",
+                color_tag = "#F44876",
+                type = EventType.TASK
+            )
+        )
+
+        tvCountOfEvents.text = data.size.toString()
     }
 
     private fun initWidgets() {

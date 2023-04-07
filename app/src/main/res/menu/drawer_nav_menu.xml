@@ -1,32 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/calendarFragment"
-        android:icon="@drawable/ic_calendar_month_24"
-        android:title="@string/calendar" />
-    <item
-        android:id="@+id/diaryFragment"
-        android:icon="@drawable/ic_book_24"
-        android:title="@string/schedule" />
-    <item
-        android:id="@+id/expensesFragment"
-        android:icon="@drawable/ic_money_24"
-        android:title="@string/expenses_manager" />
-    <item
-        android:id="@+id/passwordsFragment"
-        android:icon="@drawable/ic_password_24"
-        android:title="@string/passwords_manager" />
-
-    <item android:title="@string/management_settings">
-        <menu>
-            <item
-                android:id="@+id/accountFragment"
-                android:icon="@drawable/ic_account_circle_24"
-                android:title="@string/account" />
-            <item
-                android:id="@+id/helpFragment"
-                android:icon="@drawable/ic_help_24"
-                android:title="@string/help_faqs" />
-        </menu>
-    </item>
+    <group>
+        <item
+            android:id="@+id/calendarFragment"
+            android:icon="@drawable/ic_calendar_month_24"
+            android:title="@string/calendar" />
+        <item
+            android:id="@+id/diaryFragment"
+            android:icon="@drawable/ic_book_24"
+            android:title="@string/schedule" />
+        <item
+            android:id="@+id/expensesFragment"
+            android:icon="@drawable/ic_money_24"
+            android:title="@string/expenses_manager" />
+        <item
+            android:id="@+id/passwordsFragment"
+            android:icon="@drawable/ic_password_24"
+            android:title="@string/passwords_manager" />
+    </group>
+    <group android:id="@+id/submenu_settings">
+        <item
+            android:id="@+id/settingsFragment"
+            android:icon="@drawable/ic_settings_24"
+            android:title="@string/settings" />
+        <item
+            android:id="@+id/helpFragment"
+            android:icon="@drawable/ic_help_24"
+            android:title="@string/help_faqs" />
+    </group>
+    <group>
+        <item
+            android:id="@+id/share"
+            android:icon="@drawable/ic_share_24"
+            android:title="@string/share_with_friends" />
+        <item
+            android:id="@+id/rate"
+            android:icon="@drawable/ic_star_rate_24"
+            android:title="@string/rate_app" />
+    </group>
 </menu>

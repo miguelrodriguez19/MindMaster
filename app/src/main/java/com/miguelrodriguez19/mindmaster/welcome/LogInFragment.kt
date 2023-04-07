@@ -1,17 +1,19 @@
 package com.miguelrodriguez19.mindmaster.welcome
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.android.material.navigation.NavigationView
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentLogInBinding
+
 
 class LogInFragment : Fragment() {
     private var _binding: FragmentLogInBinding? = null
@@ -23,6 +25,7 @@ class LogInFragment : Fragment() {
     private lateinit var btnFacebook: ExtendedFloatingActionButton
     private lateinit var btnForgottenPwd: Button
     private lateinit var btnSignUp: Button
+    private lateinit var spLanguage: Spinner
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,6 +53,30 @@ class LogInFragment : Fragment() {
             findNavController().navigate(action)
         }
 
+        ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.available_languages,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spLanguage.adapter = adapter
+        }
+
+        spLanguage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                // Acciones a realizar cuando se seleccione un elemento del Spinner
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // Acciones a realizar cuando no se seleccione ningún elemento del Spinner
+            }
+        }
+
 
     }
 
@@ -67,6 +94,7 @@ class LogInFragment : Fragment() {
         btnFacebook = binding.efabFacebook
         btnForgottenPwd = binding.btnForgottenPassword
         btnSignUp = binding.btnSignUp
+        spLanguage = binding.spLanguage
     }
 
     override fun onDestroyView() {

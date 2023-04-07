@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
     android:orientation="vertical">
 
     <TextView
@@ -31,10 +32,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
-        android:layout_marginTop="-5dp"
         android:background="@android:color/transparent"
         android:padding="5dp"
-        android:src="@drawable/ic_more_option_vert_24"
+        android:src="@drawable/ic_more_horiz_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/gray_dove_500" />
@@ -192,7 +192,7 @@
             android:id="@+id/et_note"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="5dp"
             android:fontFamily="@font/popings_regular_400"
             android:inputType="none"
             android:text="Nota de ejemplo"
@@ -201,4 +201,10 @@
 
     </LinearLayout>
 
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="0dp"
+        android:layout_height="1.5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

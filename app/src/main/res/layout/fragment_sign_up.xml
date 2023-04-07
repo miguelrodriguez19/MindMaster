@@ -78,7 +78,7 @@
                     android:id="@+id/txt_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/hint_name"
+                    android:hint="@string/hint_first_name"
                     android:inputType="text"
                     android:maxEms="25"
                     android:singleLine="true"
@@ -98,7 +98,7 @@
                     android:id="@+id/txt_surname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/hint_surname"
+                    android:hint="@string/hint_last_name"
                     android:inputType="text"
                     android:maxEms="25"
                     android:singleLine="true"
@@ -122,31 +122,8 @@
                     android:id="@+id/txt_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/hint_email_"
+                    android:hint="@string/hint_email_red"
                     android:inputType="textEmailAddress"
-                    android:maxEms="250"
-                    android:singleLine="true" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_phone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                app:boxCornerRadiusBottomEnd="5dp"
-                app:boxCornerRadiusBottomStart="5dp"
-                app:boxCornerRadiusTopEnd="5dp"
-                app:boxCornerRadiusTopStart="5dp"
-                app:startIconDrawable="@drawable/ic_phone_24"
-                app:startIconTint="@color/gray_dove_500">
-
-                <EditText
-                    android:id="@+id/txt_phone"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/hint_phone"
-                    android:inputType="phone"
                     android:maxEms="250"
                     android:singleLine="true" />
 
@@ -192,7 +169,7 @@
                     android:id="@+id/et_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/hint_password_"
+                    android:hint="@string/hint_password_red"
                     android:inputType="textPassword"
                     android:maxEms="12"
                     android:minEms="6" />
@@ -228,7 +205,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:checked="false"
-                android:text="@string/terms_conditions"
+                android:text="@string/check_terms_and_conditions"
                 android:textColor="@color/gray_dark_700" />
 
             <TextView

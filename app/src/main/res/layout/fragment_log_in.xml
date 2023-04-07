@@ -14,10 +14,10 @@
 
         <LinearLayout
             android:id="@+id/ll_logo"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
             android:gravity="center|start"
             android:orientation="horizontal">
 
@@ -39,6 +39,14 @@
 
         </LinearLayout>
 
+        <Spinner
+            android:id="@+id/sp_language"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="9dp"
+            android:layout_alignParentEnd="true"/>
+
         <pl.droidsonroids.gif.GifImageView
             android:id="@+id/giv_productivity"
             android:layout_width="250dp"
@@ -50,6 +58,7 @@
         <TextView
             android:id="@+id/tv_welcome_title"
             style="@style/main_titles"
+            android:textColor="@color/primaryColor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/giv_productivity"

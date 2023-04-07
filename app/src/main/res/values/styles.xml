@@ -3,7 +3,6 @@
     <style name="main_titles" >
         <item name="android:fontFamily">@font/popings_medium_500</item>
         <item name="android:textSize">30sp</item>
-        <item name="android:textColor">@color/primaryColor</item>
     </style>
     <style name="secondary_titles" >
         <item name="android:fontFamily">@font/popings_regular_400</item>

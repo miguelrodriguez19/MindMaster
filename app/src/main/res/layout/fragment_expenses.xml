@@ -67,18 +67,19 @@
             tools:itemCount="3"
             tools:listitem="@layout/cell_movement" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_seeAllMovements"
-            style="@style/body_large"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="20dp"
-            android:background="@android:color/transparent"
+            android:fontFamily="@font/popings_regular_400"
             android:text="@string/see_all_movements"
             android:textAllCaps="false"
-            android:textColor="@color/primaryColor"
+            android:textSize="15sp"
+            app:strokeWidth="0dp"
             app:layout_constraintBottom_toTopOf="@+id/ll_addMovements"
             app:layout_constraintEnd_toEndOf="@+id/rv_latestMovements"
             app:layout_constraintStart_toStartOf="@+id/rv_latestMovements" />

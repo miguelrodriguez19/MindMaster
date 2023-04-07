@@ -2,6 +2,7 @@ package com.miguelrodriguez19.mindmaster
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.annotation.IdRes
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.FragmentActivity
@@ -32,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment.findNavController()
 
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.calendarFragment, R.id.diaryFragment, R.id.expensesFragment, R.id.passwordsFragment),
+            setOf(R.id.calendarFragment, R.id.diaryFragment, R.id.expensesFragment, R.id.passwordsFragment, R.id.settingsFragment, R.id.helpFragment),
             binding.drawerLayout
         )
 
