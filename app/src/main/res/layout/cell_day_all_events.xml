@@ -8,62 +8,31 @@
     android:layout_marginBottom="6dp"
     android:padding="1dp">
 
-    <RelativeLayout
-        android:id="@+id/rl_eventCounter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_monthTitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btn_monthTitle">
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_centerInParent="true"
-            android:backgroundTint="?attr/colorPrimary"
-            android:elevation="2dp"
-            app:cardCornerRadius="40dp" />
-
-        <TextView
-            android:id="@+id/tv_countOfEvents"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:elevation="3dp"
-            android:text="3"
-
-            android:textColor="@color/white"
-            android:textSize="15sp" />
-    </RelativeLayout>
-
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_monthTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:fontFamily="@font/popings_medium_500"
-        android:padding="0dp"
+        android:padding="3dp"
         android:text="March 2023"
         android:textAlignment="textStart"
         android:textSize="15sp"
         app:strokeWidth="0dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/rl_eventCounter"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_monthEvents"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingStart="2dp"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_monthTitle"
         tools:itemCount="4"
-        tools:listitem="@layout/cell_diary_events" />
+        android:layout_marginStart="4dp"
+        tools:listitem="@layout/cell_calendar_events" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.getbase.floatingactionbutton.FloatingActionButton
+import com.github.clans.fab.FloatingActionButton
 import com.miguelrodriguez19.mindmaster.databinding.FragmentAllMovementsBinding
 import com.miguelrodriguez19.mindmaster.models.MonthMovementsResponse
 
@@ -70,9 +70,9 @@ class AllMovementsFragment : Fragment() {
 
     private fun initWidget() {
         createFakeData()
-        searchView = binding.searchView
+        searchView = binding.searchView/*
         fabAddIncome = binding.fabAddIncome
-        fabAddExpense = binding.fabAddExpense
+        fabAddExpense = binding.fabAddExpense*/
         rvAllMovements = binding.rvAllMovements
 
         val mLayoutManager = StaggeredGridLayoutManager(1, 1)

@@ -35,7 +35,7 @@ class FAQsAdapter(
             llQuestion.setOnClickListener {
                 setVisibilityAnswer()
             }
-            llQuestion.setOnClickListener {
+            llAnswer.setOnClickListener {
                 setVisibilityAnswer()
             }
             btnSeeMore.setOnClickListener {

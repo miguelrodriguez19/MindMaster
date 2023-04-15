@@ -78,7 +78,7 @@
                     android:id="@+id/txt_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/hint_first_name"
+                    android:hint="@string/hint_first_name_red"
                     android:inputType="text"
                     android:maxEms="25"
                     android:singleLine="true"
@@ -145,7 +145,7 @@
                     android:layout_height="wrap_content"
                     android:clickable="false"
                     android:focusable="false"
-                    android:hint="@string/hint_dateBirthdate"
+                    android:hint="@string/hint_dateBirthdate_red"
                     android:inputType="date"
                     android:maxLines="1"
                     android:textSize="18sp" />

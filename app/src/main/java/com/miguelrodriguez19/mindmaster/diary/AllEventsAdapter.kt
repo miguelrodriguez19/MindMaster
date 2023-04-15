@@ -14,12 +14,14 @@ import com.miguelrodriguez19.mindmaster.expenses.LastMovementsAdapter
 import com.miguelrodriguez19.mindmaster.models.AbstractEvents
 import com.miguelrodriguez19.mindmaster.models.EventsResponse
 import com.miguelrodriguez19.mindmaster.models.MonthMovementsResponse
+import com.miguelrodriguez19.mindmaster.models.Sender
 
 
 class AllEventsAdapter(
     private val context: Context,
-    var data: ArrayList<EventsResponse>
-) :
+    var data: ArrayList<EventsResponse>,
+    private val sender:Sender
+    ) :
     RecyclerView.Adapter<AllEventsAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view =
@@ -35,14 +37,12 @@ class AllEventsAdapter(
     inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         private val bind = CellDayAllEventsBinding.bind(v)
         private val btnMonth = bind.btnMonthTitle
-        private val tvCounterEvents = bind.tvCountOfEvents
         private val rvMonthEvents = bind.rvMonthEvents
         private lateinit var adapter: CalendarEventsAdapter
 
         fun bind(item: EventsResponse) {
             initRecyclerView(item.allEventsList)
             btnMonth.text = item.date
-            tvCounterEvents.text = item.allEventsList.count().toString()
             btnMonth.setOnClickListener {
                 if (rvMonthEvents.visibility == View.GONE) {
                     rvMonthEvents.visibility = View.VISIBLE
@@ -56,7 +56,7 @@ class AllEventsAdapter(
             val mLayoutManager = StaggeredGridLayoutManager(1, 1)
             rvMonthEvents.layoutManager = mLayoutManager
 
-            adapter = CalendarEventsAdapter(context, ArrayList(data)) {
+            adapter = CalendarEventsAdapter(context, ArrayList(data), sender) {
 
             }
 

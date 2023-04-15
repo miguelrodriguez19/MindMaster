@@ -79,10 +79,10 @@
             android:text="@string/see_all_movements"
             android:textAllCaps="false"
             android:textSize="15sp"
-            app:strokeWidth="0dp"
             app:layout_constraintBottom_toTopOf="@+id/ll_addMovements"
             app:layout_constraintEnd_toEndOf="@+id/rv_latestMovements"
-            app:layout_constraintStart_toStartOf="@+id/rv_latestMovements" />
+            app:layout_constraintStart_toStartOf="@+id/rv_latestMovements"
+            app:strokeWidth="0dp" />
 
         <LinearLayout
             android:id="@+id/ll_addMovements"
@@ -106,7 +106,9 @@
                 android:backgroundTint="@color/red_bittersweet_200"
                 android:text="@string/expense"
                 android:textAlignment="center"
+                android:textAllCaps="false"
                 android:textColor="@color/white"
+                android:textSize="15sp"
                 app:icon="@drawable/ic_add_24"
                 app:iconTint="@color/white" />
 
@@ -119,7 +121,9 @@
                 android:backgroundTint="@color/green_mantis_200"
                 android:text="@string/income"
                 android:textAlignment="center"
+                android:textAllCaps="false"
                 android:textColor="@color/white"
+                android:textSize="15sp"
                 app:icon="@drawable/ic_add_24"
                 app:iconTint="@color/white" />
 

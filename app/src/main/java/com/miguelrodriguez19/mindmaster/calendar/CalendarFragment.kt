@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.github.clans.fab.FloatingActionButton
 import com.miguelrodriguez19.mindmaster.databinding.FragmentCalendarBinding
 import com.miguelrodriguez19.mindmaster.models.*
 import java.text.SimpleDateFormat
@@ -26,6 +27,9 @@ class CalendarFragment : Fragment() {
     private lateinit var tvCountOfEvents: TextView
     private lateinit var calendarView: CalendarView
     private lateinit var rvCalendarEvents: RecyclerView
+    private lateinit var btnAddEvent: FloatingActionButton
+    private lateinit var btnAddReminder: FloatingActionButton
+    private lateinit var btnAddTask: FloatingActionButton
     private lateinit var adapter: CalendarEventsAdapter
     private lateinit var pbLoading: View
     var data = ArrayList<AbstractEvents>()
@@ -47,7 +51,7 @@ class CalendarFragment : Fragment() {
         val mLayoutManager = StaggeredGridLayoutManager(1, 1)
         rvCalendarEvents.layoutManager = mLayoutManager
 
-        adapter = CalendarEventsAdapter(requireContext(), data){ item ->
+        adapter = CalendarEventsAdapter(requireContext(), data, Sender.CALENDAR){ item ->
             Log.i(TAG, "onViewCreated - event: ${item.title}")
         }
 
@@ -116,6 +120,9 @@ class CalendarFragment : Fragment() {
         calendarView = binding.calendarView
         tvSelectedDateEvents = binding.tvSelectedDateEvents
         tvCountOfEvents = binding.tvCountOfEvents
+        btnAddEvent = binding.fabAddEvent
+        btnAddTask = binding.fabAddTask
+        btnAddReminder = binding.fabAddReminder
         rvCalendarEvents = binding.rvEvents
         pbLoading = binding.pbLoading
 

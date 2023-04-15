@@ -9,10 +9,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.CellCalendarEventsBinding
 import com.miguelrodriguez19.mindmaster.models.AbstractEvents
+import com.miguelrodriguez19.mindmaster.models.Sender
 
 class CalendarEventsAdapter(
     private val context: Context,
     private val data: ArrayList<AbstractEvents>,
+    private val sender:Sender,
     val onClick: (AbstractEvents) -> Unit
 ) :
     RecyclerView.Adapter<CalendarEventsAdapter.ViewHolder>() {
@@ -37,7 +39,7 @@ class CalendarEventsAdapter(
         fun bind(item: AbstractEvents) {
             tvEventTitle.text = item.title
             tvEventType.text = item.getItemType(context, item.type)
-            civColorTag.setImageDrawable(ColorDrawable(item.getColor(context, item.color_tag)))
+            civColorTag.setCardBackgroundColor(item.getColor(context, item.color_tag))
             clEventArea.setOnClickListener {
                 onClick(item)
             }

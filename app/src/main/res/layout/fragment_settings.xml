@@ -50,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Edit profile"
+                android:text="@string/edit_profile"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@+id/civ_userPhoto"
                 app:layout_constraintStart_toStartOf="@+id/tv_name"
@@ -162,37 +162,106 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_security"
-            style="@style/secondary_titles"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:background="@android:color/transparent"
+            android:fontFamily="@font/popings_regular_400"
             android:gravity="start|center"
             android:padding="0dp"
             android:text="@string/security"
             android:textAllCaps="false"
             android:textColor="@color/gray_dark_700"
+            android:textSize="19sp"
             app:icon="@drawable/ic_arrow_forward_24"
             app:iconGravity="end"
             app:iconSize="20dp"
-            app:iconTint="@color/gray_scorpion_200" />
+            app:iconTint="@color/gray_scorpion_200"
+            app:strokeWidth="0dp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_changePassword"
-            style="@style/secondary_titles"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:background="@android:color/transparent"
-            android:gravity="start|center"
-            android:padding="0dp"
-            android:text="@string/change_password"
-            android:textAllCaps="false"
-            android:textColor="@color/gray_dark_700"
-            app:icon="@drawable/ic_arrow_forward_24"
-            app:iconGravity="end"
-            app:iconSize="20dp"
-            app:iconTint="@color/gray_scorpion_200" />
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/ll_advancedOptions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start|center"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/tv_advancedOptions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="90"
+                    android:fontFamily="@font/popings_regular_400"
+                    android:text="@string/advanced_options"
+                    android:textColor="@color/primaryColorDark"
+                    android:textSize="19sp" />
+
+                <ImageButton
+                    android:id="@+id/btn_seeMore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="10"
+                    android:background="@android:color/transparent"
+                    android:padding="3dp"
+                    android:src="@drawable/ic_keyboard_arrow_down_24"
+                    app:tint="@color/primaryColorDark" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_expandableAdvancedOptions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start|center"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_changePassword"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="@font/popings_regular_400"
+                    android:gravity="start|center"
+                    android:padding="0dp"
+                    android:text="@string/change_password"
+                    android:textAllCaps="false"
+                    android:textColor="@color/gray_dark_700"
+                    android:textSize="19sp"
+                    app:icon="@drawable/ic_arrow_forward_24"
+                    app:iconGravity="end"
+                    app:iconSize="20dp"
+                    app:iconTint="@color/gray_scorpion_200"
+                    app:strokeWidth="0dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_deleteAccount"
+                    style="@style/secondary_titles"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:background="@android:color/transparent"
+                    android:gravity="start|bottom"
+                    android:padding="0dp"
+                    android:text="@string/delete_account"
+                    android:textAllCaps="false"
+                    android:textColor="@color/red_error_500"
+                    app:icon="@drawable/ic_delete_24"
+                    app:iconSize="25dp"
+                    app:iconTint="@color/red_error_500" />
+            </LinearLayout>
+
+        </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_logOut"

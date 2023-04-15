@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.getbase.floatingactionbutton.FloatingActionButton
+import com.github.clans.fab.FloatingActionButton
 import com.miguelrodriguez19.mindmaster.databinding.FragmentDiaryBinding
 import com.miguelrodriguez19.mindmaster.models.*
 
@@ -80,7 +80,7 @@ class DiaryFragment : Fragment() {
         val mLayoutManager = StaggeredGridLayoutManager(1, 1)
         rvEventsPerMonth.layoutManager = mLayoutManager
 
-        adapter = AllEventsAdapter(requireContext(), data)
+        adapter = AllEventsAdapter(requireContext(), data, Sender.SCHEDULE)
         dataFiltered.addAll(data)
 
         rvEventsPerMonth.adapter = adapter

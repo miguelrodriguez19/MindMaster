@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Mind Master</string>
     <string name="mind_master_logo">Mind \nMaster</string>
-    <string name="or">or</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="welcome">Welcome!</string>
     <string name="log_in">Log In</string>
@@ -17,14 +16,17 @@
     <string name="help_faqs">FAQs &amp; Support</string>
     <string name="share_with_friends">Share with friends</string>
     <string name="rate_app">Rate app</string>
+    <string name="confirmation">Continue</string>
 
     <!-- Forms -->
-    <string name="hint_first_name">First name<font fgcolor='#C80000'>*</font></string>
+    <string name="hint_first_name_red">First name<font fgcolor='#C80000'>*</font></string>
+    <string name="hint_first_name">First name</string>
     <string name="hint_last_name">Last name</string>
     <string name="hint_email">Email</string>
     <string name="hint_email_red">Email<font fgcolor='#C80000'>*</font></string>
     <string name="hint_phone">Phone<font fgcolor='#C80000'>*</font></string>
-    <string name="hint_dateBirthdate">Birthdate<font fgcolor='#C80000'>*</font></string>
+    <string name="hint_dateBirthdate_red">Birthdate<font fgcolor='#C80000'>*</font></string>
+    <string name="hint_dateBirthdate">Birthdate</string>
     <string name="hint_password">Password</string>
     <string name="hint_password_red">Password<font fgcolor='#C80000'>*</font></string>
     <string name="hint_search">Search here …</string>
@@ -36,6 +38,7 @@
     <string name="facebook">Facebook</string>
     <string name="google">Google</string>
     <string name="join_now">Join now!</string>
+    <string name="or">or</string>
 
 
     <!-- Calendar and Diary -->
@@ -80,13 +83,22 @@
     <string name="change_password">Change password</string>
     <string name="log_out">Log out</string>
     <string name="cancel">Cancel</string>
-    <string name="logout_confirmation_message">Do you want to log out?</string>
+    <string name="logout_confirmation_title">Do you want to log out?</string>
+    <string name="delete_account_confirmation_title">Do you want to delete your account?</string>
+    <string name="confirmation_twice">Do you still want it?</string>
+    <string name="delete_account_confirmation_message">This action is irreversible, you will delete all your data from the system.</string>
     <string name="descripting_message_for_help">Didn\'t find the answer you were looking for? \nContact our support center!</string>
     <string name="need_help">Need help?</string>
     <string name="go_to_our_website">Go to our website</string>
     <string name="terms_and_conditions">Terms and Conditions</string>
     <string name="email_us">Email Us</string>
     <string name="find_question">Find question...</string>
+    <string name="save">Save</string>
+    <string name="done">Done</string>
+    <string name="edit_profile">Edit profile</string>
+    <string name="advanced_options">Advanced options</string>
+    <string name="delete_account">Delete account</string>
+
 
     <string-array name="available_languages">
         <item>English</item>

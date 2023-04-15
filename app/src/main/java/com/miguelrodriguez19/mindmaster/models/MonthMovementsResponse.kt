@@ -15,3 +15,7 @@ data class MonthMovementsResponse(
         val type: String
     ) : Serializable
 }
+
+enum class Sender {
+    CALENDAR, SCHEDULE
+}

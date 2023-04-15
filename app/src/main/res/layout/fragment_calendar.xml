@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -113,51 +114,57 @@
                 app:layout_constraintStart_toStartOf="@+id/cardview_events"
                 app:layout_constraintTop_toBottomOf="@+id/cardview_events"
                 tools:itemCount="3"
+                android:layout_marginStart="8dp"
                 tools:listitem="@layout/cell_calendar_events" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.getbase.floatingactionbutton.FloatingActionsMenu
+        <com.github.clans.fab.FloatingActionMenu
             android:id="@+id/famb_addMenu"
             android:layout_width="250dp"
             android:layout_height="250dp"
             android:layout_margin="20dp"
-            app:fab_labelsPosition="left"
-            app:fab_expandDirection="up"
-            app:fab_addButtonColorNormal="@color/primaryColor"
-            app:fab_addButtonColorPressed="@color/blue_ribbon_500"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintEnd_toEndOf="parent"
+            fab:menu_colorNormal="@color/primaryColor"
+            fab:menu_colorPressed="@color/blue_ribbon_500"
+            fab:menu_labels_position="left"
+            fab:menu_openDirection="up">
 
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_addEvent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fab_colorNormal="@color/blue_primary_light_200"
-            app:fab_icon="@drawable/ic_calendar_today_24"
-            app:fab_size="mini"
-            app:fab_title="@string/event"
-            />
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab_addEvent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_calendar_today_24"
+                app:fab_colorNormal="@color/blue_primary_light_200"
+                app:fab_colorPressed="@color/blue_fog_100"
+                app:fab_colorRipple="@color/blue_fog_100"
+                fab:fab_label="@string/event"
+                fab:fab_size="mini" />
 
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_addReminder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fab_colorNormal="@color/blue_primary_light_200"
-            app:fab_icon="@drawable/ic_reminder_24"
-            app:fab_size="mini"
-            app:fab_title="@string/reminder" />
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab_addReminder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_reminder_24"
+                app:fab_colorNormal="@color/blue_primary_light_200"
+                app:fab_colorPressed="@color/blue_fog_100"
+                app:fab_colorRipple="@color/blue_fog_100"
+                fab:fab_label="@string/reminder"
+                fab:fab_size="mini" />
 
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_addTask"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fab_colorNormal="@color/blue_primary_light_200"
-            app:fab_icon="@drawable/ic_task_24"
-            app:fab_size="mini"
-            app:fab_title="@string/task" />
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab_addTask"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_task_24"
+                app:fab_colorNormal="@color/blue_primary_light_200"
+                app:fab_colorPressed="@color/blue_fog_100"
+                app:fab_colorRipple="@color/blue_fog_100"
+                fab:fab_label="@string/task"
+                fab:fab_size="mini" />
 
-        </com.getbase.floatingactionbutton.FloatingActionsMenu>
+        </com.github.clans.fab.FloatingActionMenu>
 
         <ProgressBar
             android:id="@+id/pb_loading"
