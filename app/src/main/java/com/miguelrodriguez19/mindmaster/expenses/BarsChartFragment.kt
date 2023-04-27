@@ -34,8 +34,9 @@ class BarsChartFragment : Fragment() {
         barChart = binding.barChart
 
         val listIncomes: ArrayList<BarEntry> = ArrayList()
-        for (i in 1..12)
-        listIncomes.add(BarEntry(i.toFloat(), (Math.random()*100).toFloat()))
+        for (i in 1..12) {
+            listIncomes.add(BarEntry(i.toFloat(), (Math.random() * 100).toFloat()))
+        }
 
         val listExpenses: ArrayList<BarEntry> = ArrayList()
         for (i in 1..12)

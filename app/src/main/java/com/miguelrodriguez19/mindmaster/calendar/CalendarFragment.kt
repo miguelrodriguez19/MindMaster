@@ -1,6 +1,5 @@
 package com.miguelrodriguez19.mindmaster.calendar
 
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,11 +12,13 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.clans.fab.FloatingActionButton
+import com.github.clans.fab.FloatingActionMenu
+import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.databinding.FragmentCalendarBinding
 import com.miguelrodriguez19.mindmaster.models.*
+import com.miguelrodriguez19.mindmaster.utils.AllBottomSheets
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class CalendarFragment : Fragment() {
     private val TAG = "CalendarFragment"
@@ -30,6 +31,7 @@ class CalendarFragment : Fragment() {
     private lateinit var btnAddEvent: FloatingActionButton
     private lateinit var btnAddReminder: FloatingActionButton
     private lateinit var btnAddTask: FloatingActionButton
+    private lateinit var btnMenuEvents: FloatingActionMenu
     private lateinit var adapter: CalendarEventsAdapter
     private lateinit var pbLoading: View
     var data = ArrayList<AbstractEvents>()
@@ -39,6 +41,7 @@ class CalendarFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        (activity as MainActivity).unlockDrawer()
         _binding = FragmentCalendarBinding.inflate(inflater, container, false)
         (requireActivity() as AppCompatActivity).supportActionBar?.show()
         return binding.root
@@ -56,6 +59,11 @@ class CalendarFragment : Fragment() {
         }
 
         rvCalendarEvents.adapter = adapter
+
+        btnAddEvent.setOnClickListener {
+            AllBottomSheets.showEventsBS(requireContext(), null)
+            btnMenuEvents.close(true)
+        }
 
         calendarView.setOnDateChangeListener { view, year, month, dayOfMonth ->
             val selectedDate = Calendar.getInstance()
@@ -80,7 +88,7 @@ class CalendarFragment : Fragment() {
                 location = "123 Main St.",
                 description = "Celebrate Jane's 30th birthday",
                 participants = listOf("Jane", "John", "Samantha"),
-                category = "Celebration",
+                category = listOf("Celebration"),
                 repetition = Repetition.ONCE,
                 color_tag = "#F44336",
                 type = EventType.EVENT
@@ -93,7 +101,7 @@ class CalendarFragment : Fragment() {
                 title = "Meeting with Manager",
                 reminder_time = "2022-05-23T10:00:00",
                 description = "Discuss project progress",
-                category = "Work",
+                category = listOf("Work"),
                 color_tag = "#4CAF50",
                 type = EventType.REMINDER
             )
@@ -107,7 +115,7 @@ class CalendarFragment : Fragment() {
                 description = "Complete final report for project",
                 priority = Priority.HIGH,
                 status = Status.IN_PROGRESS,
-                category = "Work",
+                category = listOf("Work"),
                 color_tag = "#F44876",
                 type = EventType.TASK
             )
@@ -123,6 +131,7 @@ class CalendarFragment : Fragment() {
         btnAddEvent = binding.fabAddEvent
         btnAddTask = binding.fabAddTask
         btnAddReminder = binding.fabAddReminder
+        btnMenuEvents = binding.fambAddMenu
         rvCalendarEvents = binding.rvEvents
         pbLoading = binding.pbLoading
 
@@ -143,4 +152,6 @@ class CalendarFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+
 }

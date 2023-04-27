@@ -44,8 +44,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="9dp"
-            android:layout_alignParentEnd="true"/>
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="9dp" />
 
         <pl.droidsonroids.gif.GifImageView
             android:id="@+id/giv_productivity"
@@ -58,12 +58,12 @@
         <TextView
             android:id="@+id/tv_welcome_title"
             style="@style/main_titles"
-            android:textColor="@color/primaryColor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/giv_productivity"
             android:layout_centerHorizontal="true"
-            android:text="@string/welcome" />
+            android:text="@string/welcome"
+            android:textColor="@color/primaryColor" />
 
         <LinearLayout
             android:id="@+id/ll_login_form"
@@ -179,6 +179,7 @@
 
                 <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                     android:id="@+id/efab_facebook"
+                    android:enabled="false"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -206,7 +207,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-
                 android:orientation="horizontal">
 
                 <TextView

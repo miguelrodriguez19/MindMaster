@@ -14,7 +14,7 @@ abstract class AbstractEvents : java.io.Serializable {
     abstract val cod: String
     abstract val title: String
     abstract val description: String?
-    abstract val category: String?
+    abstract val category: List<String>?
     abstract val color_tag: String
     abstract val type: EventType
 
@@ -40,7 +40,7 @@ data class Event(
     val location: String,
     override val description: String?,
     val participants: List<String>?,
-    override val category: String?,
+    override val category: List<String>?,
     val repetition: Repetition,
     override val color_tag: String,
     override val type: EventType
@@ -51,7 +51,7 @@ data class Reminder(
     override val title: String,
     val reminder_time: String,
     override val description: String?,
-    override val category: String?,
+    override val category: List<String>?,
     override val color_tag: String,
     override val type: EventType
 ) : AbstractEvents()
@@ -63,7 +63,7 @@ data class Task(
     override val description: String?,
     val priority: Priority,
     val status: Status,
-    override val category: String?,
+    override val category: List<String>?,
     override val color_tag: String,
     override val type: EventType
 ) : AbstractEvents()

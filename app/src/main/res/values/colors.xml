@@ -26,5 +26,47 @@
     <color name="black_translucent">#74000000</color>
     <color name="transparent">#00000000</color>
 
+    <!-- Color Picker -->
+    <color name="red_standard">#D83333</color>
+    <color name="orange_standard">#DC7531</color>
+    <color name="yellow_standard">#DBCD30</color>
+    <color name="green_standard">#6BC72D</color>
+    <color name="turquoise_standard">#30DBBC</color>
+    <color name="blue_standard">#30B6DB</color>
+    <color name="navy_standard">#3039DB</color>
+    <color name="magenta_standard">#B630DB</color>
+    <color name="gray_standard">#A0A0A0</color>
+
+    <color name="red_extralight">#F09393</color>
+    <color name="orange_extralight">#F2BA94</color>
+    <color name="yellow_extralight">#F1E993</color>
+    <color name="green_extralight">#B3EC8D</color>
+    <color name="turquoise_extralight">#93F1E0</color>
+    <color name="blue_extralight">#93DDF1</color>
+    <color name="navy_extralight">#9397F1</color>
+    <color name="magenta_extralight">#DD93F1</color>
+    <color name="gray_extralight">#DCC4C4</color>
+
+    <color name="red_light">#E85E5E</color>
+    <color name="orange_light">#EA9760</color>
+    <color name="yellow_light">#E9DD5D</color>
+    <color name="green_light">#8DE255</color>
+    <color name="turquoise_light">#5DE9CF</color>
+    <color name="blue_light">#5DCBE9</color>
+    <color name="navy_light">#5D64E9</color>
+    <color name="magenta_light">#CB5DE9</color>
+    <color name="gray_light">#C6AAAA</color>
+
+
+
+    <color name="red_extradark">#702222</color>
+    <color name="orange_extradark">#754220</color>
+    <color name="yellow_extradark">#726B20</color>
+    <color name="green_extradark">#3D6522</color>
+    <color name="turquoise_extradark">#207263</color>
+    <color name="blue_extradark">#206072</color>
+    <color name="navy_extradark">#202472</color>
+    <color name="magenta_extradark">#602072</color>
+    <color name="gray_extradark">#585858</color>
 
 </resources>

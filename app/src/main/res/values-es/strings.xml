@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mind Master</string>
+    <string name="mind_master_logo">Mind \nMaster</string>
+    <string name="hello_blank_fragment">Hola fragmento vacío</string>
+    <string name="welcome">¡Bienvenido!</string>
+    <string name="log_in">Iniciar sesión</string>
+    <string name="sign_up">Registro</string>
+    <string name="calendar">Calendario</string>
+    <string name="schedule">Agenda</string>
+    <string name="expenses_manager">Gestor de Gastos</string>
+    <string name="passwords_manager">Gestor de Contraseñas</string>
+    <string name="all_movements">Todos los movimientos</string>
+    <string name="settings">Ajustes</string>
+    <string name="management_settings">Ajustes de gestión</string>
+    <string name="account">Cuenta</string>
+    <string name="help_faqs">Preguntas frecuentes y soporte</string>
+    <string name="share_with_friends">Compartir con amigos</string>
+    <string name="rate_app">Calificar la aplicación</string>
+    <string name="confirmation">Continuar</string>
+
+    <!-- Formularios -->
+    <string name="hint_first_name_red">Nombre<font fgcolor='#C80000'>*</font></string>
+    <string name="hint_first_name">Nombre</string>
+    <string name="hint_last_name">Apellido</string>
+    <string name="hint_email">Correo electrónico</string>
+    <string name="hint_email_red">Correo electrónico<font fgcolor='#C80000'>*</font></string>
+    <string name="hint_phone">Teléfono<font fgcolor='#C80000'>*</font></string>
+    <string name="hint_dateBirthdate_red">Fecha de nacimiento<font fgcolor='#C80000'>*</font></string>
+    <string name="hint_dateBirthdate">Fecha de nacimiento</string>
+    <string name="hint_password">Contraseña</string>
+    <string name="hint_password_red">Contraseña<font fgcolor='#C80000'>*</font></string>
+    <string name="hint_search">Buscar aquí …</string>
+    <string name="hint_repeatPassword">Repetir contraseña<font fgcolor='#C80000'>*</font></string>
+    <string name="check_terms_and_conditions">Acepto los <a href="#">Términos de Servicio</a> y la <a href="#">Política de Privacidad</a>.</string>
+    <string name="forgotten_password">¿Olvidaste la contraseña?</string>
+    <string name="have_an_account">¿Ya tienes una cuenta?</string>
+    <string name="dont_have_an_account">¿No tienes una cuenta?</string>
+    <string name="facebook">Facebook</string>
+    <string name="google">Google</string>
+    <string name="join_now">¡Únete ahora!</string>
+    <string name="or">o</string>
+
+    <!-- Calendario y Diario -->
+    <string name="planned_events">Eventos planeados</string>
+    <string name="upcoming_events">Próximos eventos</string>
+    <string name="event">Evento</string>
+    <string name="reminder">Recordatorio</string>
+    <string name="task">Tarea</string>
+
+    <!-- Gastos -->
+    <string name="monthly">Mensual</string>
+    <string name="annual">Anual</string>
+    <string name="income">Ingreso</string>
+    <string name="expense">Gasto</string>
+    <string name="incomes">Ingresos</string>
+    <string name="expenses">Gastos</string>
+    <string name="incomesAndExpenses">Ingresos y gastos</string>
+    <string name="movements">Movimientos</string>
+    <string name="movement">Movimiento</string>
+    <string name="latest_movements">Últimos movimientos:</string>
+    <string name="see_all_movements">Ver todos los movimientos</string>
+
+    <!-- Contraseñas -->
+    <string name="group">Grupo</string>
+    <string name="username_label">Nombre de usuario:</string>
+    <string name="email_label">Correo electrónico:</string>
+    <string name="password_label">Contraseña:</string>
+    <string name="google_sign_up_type">Registro con Google</string>
+    <string name="facebook_sign_up_type">Registro con Facebook</string>
+    <string name="username_copied">Nombre de usuario copiado</string>
+    <string name="email_copied">Correo electrónico copiado</string>
+    <string name="password_copied">Contraseña copiada</string>
+
+    <string name="notifications">Notificaciones</string>
+    <string name="language">Idioma</string>
+    <string name="theme">Tema</string>
+    <string name="security">Seguridad</string>
+    <string name="currency">Moneda</string>
+    <string name="change_password">Cambiar contraseña</string>
+    <string name="log_out">Cerrar sesión</string>
+    <string name="cancel">Cancelar</string>
+    <string name="logout_confirmation_title">¿Desea cerrar sesión?</string>
+    <string name="delete_account_confirmation_title">¿Desea eliminar su cuenta?</string>
+    <string name="confirmation_twice">¿Lo desea hacer de todas maneras?</string>
+    <string name="delete_account_confirmation_message">Esta acción es irreversible, eliminará todos sus datos del sistema.</string>
+    <string name="descripting_message_for_help">¿No encontró la respuesta que buscaba? \n¡Póngase en contacto con nuestro centro de soporte!</string>
+    <string name="need_help">¿Necesita ayuda?</string>
+    <string name="go_to_our_website">Ir a nuestro sitio web</string>
+    <string name="terms_and_conditions">Términos y condiciones</string>
+    <string name="email_us">Envíenos un correo electrónico</string>
+    <string name="find_question">Encontrar pregunta…</string>
+    <string name="save">Guardar</string>
+    <string name="done">Listo</string>
+    <string name="edit_profile">Editar perfil</string>
+    <string name="advanced_options">Opciones avanzadas</string>
+    <string name="delete_account">Eliminar cuenta</string>
+
+    <string-array name="available_languages">
+        <item>Ingles</item>
+        <item>Español</item>
+        <item>Frances</item>
+    </string-array>
+
+    <string-array name="available_themes">
+        <item>Claro</item>
+        <item>Oscuro</item>
+        <item>Sistema</item>
+    </string-array>
+
+    <string-array name="available_currencies">
+        <item>Euro - €</item>
+        <item>Dolar - $</item>
+        <item>Libra - £</item>
+    </string-array>
+</resources>

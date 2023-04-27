@@ -9,8 +9,10 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.clans.fab.FloatingActionButton
+import com.github.clans.fab.FloatingActionMenu
 import com.miguelrodriguez19.mindmaster.databinding.FragmentDiaryBinding
 import com.miguelrodriguez19.mindmaster.models.*
+import com.miguelrodriguez19.mindmaster.utils.AllBottomSheets
 
 
 class DiaryFragment : Fragment() {
@@ -21,6 +23,7 @@ class DiaryFragment : Fragment() {
     private lateinit var btnAddEvent: FloatingActionButton
     private lateinit var btnAddReminder: FloatingActionButton
     private lateinit var btnAddTask: FloatingActionButton
+    private lateinit var btnMenuEvents: FloatingActionMenu
     private lateinit var rvEventsPerMonth: RecyclerView
     private lateinit var adapter: AllEventsAdapter
     var data: ArrayList<EventsResponse> = ArrayList()
@@ -39,6 +42,11 @@ class DiaryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initWidget()
+
+        btnAddEvent.setOnClickListener {
+            AllBottomSheets.showEventsBS(requireContext(), null)
+            btnMenuEvents.close(true)
+        }
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -75,6 +83,7 @@ class DiaryFragment : Fragment() {
         btnAddEvent = binding.fabAddEvent
         btnAddTask = binding.fabAddTask
         btnAddReminder = binding.fabAddReminder
+        btnMenuEvents = binding.fambAddMenu
         rvEventsPerMonth = binding.rvAllEvents
 
         val mLayoutManager = StaggeredGridLayoutManager(1, 1)
@@ -99,7 +108,7 @@ class DiaryFragment : Fragment() {
                         location = "Estadio de futbol",
                         description = "Un gran concierto con muchas bandas famosas",
                         participants = listOf("Banda 1", "Banda 2", "Banda 3"),
-                        category = "Entretenimiento",
+                        category = listOf("Entretenimiento"),
                         repetition = Repetition.ONCE,
                         color_tag = "#F44336",
                         type = EventType.EVENT
@@ -109,7 +118,7 @@ class DiaryFragment : Fragment() {
                         title = "Recordatorio de cumpleaños",
                         reminder_time = "2022-06-25 09:00",
                         description = "El cumpleaños de mi mejor amigo",
-                        category = "Personal",
+                        category = listOf("Personal"),
                         color_tag = "#FF9800",
                         type = EventType.REMINDER
                     ),
@@ -120,7 +129,7 @@ class DiaryFragment : Fragment() {
                         description = "Informe mensual de ventas de la compañía",
                         priority = Priority.HIGH,
                         status = Status.PENDING,
-                        category = "Trabajo",
+                        category = listOf("Trabajo"),
                         color_tag = "#4CAF50",
                         type = EventType.TASK
                     )
@@ -137,7 +146,7 @@ class DiaryFragment : Fragment() {
                         location = "Parque central",
                         description = "Disfruta de diferentes comidas de todo el mundo",
                         participants = null,
-                        category = "Entretenimiento",
+                        category = listOf("Entretenimiento"),
                         repetition = Repetition.ANNUAL,
                         color_tag = "#F44336",
                         type = EventType.EVENT
@@ -147,7 +156,7 @@ class DiaryFragment : Fragment() {
                         title = "Recordatorio de cita médica",
                         reminder_time = "2022-06-26 16:30",
                         description = "Ir al dentista",
-                        category = "Salud",
+                        category = listOf("Salud"),
                         color_tag = "#FF9800",
                         type = EventType.REMINDER
                     ),
@@ -158,7 +167,7 @@ class DiaryFragment : Fragment() {
                         description = null,
                         priority = Priority.MEDIUM,
                         status = Status.PENDING,
-                        category = "Viajes",
+                        category = listOf("Viajes"),
                         color_tag = "#4CAF50",
                         type = EventType.TASK
                     )

@@ -24,7 +24,7 @@
             app:exitAnim="@anim/slide_out_top"
             app:popEnterAnim="@anim/slide_in_top"
             app:popExitAnim="@anim/slide_out_bottom"
-            app:popUpTo="@id/logInFragment"
+            app:popUpTo="@id/calendarFragment"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment

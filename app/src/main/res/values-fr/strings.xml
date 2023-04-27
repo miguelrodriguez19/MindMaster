@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mind Master</string>
+    <string name="mind_master_logo">Mind \nMaster</string>
+    <string name="hello_blank_fragment">Bonjour fragment vide</string>
+    <string name="welcome">Bienvenue!</string>
+    <string name="log_in">Se connecter</string>
+    <string name="sign_up">S\'inscrire</string>
+    <string name="calendar">Calendrier</string>
+    <string name="schedule">Agenda</string>
+    <string name="expenses_manager">Gestionnaire de dépenses</string>
+    <string name="passwords_manager">Gestionnaire de mots de passe</string>
+    <string name="all_movements">Tous les mouvements</string>
+    <string name="settings">Paramètres</string>
+    <string name="management_settings">Paramètres de gestion</string>
+    <string name="account">Compte</string>
+    <string name="help_faqs">Foire aux questions et support</string>
+    <string name="share_with_friends">Partager avec des amis</string>
+    <string name="rate_app">Évaluer l\'application</string>
+    <string name="confirmation">Continuer</string>
+
+    <!-- Formulaires -->
+    <string name="hint_first_name_red">Prénom<font fgcolor='#C80000'>*</font></string>
+    <string name="hint_first_name">Prénom</string>
+    <string name="hint_last_name">Nom de famille</string>
+    <string name="hint_email">Adresse e-mail</string>
+    <string name="hint_email_red">Adresse e-mail<font fgcolor='#C80000'>*</font></string>
+    <string name="hint_phone">Téléphone<font fgcolor='#C80000'>*</font></string>
+    <string name="hint_dateBirthdate_red">Date de naissance<font fgcolor='#C80000'>*</font></string>
+    <string name="hint_dateBirthdate">Date de naissance</string>
+    <string name="hint_password">Mot de passe</string>
+    <string name="hint_password_red">Mot de passe<font fgcolor='#C80000'>*</font></string>
+    <string name="hint_search">Rechercher ici …</string>
+    <string name="hint_repeatPassword">Répéter le mot de passe<font fgcolor='#C80000'>*</font></string>
+    <string name="check_terms_and_conditions">J\'accepte les <a href="#">Conditions d\'utilisation</a> et la <a href="#">Politique de confidentialité</a>.</string>
+    <string name="forgotten_password">Mot de passe oublié?</string>
+    <string name="have_an_account">Vous avez déjà un compte?</string>
+    <string name="dont_have_an_account">Vous n´avez pas de compte?</string>
+    <string name="facebook">Facebook</string>
+    <string name="google">Google</string>
+    <string name="join_now">Rejoindre maintenant!</string>
+    <string name="or">ou</string>
+
+    <!-- Calendrier et Journal -->
+    <string name="planned_events">Événements planifiés</string>
+    <string name="upcoming_events">Prochains événements</string>
+    <string name="event">Événement</string>
+    <string name="reminder">Rappel</string>
+    <string name="task">Tâche</string>
+
+    <!-- Expenses -->
+    <string name="monthly">Mensuel</string>
+    <string name="annual">Annuel</string>
+    <string name="income">Revenu</string>
+    <string name="expense">Dépense</string>
+    <string name="incomes">Revenus</string>
+    <string name="expenses">Dépenses</string>
+    <string name="incomesAndExpenses">Revenus et dépenses</string>
+    <string name="movements">Opérations</string>
+    <string name="movement">Opération</string>
+    <string name="latest_movements">Dernières opérations:</string>
+    <string name="see_all_movements">Voir toutes les opérations</string>
+
+    <!-- Passwords -->
+    <string name="group">Groupe</string>
+    <string name="username_label">Nom d\'utilisateur:</string>
+    <string name="email_label">Email:</string>
+    <string name="password_label">Mot de passe:</string>
+    <string name="google_sign_up_type">Inscription avec Google</string>
+    <string name="facebook_sign_up_type">Inscription avec Facebook</string>
+    <string name="username_copied">Nom d\'utilisateur copié</string>
+    <string name="email_copied">Email copié</string>
+    <string name="password_copied">Mot de passe copié</string>
+
+    <string name="notifications">Notifications</string>
+    <string name="language">Langue</string>
+    <string name="theme">Thème</string>
+    <string name="security">Sécurité</string>
+    <string name="currency">Devise</string>
+    <string name="change_password">Changer le mot de passe</string>
+    <string name="log_out">Déconnexion</string>
+    <string name="cancel">Annuler</string>
+    <string name="logout_confirmation_title">Voulez-vous vous déconnecter ?</string>
+    <string name="delete_account_confirmation_title">Voulez-vous supprimer votre compte ?</string>
+    <string name="confirmation_twice">Êtes-vous sûr de vouloir le faire ?</string>
+    <string name="delete_account_confirmation_message">Cette action est irréversible, vous allez supprimer toutes vos données du système.</string>
+    <string name="descripting_message_for_help">Vous n\'avez pas trouvé la réponse que vous cherchiez? \nContactez notre centre d\'assistance!</string>
+    <string name="need_help">Besoin d\'aide ?</string>
+    <string name="go_to_our_website">Aller sur notre site web</string>
+    <string name="terms_and_conditions">Conditions d\'utilisation</string>
+    <string name="email_us">Envoyez-nous un email</string>
+    <string name="find_question">Trouver une question…</string>
+    <string name="save">Enregistrer</string>
+    <string name="done">Terminé</string>
+    <string name="edit_profile">Modifier le profil</string>
+    <string name="advanced_options">Options avancées</string>
+    <string name="delete_account">Supprimer le compte</string>
+
+    <string-array name="available_languages">
+        <item>Anglais</item>
+        <item>Espagnol</item>
+        <item>Français</item>
+    </string-array>
+
+    <string-array name="available_themes">
+        <item>Clair</item>
+        <item>Sombre</item>
+        <item>Système</item>
+    </string-array>
+
+    <string-array name="available_currencies">
+        <item>Euro - €</item>
+        <item>Dollar - $</item>
+        <item>Livre - £</item>
+    </string-array>
+</resources>

@@ -14,7 +14,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "295470441833-bcjhcrf9t0qjo8to7tb4ktv339e031sk.apps.googleusercontent.com",
+          "client_id": "295470441833-t5rfk5lf31h001ushb22l1sfa1g2k28i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.miguelrodriguez19.mindmaster",
+            "certificate_hash": "281c8809000b94549600a109e741f09c5f0cd156"
+          }
+        },
+        {
+          "client_id": "295470441833-hcitm6u0n2lf7r668fgjpsflgubp0pou.apps.googleusercontent.com",
           "client_type": 3
         }
       ],

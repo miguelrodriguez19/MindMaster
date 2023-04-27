@@ -10,6 +10,7 @@ import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.CellCalendarEventsBinding
 import com.miguelrodriguez19.mindmaster.models.AbstractEvents
 import com.miguelrodriguez19.mindmaster.models.Sender
+import java.util.stream.Stream
 
 class CalendarEventsAdapter(
     private val context: Context,
@@ -38,7 +39,12 @@ class CalendarEventsAdapter(
 
         fun bind(item: AbstractEvents) {
             tvEventTitle.text = item.title
-            tvEventType.text = item.getItemType(context, item.type)
+            val header = StringBuilder(item.getItemType(context, item.type))
+            if (!item.category.isNullOrEmpty()) {
+                header.append(" - ")
+                header.append(item.category!!.joinToString(", "))
+            }
+            tvEventType.text = header
             civColorTag.setCardBackgroundColor(item.getColor(context, item.color_tag))
             clEventArea.setOnClickListener {
                 onClick(item)

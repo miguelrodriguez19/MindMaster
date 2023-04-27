@@ -1,6 +1,6 @@
 package com.miguelrodriguez19.mindmaster.settings
 
-import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,8 +11,12 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.switchmaterial.SwitchMaterial
+import com.google.firebase.auth.FirebaseAuth
+import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentSettingsBinding
+import com.miguelrodriguez19.mindmaster.utils.Preferences
+import com.miguelrodriguez19.mindmaster.utils.AllDialogs.Companion.showConfirmationDialog
 import de.hdodenhof.circleimageview.CircleImageView
 
 class SettingsFragment : Fragment() {
@@ -57,8 +61,7 @@ class SettingsFragment : Fragment() {
         }
         btnLogOut.setOnClickListener {
             showConfirmationDialog(
-                getString(R.string.logout_confirmation_title),
-                null
+                requireContext(), getString(R.string.logout_confirmation_title),null
             ) { confirmed ->
                 if (confirmed) {
                     logout()
@@ -69,13 +72,13 @@ class SettingsFragment : Fragment() {
 
         btnDeleteAccount.setOnClickListener {
             showConfirmationDialog(
+                requireContext(),
                 getString(R.string.delete_account_confirmation_title),
                 getString(R.string.delete_account_confirmation_message)
             ) { confirmed ->
                 if (confirmed) {
                     showConfirmationDialog(
-                        getString(R.string.confirmation_twice),
-                        null
+                        requireContext(),getString(R.string.confirmation_twice),null
                     ) { confirmed ->
                         if (confirmed) {
                             deleteAccountFromFirestore()
@@ -86,13 +89,13 @@ class SettingsFragment : Fragment() {
         }
 
         llAdvancedOptions.setOnClickListener {
-            setVisibilityAnswer()
+            setVisibilityAdvSet()
         }
         llExpandableAdvancedOptions.setOnClickListener {
-            setVisibilityAnswer()
+            setVisibilityAdvSet()
         }
         btnSeeMore.setOnClickListener {
-            setVisibilityAnswer()
+            setVisibilityAdvSet()
         }
         spLanguage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
@@ -171,7 +174,7 @@ class SettingsFragment : Fragment() {
         btnLogOut = binding.btnLogOut
     }
 
-    private fun setVisibilityAnswer() {
+    private fun setVisibilityAdvSet() {
         if (llExpandableAdvancedOptions.visibility == View.GONE) {
             llExpandableAdvancedOptions.visibility = View.VISIBLE
             btnSeeMore.rotation = 180F
@@ -181,23 +184,13 @@ class SettingsFragment : Fragment() {
         }
     }
 
-    fun showConfirmationDialog(title: String, message: String?, callback: (Boolean) -> Unit) {
-        val alertDialog = AlertDialog.Builder(context).setTitle(title).setMessage(message ?: "")
-            .setPositiveButton(android.R.string.ok) { _, _ ->
-                callback(true)
-            }.setNegativeButton(android.R.string.cancel) { _, _ ->
-                callback(false)
-            }.create()
-        alertDialog.show()
-    }
-
-
     private fun logout() {
-        // Borrar la sesión del usuario aquí
-        val action = SettingsFragmentDirections.actionSettingsFragmentToLogInFragment()
-        findNavController().navigate(action)
+        Preferences.deleteToken()
+        FirebaseAuth.getInstance().signOut()
+        val intent = Intent(requireActivity(), MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

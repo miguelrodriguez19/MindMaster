@@ -98,6 +98,31 @@
     <string name="edit_profile">Edit profile</string>
     <string name="advanced_options">Advanced options</string>
     <string name="delete_account">Delete account</string>
+    <string name="error">Error</string>
+    <string name="something_went_wrong">Something went wrong please try again later.</string>
+    <string name="wrong_email_password">Wrong email or password</string>
+    <string name="fill_all_fields">Fill all fields</string>
+    <string name="pwdsDontMatch">Passwords don\'t match</string>
+    <string name="weakPassword">Must contain at least 8 characters, numbers, uppercase and special characters.</string>
+    <string name="invalidEmail">Invalid email.</string>
+    <string name="fill_this_field">You must fill this field</string>
+    <string name="collision_auth">The email address is already in use.</string>
+    <string name="participants">Participants</string>
+    <string name="category">Category</string>
+    <string name="add">Add</string>
+    <string name="repetition">Repetition</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="start_time">Starts At:</string>
+    <string name="end_time">Ends at:</string>
+    <string name="location">Location</string>
+    <string name="select_a_color">Select a color</string>
+    <string name="date">Date</string>
+    <string name="due_date">Due date</string>
+    <string name="priority">Priority</string>
+    <string name="status">Status</string>
+    <string name="select">Select</string>
+    <string name="reached_max_categories">The maximum are 3</string>
 
 
     <string-array name="available_languages">
