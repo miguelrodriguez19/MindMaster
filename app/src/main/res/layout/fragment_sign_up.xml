@@ -65,13 +65,9 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_name"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                android:layout_width="match_parent"
+                style="@style/form_text_input_layout"                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                app:boxStrokeErrorColor="@color/red_error_500"
-                app:startIconDrawable="@drawable/ic_person_24"
-                app:startIconTint="@color/gray_dove_500">
+                app:startIconDrawable="@drawable/ic_person_24">
 
                 <EditText
                     android:id="@+id/txt_name"
@@ -86,13 +82,10 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_surname"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                android:layout_width="match_parent"
+                style="@style/form_text_input_layout"                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                app:boxStrokeErrorColor="@color/red_error_500"
-                app:startIconDrawable="@drawable/ic_person_24"
-                app:startIconTint="@color/gray_dove_500">
+                app:startIconDrawable="@drawable/ic_person_24">
 
                 <EditText
                     android:id="@+id/txt_surname"
@@ -107,17 +100,9 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_email"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                android:layout_width="match_parent"
+                style="@style/form_text_input_layout"                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                app:boxCornerRadiusBottomEnd="5dp"
-                app:boxCornerRadiusBottomStart="5dp"
-                app:boxCornerRadiusTopEnd="5dp"
-                app:boxCornerRadiusTopStart="5dp"
-                app:boxStrokeErrorColor="@color/red_error_500"
-                app:startIconDrawable="@drawable/ic_email_24"
-                app:startIconTint="@color/gray_dove_500">
+                app:startIconDrawable="@drawable/ic_email_24">
 
                 <EditText
                     android:id="@+id/txt_email"
@@ -131,15 +116,11 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_DateBirthdate"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                android:layout_width="match_parent"
+                style="@style/form_text_input_layout"                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
                 android:clickable="false"
                 android:focusable="false"
-                app:boxStrokeErrorColor="@color/red_error_500"
-                app:startIconDrawable="@drawable/ic_calendar_month_24"
-                app:startIconTint="@color/gray_dove_500">
+                app:startIconDrawable="@drawable/ic_calendar_month_24">
 
                 <EditText
                     android:id="@+id/txt_DateBirthdate"
@@ -156,18 +137,10 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_password"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                android:layout_width="match_parent"
+                style="@style/form_text_input_layout"                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                app:boxCornerRadiusBottomEnd="5dp"
-                app:boxCornerRadiusBottomStart="5dp"
-                app:boxCornerRadiusTopEnd="5dp"
-                app:boxCornerRadiusTopStart="5dp"
-                app:boxStrokeErrorColor="@color/red_error_500"
                 app:endIconMode="password_toggle"
-                app:startIconDrawable="@drawable/ic_lock_24"
-                app:startIconTint="@color/gray_dove_500">
+                app:startIconDrawable="@drawable/ic_lock_24">
 
                 <EditText
                     android:id="@+id/et_password"
@@ -182,18 +155,12 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_repeat_password"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                style="@style/form_text_input_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                app:boxCornerRadiusBottomEnd="5dp"
-                app:boxCornerRadiusBottomStart="5dp"
-                app:boxCornerRadiusTopEnd="5dp"
-                app:boxCornerRadiusTopStart="5dp"
                 app:boxStrokeErrorColor="@color/red_error_500"
                 app:endIconMode="password_toggle"
-                app:startIconDrawable="@drawable/ic_lock_24"
-                app:startIconTint="@color/gray_dove_500">
+                app:startIconDrawable="@drawable/ic_lock_24">
 
                 <EditText
                     android:id="@+id/txt_repeat_password"
@@ -201,8 +168,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_repeatPassword"
                     android:inputType="textPassword"
-                    android:maxEms="12"
-                    android:minEms="6" />
+                    android:maxEms="20"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 

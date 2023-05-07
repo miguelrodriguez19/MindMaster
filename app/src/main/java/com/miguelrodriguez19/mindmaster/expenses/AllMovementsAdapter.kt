@@ -1,5 +1,6 @@
 package com.miguelrodriguez19.mindmaster.expenses
 
+import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,8 +11,7 @@ import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.CellDayAllMovementsBinding
 import com.miguelrodriguez19.mindmaster.models.MonthMovementsResponse
 
-
-class AllMovementsAdapter(var data: ArrayList<MonthMovementsResponse>) :
+class AllMovementsAdapter(private val context: Context, var data: ArrayList<MonthMovementsResponse>) :
     RecyclerView.Adapter<AllMovementsAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.cell_day_all_movements, parent, false)
@@ -27,7 +27,7 @@ class AllMovementsAdapter(var data: ArrayList<MonthMovementsResponse>) :
         private val bind = CellDayAllMovementsBinding.bind(v)
         private val btnMonth = bind.btnMonthTitle
         private val rvMonthMovements = bind.rvMonthMovements
-        private lateinit var adapter: LastMovementsAdapter
+        private lateinit var adapter: MovementAdapter
 
         fun bind(item: MonthMovementsResponse) {
             initRecyclerView(item.movementsList)
@@ -46,8 +46,8 @@ class AllMovementsAdapter(var data: ArrayList<MonthMovementsResponse>) :
             val mLayoutManager = StaggeredGridLayoutManager(1, 1)
             rvMonthMovements.layoutManager = mLayoutManager
 
-            adapter = LastMovementsAdapter(dataArrList){ movement ->
-                Log.i("AllMovementsAdapter", "onViewCreated - event: ${movement.title}")
+            adapter = MovementAdapter(context, dataArrList){ movement ->
+                Log.i("AllMovementsAdapter", "onViewCreated - event: ${movement.concept}")
             }
 
             rvMonthMovements.adapter = adapter

@@ -3,208 +3,220 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="5dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingTop="8dp">
 
-    <TextView
-        android:id="@+id/tv_accountTitle"
+        <TextView
+            android:id="@+id/et_titleAccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Account"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:textAppearance="?attr/textAppearanceSubtitle1"
+            app:layout_constraintEnd_toStartOf="@+id/btn_moreOptions"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHorizontal_bias="0"/>
+<!--
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_moreOptions"
+        style="@style/Widget.Material3.Button.IconButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/popings_medium_500"
-        android:text="Account"
-        android:textSize="17sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginEnd="6dp"
+        app:icon="@drawable/ic_more_option_vert_24"
+        app:iconTint="@color/gray_dove_500"
+        app:layout_constraintBottom_toBottomOf="@id/et_titleAccount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/et_titleAccount"
+        app:iconSize="20dp"/>
+-->
+    <!-- Divider -->
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider_fields"
+        android:layout_width="0dp"
+        android:layout_height="1.5dp"
+        android:layout_marginTop="2dp"
+        app:layout_constraintEnd_toEndOf="@+id/et_titleAccount"
+        app:layout_constraintStart_toStartOf="@+id/et_titleAccount"
+        app:layout_constraintTop_toBottomOf="@id/et_titleAccount" />
 
     <TextView
-        android:id="@+id/tv_accountSubTitle"
-        android:layout_width="wrap_content"
+        android:id="@+id/tv_typeAccount"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/popings_regular_400"
-        android:text="Sub tittle"
         android:textSize="14sp"
         android:visibility="gone"
+        android:layout_marginTop="6dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_accountTitle" />
-
-    <ImageButton
-        android:id="@+id/btn_moreOptions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
-        android:background="@android:color/transparent"
-        android:padding="5dp"
-        android:src="@drawable/ic_more_horiz_24"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/gray_dove_500" />
+        app:layout_constraintTop_toBottomOf="@+id/divider_fields" />
 
     <LinearLayout
-        android:id="@+id/ll_username"
+        android:id="@+id/ll_fields"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="center|start"
-        android:orientation="horizontal"
+        android:gravity="center|top"
+        android:orientation="vertical"
+        android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_accountSubTitle">
+        app:layout_constraintTop_toBottomOf="@+id/tv_typeAccount">
 
-        <TextView
-            android:id="@+id/tv_username"
-            android:layout_width="wrap_content"
+        <!-- Username -->
+        <LinearLayout
+            android:id="@+id/ll_username"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="3dp"
-            android:fontFamily="@font/popings_regular_400"
-            android:text="@string/username_label"
-            android:textSize="13sp" />
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/et_username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
-            android:fontFamily="@font/popings_regular_400"
-            android:inputType="none"
-            android:text="example"
-            android:textSize="13sp"
-            android:theme="@style/textfieldsWithoutBorder" />
-
-        <ImageButton
-            android:id="@+id/btn_copyUsername"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:background="@android:color/transparent"
-            android:padding="5dp"
-            android:src="@drawable/ic_content_copy_24"
-            app:tint="@color/gray_dove_500" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ll_email"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="center|start"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_username">
-
-        <TextView
-            android:id="@+id/tv_email"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="3dp"
-            android:fontFamily="@font/popings_regular_400"
-            android:text="@string/email_label"
-            android:textSize="13sp" />
-
-        <EditText
-            android:id="@+id/et_email"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
-            android:fontFamily="@font/popings_regular_400"
-            android:inputType="none"
-            android:text="example@gmail.com "
-            android:textSize="13sp"
-            android:theme="@style/textfieldsWithoutBorder" />
-
-        <ImageButton
-            android:id="@+id/btn_copyEmail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:background="@android:color/transparent"
-            android:padding="5dp"
-            android:src="@drawable/ic_content_copy_24"
-            app:tint="@color/gray_dove_500" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ll_password"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="-15dp"
-        android:gravity="top|start"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_email">
-
-        <TextView
-            android:id="@+id/tv_password"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="3dp"
-            android:fontFamily="@font/popings_regular_400"
-            android:text="@string/password_label"
-            android:textSize="13sp" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_password"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:boxBackgroundMode="none"
-            app:endIconMode="password_toggle">
-
-            <EditText
-                android:id="@+id/et_password"
-                android:layout_width="match_parent"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_username"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/popings_regular_400"
-                android:inputType="textPassword"
-                android:text="example44"
-                android:textSize="15sp"
-                android:theme="@style/textfieldsWithoutBorder" />
+                android:layout_weight="90"
+                android:hint="@string/username_label"
+                app:boxStrokeErrorColor="@color/red_error_500">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="textPersonName"
+                    style="@style/cell_account_edittext"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_copyUsername"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="5dp"
+                android:layout_weight="10"
+                android:contentDescription="@string/copy_users_text_to_clipboard"
+                app:icon="@drawable/ic_content_copy_24"
+                app:iconTint="@color/gray_dove_500"
+                app:iconGravity="textEnd"
+                app:iconSize="23dp"/>
+        </LinearLayout>
+
+        <!-- Email -->
+        <LinearLayout
+            android:id="@+id/ll_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_email"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="90"
+                android:hint="@string/email_label"
+                app:boxStrokeErrorColor="@color/red_error_500">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="text"
+                    style="@style/cell_account_edittext"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_copyEmail"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="5dp"
+                android:layout_weight="10"
+                android:contentDescription="@string/copy_email_text_to_clipboard"
+                app:icon="@drawable/ic_content_copy_24"
+                app:iconTint="@color/gray_dove_500"
+                app:iconGravity="textEnd"
+                app:iconSize="23dp" />
+        </LinearLayout>
+
+        <!-- Password -->
+        <LinearLayout
+            android:id="@+id/ll_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_password"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="90"
+                android:hint="@string/password_label"
+                app:boxStrokeErrorColor="@color/red_error_500"
+                app:endIconMode="password_toggle">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="textPassword"
+                    style="@style/cell_account_edittext"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_copyPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="5dp"
+                android:layout_weight="10"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:contentDescription="@string/copy_password_text_to_clipboard"
+                app:icon="@drawable/ic_content_copy_24"
+                app:iconTint="@color/gray_dove_500"
+                app:iconGravity="textEnd"
+                app:iconSize="23dp" />
+        </LinearLayout>
+
+        <!-- Description -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_description"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="90"
+            android:layout_marginBottom="10dp"
+            android:hint="@string/description"
+            app:boxStrokeErrorColor="@color/red_error_500">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_description"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                style="@style/cell_account_edittext"
+                />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <ImageButton
-            android:id="@+id/btn_copyPassword"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"
-            android:background="@android:color/transparent"
-            android:padding="5dp"
-            android:src="@drawable/ic_content_copy_24"
-            app:tint="@color/gray_dove_500" />
-
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/ll_note"
+    <!-- Divider -->
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider_account"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="center|start"
-        android:orientation="horizontal"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_password">
+        app:layout_constraintTop_toBottomOf="@+id/ll_fields" />
 
-
-        <EditText
-            android:id="@+id/et_note"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:fontFamily="@font/popings_regular_400"
-            android:inputType="none"
-            android:text="Nota de ejemplo"
-            android:textSize="13sp"
-            android:theme="@style/textfieldsWithoutBorder" />
-
-    </LinearLayout>
-
-    <com.google.android.material.divider.MaterialDivider
-        android:layout_width="0dp"
-        android:layout_height="1.5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

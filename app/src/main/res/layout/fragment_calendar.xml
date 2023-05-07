@@ -21,7 +21,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cl_eventArea"
+            android:id="@+id/cv_eventArea"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
@@ -114,6 +114,7 @@
                 app:layout_constraintStart_toStartOf="@+id/cardview_events"
                 app:layout_constraintTop_toBottomOf="@+id/cardview_events"
                 tools:itemCount="3"
+                android:layout_marginTop="5dp"
                 android:layout_marginStart="8dp"
                 tools:listitem="@layout/cell_calendar_events" />
 

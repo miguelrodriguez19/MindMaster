@@ -82,15 +82,10 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_email"
+                style="@style/form_text_input_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                app:boxCornerRadiusBottomEnd="5dp"
-                app:boxCornerRadiusBottomStart="5dp"
-                app:boxCornerRadiusTopEnd="5dp"
-                app:boxCornerRadiusTopStart="5dp"
-                app:startIconDrawable="@drawable/ic_email_24"
-                app:startIconTint="@color/gray_dove_500">
+                app:startIconDrawable="@drawable/ic_email_24">
 
                 <EditText
                     android:id="@+id/txt_email_logIn"
@@ -105,24 +100,19 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_password"
+                style="@style/form_text_input_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                app:boxCornerRadiusBottomEnd="5dp"
-                app:boxCornerRadiusBottomStart="5dp"
-                app:boxCornerRadiusTopEnd="5dp"
-                app:boxCornerRadiusTopStart="5dp"
+                android:layout_height="match_parent"
                 app:endIconMode="password_toggle"
-                app:startIconDrawable="@drawable/ic_lock_24"
-                app:startIconTint="@color/gray_dove_500">
+                app:startIconDrawable="@drawable/ic_lock_24">
 
                 <EditText
                     android:id="@+id/txt_password_logIn"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:hint="@string/hint_password"
                     android:inputType="textPassword"
-                    android:maxEms="12"
+                    android:maxEms="20"
                     android:minEms="6" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -174,12 +164,15 @@
                     android:text="@string/google"
                     android:textColor="@color/white"
                     android:textSize="15sp"
+                    android:textAlignment="center"
+                    app:iconGravity="textStart"
                     app:icon="@drawable/google_logo"
                     app:iconTint="@color/white" />
 
                 <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                     android:id="@+id/efab_facebook"
                     android:enabled="false"
+                    android:visibility="gone"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

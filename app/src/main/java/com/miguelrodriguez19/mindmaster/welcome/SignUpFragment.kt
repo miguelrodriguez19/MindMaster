@@ -16,13 +16,13 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentSignUpBinding
-import com.miguelrodriguez19.mindmaster.utils.AllDialogs
-import com.miguelrodriguez19.mindmaster.utils.AllDialogs.Companion.PASSWORD_PATTERN
+import com.miguelrodriguez19.mindmaster.utils.AllDialogs.Companion.showDatePicker
+import com.miguelrodriguez19.mindmaster.utils.FirebaseManager.createUserFirebase
+import com.miguelrodriguez19.mindmaster.utils.Toolkit
+import com.miguelrodriguez19.mindmaster.utils.Toolkit.PASSWORD_PATTERN
 
 class SignUpFragment : Fragment() {
     private var _binding: FragmentSignUpBinding? = null
@@ -62,96 +62,42 @@ class SignUpFragment : Fragment() {
         etRepeatPassword.addTextChangedListener(pwdReptWatcher)
         etEmail.addTextChangedListener(emailWatcher)
         etBirthdate.setOnClickListener {
-            showDatePickerDialog()
+            showDatePicker(requireContext()) { date ->
+                etBirthdate.setText(date)
+            }
         }
-
         btnLogIn.setOnClickListener {
             clearFields()
             findNavController().popBackStack()
         }
 
         btnSignUp.setOnClickListener {
-            checkFields() { ok ->
+            Toolkit.checkFields(
+                requireContext(),
+                arrayOf(tilEmail, tilName, tilBirthdate, tilPassword, tilRepeatPassword)
+            ) { ok ->
                 if (ok) {
-                    createUserFirebase() { wasAdded ->
+                    createUserFirebase(
+                        requireContext(), etEmail.text.toString(), etPassword.text.toString()
+                    ) { wasAdded ->
                         if (wasAdded) {
                             clearFields()
                             findNavController().popBackStack()
                         }
                     }
-                } else {
-                    //tvError.visibility = View.VISIBLE
-                    //tvError.text = getString(R.string.fill_all_fields)
                 }
             }
         }
-    }
-
-
-    private fun createUserFirebase(result: (Boolean) -> Unit) {
-        FirebaseAuth.getInstance().createUserWithEmailAndPassword(
-            etEmail.text.toString(),
-            etPassword.text.toString()
-        ).addOnCompleteListener {
-            if (it.isSuccessful) {
-                result(true)
-            } else {
-                result(false)
-                val msg = if (it.exception is FirebaseAuthUserCollisionException) {
-                    getString(R.string.collision_auth)
-                } else {
-                    getString(R.string.something_went_wrong)
-                }
-                AllDialogs.showAlertDialog(
-                    requireContext(),
-                    getString(R.string.error),
-                    msg
-                )
-            }
-        }
-    }
-
-
-    private fun checkFields(callback: (Boolean) -> Unit) {
-        var flag = true
-        for (item in arrayOf(tilEmail, tilName, tilBirthdate, tilPassword, tilRepeatPassword)) {
-            if (item.editText!!.text.isBlank()) {
-                item.error = getString(R.string.fill_this_field)
-                flag = false
-            } else {
-                item.error = null
-            }
-        }
-        checkTerms.isErrorShown = !checkTerms.isChecked
-
-        callback(flag && checkTerms.isChecked)
-    }
-
-    private fun showDatePickerDialog() {
-        val datePicker = DatePickerFragment { day, month, year -> onDateSelected(day, month, year) }
-        datePicker.show(requireActivity().supportFragmentManager, "datePicker")
-    }
-
-    private fun onDateSelected(day: Int, month: Int, year: Int) {
-        val myMonth = if ((month + 1) < 10) {
-            "0${month + 1}"
-        } else {
-            month + 1
-        }
-
-        val myDay = if (day < 10) {
-            "0$day"
-        } else {
-            day
-        }
-        val date = "$year-${myMonth}-$myDay"
-        etBirthdate.setText(date)
     }
 
     private val pwdWatcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
-            if (s.toString().isNotBlank() && !PASSWORD_PATTERN.matcher(s.toString()).matches()) {
-                tilPassword.error = getString(R.string.weakPassword)
+            if (!s.isNullOrBlank()) {
+                if (!s.matches(PASSWORD_PATTERN.toRegex())) {
+                    tilPassword.error = getString(R.string.weakPassword)
+                }else{
+                    tilPassword.error = null
+                }
             }
         }
 
@@ -161,8 +107,14 @@ class SignUpFragment : Fragment() {
 
     private val pwdReptWatcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
-            if (s.toString().isNotBlank() || etPassword.text != s) {
-                tilRepeatPassword.error = getString(R.string.pwdsDontMatch)
+            if (!s.isNullOrBlank()) {
+                if (etPassword.text != s) {
+                    tilRepeatPassword.error = getString(R.string.pwdsDontMatch)
+                    tilPassword.error = getString(R.string.pwdsDontMatch)
+                } else {
+                    tilPassword.error = null
+                    tilRepeatPassword.error = null
+                }
             }
         }
 
@@ -172,10 +124,10 @@ class SignUpFragment : Fragment() {
 
     private val emailWatcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
-            if (s.toString().isNotBlank() && !PatternsCompat.EMAIL_ADDRESS.matcher(s.toString())
-                    .matches()
-            ) {
-                tilEmail.error = getString(R.string.invalidEmail)
+            if (!s.isNullOrBlank()) {
+                if (!s.matches(PatternsCompat.EMAIL_ADDRESS.toRegex())) {
+                    tilEmail.error = getString(R.string.invalidEmail)
+                }
             }
         }
 

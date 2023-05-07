@@ -10,12 +10,13 @@ data class MonthMovementsResponse(
     data class Movement(
         val codMovement: Int,
         val date: String,
-        val title: String,
-        val amount: Float,
-        val type: String
+        val concept: String,
+        val amount: Double,
+        val description: String?,
+        val type: Type
     ) : Serializable
-}
 
-enum class Sender {
-    CALENDAR, SCHEDULE
+    enum class Type {
+        INCOME, EXPENSE
+    }
 }

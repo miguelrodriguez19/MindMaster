@@ -48,6 +48,16 @@ class DiaryFragment : Fragment() {
             btnMenuEvents.close(true)
         }
 
+        btnAddReminder.setOnClickListener {
+            AllBottomSheets.showRemindersBS(requireContext(), null)
+            btnMenuEvents.close(true)
+        }
+
+        btnAddTask.setOnClickListener {
+            AllBottomSheets.showTasksBS(requireContext(), null)
+            btnMenuEvents.close(true)
+        }
+
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
@@ -89,7 +99,8 @@ class DiaryFragment : Fragment() {
         val mLayoutManager = StaggeredGridLayoutManager(1, 1)
         rvEventsPerMonth.layoutManager = mLayoutManager
 
-        adapter = AllEventsAdapter(requireContext(), data, Sender.SCHEDULE)
+        adapter = AllEventsAdapter(requireContext(), data)
+
         dataFiltered.addAll(data)
 
         rvEventsPerMonth.adapter = adapter
@@ -116,7 +127,7 @@ class DiaryFragment : Fragment() {
                     Reminder(
                         cod ="2",
                         title = "Recordatorio de cumpleaños",
-                        reminder_time = "2022-06-25 09:00",
+                        date_time = "2022-06-25 09:00",
                         description = "El cumpleaños de mi mejor amigo",
                         category = listOf("Personal"),
                         color_tag = "#FF9800",
@@ -154,7 +165,7 @@ class DiaryFragment : Fragment() {
                     Reminder(
                         cod = "5",
                         title = "Recordatorio de cita médica",
-                        reminder_time = "2022-06-26 16:30",
+                        date_time = "2022-06-26 16:30",
                         description = "Ir al dentista",
                         category = listOf("Salud"),
                         color_tag = "#FF9800",

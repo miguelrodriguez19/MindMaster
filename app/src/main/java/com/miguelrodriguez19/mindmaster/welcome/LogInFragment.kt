@@ -8,8 +8,6 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.util.PatternsCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -22,7 +20,10 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentLogInBinding
+import com.miguelrodriguez19.mindmaster.utils.FirebaseManager.getAuth
+import com.miguelrodriguez19.mindmaster.utils.FirebaseManager.logInEmailPwd
 import com.miguelrodriguez19.mindmaster.utils.Preferences
+import com.miguelrodriguez19.mindmaster.utils.Toolkit.checkFields
 
 
 class LogInFragment : Fragment() {
@@ -38,7 +39,6 @@ class LogInFragment : Fragment() {
     private lateinit var btnSignUp: Button
     private lateinit var spLanguage: Spinner
 
-    private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
 
     override fun onCreateView(
@@ -55,28 +55,27 @@ class LogInFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         (requireActivity() as AppCompatActivity).supportActionBar?.hide()
         initBindingElements()
-        auth = FirebaseAuth.getInstance()
-
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
-
         googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
 
         btnLogIn.setOnClickListener {
-            if (checkFields()) {
-                logInEmailPwd() { ok, token ->
-                    if (ok) {
-                        updateUI(token)
-                    } else {
-                        tvError.visibility = View.VISIBLE
-                        tvError.text = getString(R.string.wrong_email_password)
+            checkFields(requireContext(), arrayOf(binding.tilEmail, binding.tilPassword)) {
+                if (it) {
+                    logInEmailPwd(
+                        etEmail.text.toString(),
+                        etPassword.text.toString()
+                    ) { ok, token ->
+                        if (ok) {
+                            updateUI(token)
+                        } else {
+                            tvError.visibility = View.VISIBLE
+                            tvError.text = getString(R.string.wrong_email_password)
+                        }
                     }
                 }
-            } else {
-                tvError.visibility = View.VISIBLE
-                tvError.text = getString(R.string.fill_all_fields)
             }
         }
 
@@ -119,41 +118,8 @@ class LogInFragment : Fragment() {
         findNavController().navigate(action)
     }
 
-
     private fun getUserLanguage(): Int {
         return 0;
-    }
-
-    private fun checkFields(): Boolean {
-        val email = etEmail.text ?: ""
-        val pwd = etPassword.text.toString().replace("\\s+", "") ?: ""
-        if (PatternsCompat.EMAIL_ADDRESS.matcher(email).matches() && pwd.length >= 6) {
-            return true
-        }
-        return false
-    }
-
-    private fun initBindingElements() {
-        etEmail = binding.txtEmailLogIn
-        etPassword = binding.txtPasswordLogIn
-        tvError = binding.tvError
-        btnLogIn = binding.efabLogin
-        btnGoogle = binding.efabGoogle
-        btnFacebook = binding.efabFacebook
-        btnForgottenPwd = binding.btnForgottenPassword
-        btnSignUp = binding.btnSignUp
-        spLanguage = binding.spLanguage
-    }
-
-    private fun logInEmailPwd(callback: (Boolean, String) -> Unit) {
-        auth.signInWithEmailAndPassword(
-            etEmail.text.toString(),
-            etPassword.text.toString()
-        ).addOnCompleteListener {
-            if (it.isSuccessful) {
-                it.result.user?.let { user -> callback(true, user.uid) }
-            }
-        }
     }
 
     private fun signInGoogle() {
@@ -169,9 +135,9 @@ class LogInFragment : Fragment() {
                     val account: GoogleSignInAccount? = task.result
                     if (account != null) {
                         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-                        auth.signInWithCredential(credential).addOnCompleteListener { task ->
+                        getAuth().signInWithCredential(credential).addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-                                val uid = auth.currentUser?.uid
+                                val uid = getAuth().currentUser?.uid
                                 clearFields()
                                 Preferences.setToken(uid!!)
                                 val action =
@@ -191,6 +157,18 @@ class LogInFragment : Fragment() {
                 }
             }
         }
+
+    private fun initBindingElements() {
+        etEmail = binding.txtEmailLogIn
+        etPassword = binding.txtPasswordLogIn
+        tvError = binding.tvError
+        btnLogIn = binding.efabLogin
+        btnGoogle = binding.efabGoogle
+        btnFacebook = binding.efabFacebook
+        btnForgottenPwd = binding.btnForgottenPassword
+        btnSignUp = binding.btnSignUp
+        spLanguage = binding.spLanguage
+    }
 
     private fun clearFields() {
         etEmail.text = null

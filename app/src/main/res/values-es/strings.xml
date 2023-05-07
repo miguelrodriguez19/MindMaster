@@ -63,13 +63,13 @@
 
     <!-- Contraseñas -->
     <string name="group">Grupo</string>
-    <string name="username_label">Nombre de usuario:</string>
-    <string name="email_label">Correo electrónico:</string>
-    <string name="password_label">Contraseña:</string>
+    <string name="username_label">Usuario</string>
+    <string name="email_label">Email</string>
+    <string name="password_label">Contraseña</string>
     <string name="google_sign_up_type">Registro con Google</string>
     <string name="facebook_sign_up_type">Registro con Facebook</string>
-    <string name="username_copied">Nombre de usuario copiado</string>
-    <string name="email_copied">Correo electrónico copiado</string>
+    <string name="username_copied">Usuario copiado</string>
+    <string name="email_copied">Email copiado</string>
     <string name="password_copied">Contraseña copiada</string>
 
     <string name="notifications">Notificaciones</string>

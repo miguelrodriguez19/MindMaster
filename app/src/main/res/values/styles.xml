@@ -21,4 +21,25 @@
         <item name="colorControlActivated">#5C5C5C</item>
         <item name="boxBackgroundColor">@android:color/transparent</item>
     </style>
+    <style name="ChipStyle" parent="Widget.MaterialComponents.Chip.Entry">
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="closeIconVisible">true</item>
+    </style>
+    <style name="cell_account_edittext" parent="Widget.AppCompat.EditText">
+        <item name="android:ellipsize">end</item>
+        <item name="android:clickable">false</item>
+        <item name="android:focusable">false</item>
+        <item name="android:textIsSelectable">true</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textAppearance">?attr/textAppearanceBody1</item>
+    </style>
+
+    <style name="form_text_input_layout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="boxStrokeErrorColor">@color/red_error_500</item>
+        <item name="errorIconDrawable">@null</item>
+        <item name="startIconTint">@color/gray_dove_500</item>
+    </style>
+
 </resources>

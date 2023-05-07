@@ -1,5 +1,10 @@
 package com.miguelrodriguez19.mindmaster.calendar
 
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.ColorFilter
+import android.graphics.PorterDuff
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,15 +13,19 @@ import android.view.ViewGroup
 import android.widget.CalendarView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.clans.fab.FloatingActionButton
 import com.github.clans.fab.FloatingActionMenu
 import com.miguelrodriguez19.mindmaster.MainActivity
+import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentCalendarBinding
 import com.miguelrodriguez19.mindmaster.models.*
 import com.miguelrodriguez19.mindmaster.utils.AllBottomSheets
+import com.miguelrodriguez19.mindmaster.utils.AllDialogs
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -54,7 +63,7 @@ class CalendarFragment : Fragment() {
         val mLayoutManager = StaggeredGridLayoutManager(1, 1)
         rvCalendarEvents.layoutManager = mLayoutManager
 
-        adapter = CalendarEventsAdapter(requireContext(), data, Sender.CALENDAR){ item ->
+        adapter = CalendarEventsAdapter(requireContext(), data) { item ->
             Log.i(TAG, "onViewCreated - event: ${item.title}")
         }
 
@@ -62,6 +71,16 @@ class CalendarFragment : Fragment() {
 
         btnAddEvent.setOnClickListener {
             AllBottomSheets.showEventsBS(requireContext(), null)
+            btnMenuEvents.close(true)
+        }
+
+        btnAddReminder.setOnClickListener {
+            AllBottomSheets.showRemindersBS(requireContext(), null)
+            btnMenuEvents.close(true)
+        }
+
+        btnAddTask.setOnClickListener {
+            AllBottomSheets.showTasksBS(requireContext(), null)
             btnMenuEvents.close(true)
         }
 
@@ -73,6 +92,79 @@ class CalendarFragment : Fragment() {
             tvSelectedDateEvents.text = formattedDate
         }
 
+        val itemTouchHelper =
+            ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ): Boolean {
+                    return false
+                }
+
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    AllDialogs.showConfirmationDialog(
+                        requireContext(),
+                        requireContext().getString(R.string.delete_confirmation),
+                        requireContext().getString(R.string.delete_event_message)
+                    ) {
+                        val position = viewHolder.adapterPosition
+                        if (it) {
+                            adapter.removeAt(position)
+                        } else {
+                            adapter.notifyDataSetChanged()
+                        }
+                    }
+                }
+
+                override fun onChildDraw(
+                    c: Canvas,
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    dX: Float,
+                    dY: Float,
+                    actionState: Int,
+                    isCurrentlyActive: Boolean
+                ) {
+                    val icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete_24)?.mutate()
+                    icon?.setTint(ContextCompat.getColor(requireContext(), android.R.color.white))
+                    val background = ColorDrawable(requireContext().getColor(R.color.red_bittersweet_200))
+                    val itemView = viewHolder.itemView
+                    val iconMargin = (itemView.height - icon!!.intrinsicHeight) / 2
+                    val iconTop = itemView.top + (itemView.height - icon.intrinsicHeight) / 2
+                    val iconBottom = iconTop + icon.intrinsicHeight
+
+                    // Swipe to right
+                    if (dX > 0) {
+                        val iconLeft = itemView.left + iconMargin
+                        val iconRight = itemView.left + iconMargin + icon.intrinsicWidth
+                        icon.setBounds(iconLeft, iconTop, iconRight, iconBottom)
+
+                        background.setBounds(
+                            itemView.left,
+                            itemView.top,
+                            itemView.left + dX.toInt(),
+                            itemView.bottom
+                        )
+                    } else { // Other swipes
+                        background.setBounds(0, 0, 0, 0)
+                    }
+                    background.draw(c)
+                    icon.draw(c)
+                    super.onChildDraw(
+                        c,
+                        recyclerView,
+                        viewHolder,
+                        dX,
+                        dY,
+                        actionState,
+                        isCurrentlyActive
+                    )
+                }
+            })
+        itemTouchHelper.attachToRecyclerView(rvCalendarEvents)
+
+
         pbLoading.visibility = View.GONE
 
     }
@@ -81,7 +173,7 @@ class CalendarFragment : Fragment() {
         data.clear()
         data.add(
             Event(
-                cod ="1",
+                cod = "1",
                 title = "Birthday Party",
                 start_time = "2022-05-21T19:00:00",
                 end_time = "2022-05-21T19:00:00",
@@ -99,7 +191,7 @@ class CalendarFragment : Fragment() {
             Reminder(
                 cod = "2",
                 title = "Meeting with Manager",
-                reminder_time = "2022-05-23T10:00:00",
+                date_time = "2022-05-23T10:00:00",
                 description = "Discuss project progress",
                 category = listOf("Work"),
                 color_tag = "#4CAF50",

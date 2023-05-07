@@ -35,7 +35,7 @@
     <color name="blue_standard">#30B6DB</color>
     <color name="navy_standard">#3039DB</color>
     <color name="magenta_standard">#B630DB</color>
-    <color name="gray_standard">#A0A0A0</color>
+    <color name="gray_standard">#9F9F9F</color>
 
     <color name="red_extralight">#F09393</color>
     <color name="orange_extralight">#F2BA94</color>
@@ -45,7 +45,7 @@
     <color name="blue_extralight">#93DDF1</color>
     <color name="navy_extralight">#9397F1</color>
     <color name="magenta_extralight">#DD93F1</color>
-    <color name="gray_extralight">#DCC4C4</color>
+    <color name="gray_extralight">#DFDFDF</color>
 
     <color name="red_light">#E85E5E</color>
     <color name="orange_light">#EA9760</color>
@@ -55,7 +55,7 @@
     <color name="blue_light">#5DCBE9</color>
     <color name="navy_light">#5D64E9</color>
     <color name="magenta_light">#CB5DE9</color>
-    <color name="gray_light">#C6AAAA</color>
+    <color name="gray_light">#C6C6C6</color>
 
 
 

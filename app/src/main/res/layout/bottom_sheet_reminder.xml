@@ -2,12 +2,25 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="16dp">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        style="@style/ThemeOverlay.MaterialComponents.BottomSheetDialog"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:layout_marginBottom="50dp">
+
+        <!-- Drag handle for accessibility -->
+        <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+            android:id="@+id/drag_handle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/ibtn_close"
@@ -25,6 +38,7 @@
             style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
             android:layout_width="wrap_content"
             android:layout_height="35dp"
+            android:layout_marginTop="5dp"
             android:padding="0dp"
             android:text="@string/save"
             app:layout_constraintEnd_toEndOf="parent"
@@ -73,6 +87,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
+                    android:focusable="false"
+                    android:clickable="false"
                     android:maxLines="1"
                     android:textAppearance="?attr/textAppearanceSubtitle1" />
 
@@ -84,7 +100,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:hint="@string/select_a_color"
                 app:startIconDrawable="@drawable/ic_circle_24"
                 app:startIconTint="@color/primaryColor">
@@ -93,6 +109,8 @@
                     android:id="@+id/et_color_tag"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:focusable="false"
                     android:inputType="text"
                     android:maxLines="1"
                     android:textAppearance="?attr/textAppearanceSubtitle1" />
@@ -159,6 +177,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:focusable="false"
+                    android:clickable="false"
                     android:text="Once" />
             </com.google.android.material.textfield.TextInputLayout>
 

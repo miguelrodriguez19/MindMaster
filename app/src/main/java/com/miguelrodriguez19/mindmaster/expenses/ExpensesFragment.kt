@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +16,7 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentExpensesBinding
 import com.miguelrodriguez19.mindmaster.models.MonthMovementsResponse
+import com.miguelrodriguez19.mindmaster.utils.AllBottomSheets.Companion.showMovementBS
 import kotlin.collections.ArrayList
 
 class ExpensesFragment : Fragment() {
@@ -24,16 +24,17 @@ class ExpensesFragment : Fragment() {
     private var _binding: FragmentExpensesBinding? = null
     private val binding get() = _binding!!
     private lateinit var rvLastMovements: RecyclerView
-    private lateinit var lastMovementsAdapter: LastMovementsAdapter
+    private lateinit var movementAdapter: MovementAdapter
     private lateinit var pbLoading: View
     private lateinit var btnSeeAllMovements: Button
     private lateinit var btnAddExpense: ExtendedFloatingActionButton
     private lateinit var btnAddIncome: ExtendedFloatingActionButton
     private lateinit var pageAdapter: ViewPagerAdapter
     var data = arrayListOf(
-        MonthMovementsResponse.Movement(1, "2022-01-01", "Movimiento 1.1", 100f, "income"),
-        MonthMovementsResponse.Movement(2, "2022-01-02", "Movimiento 1.2", -50f, "expense"),
-        MonthMovementsResponse.Movement(3, "2022-01-03", "Movimiento 1.3", 200f, "income")
+        MonthMovementsResponse.Movement(1, "2022-01-01", "Movimiento 1.1",
+            100.0, "", MonthMovementsResponse.Type.INCOME),
+        MonthMovementsResponse.Movement(2, "2022-01-02", "Movimiento 1.2", -50.0, "", MonthMovementsResponse.Type.EXPENSE),
+        MonthMovementsResponse.Movement(3, "2022-01-03", "Movimiento 1.3", 200.0, null, MonthMovementsResponse.Type.INCOME)
     )
 
     override fun onCreateView(
@@ -52,10 +53,11 @@ class ExpensesFragment : Fragment() {
         // Related to recycler view
         val mLayoutManager = StaggeredGridLayoutManager(1, 1)
         rvLastMovements.layoutManager = mLayoutManager
-        lastMovementsAdapter = LastMovementsAdapter(data) { movement ->
-            Log.i(TAG, "onViewCreated - event: ${movement.title}")
+
+        movementAdapter = MovementAdapter(requireContext(), data) { movement ->
+            Log.i(TAG, "onViewCreated - event: ${movement.concept}")
         }
-        rvLastMovements.adapter = lastMovementsAdapter
+        rvLastMovements.adapter = movementAdapter
 
         // On CLick Listeners
         btnSeeAllMovements.setOnClickListener {
@@ -63,10 +65,10 @@ class ExpensesFragment : Fragment() {
             findNavController().navigate(action)
         }
         btnAddExpense.setOnClickListener {
-
+            showMovementBS(requireContext(), null, MonthMovementsResponse.Type.EXPENSE)
         }
         btnAddIncome.setOnClickListener {
-
+            showMovementBS(requireContext(), null, MonthMovementsResponse.Type.INCOME)
         }
 
         pbLoading.visibility = View.GONE

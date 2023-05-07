@@ -1,5 +1,6 @@
 package com.miguelrodriguez19.mindmaster.expenses
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,12 +9,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.CellMovementBinding
 import com.miguelrodriguez19.mindmaster.models.MonthMovementsResponse
+import com.miguelrodriguez19.mindmaster.utils.AllBottomSheets
 
-class LastMovementsAdapter(
+class MovementAdapter(
+    private val context: Context,
     private val data: ArrayList<MonthMovementsResponse.Movement>,
     val onClick: (MonthMovementsResponse.Movement) -> Unit
 ) :
-    RecyclerView.Adapter<LastMovementsAdapter.ViewHolder>() {
+    RecyclerView.Adapter<MovementAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.cell_movement, parent, false)
@@ -40,16 +43,17 @@ class LastMovementsAdapter(
             )
 
             when (item.type) {
-                "income" -> mapColors["green"]?.let { tvAmount.setTextColor(it) }
-                "expense" -> mapColors["red"]?.let { tvAmount.setTextColor(it) }
+                MonthMovementsResponse.Type.INCOME -> mapColors["green"]?.let { tvAmount.setTextColor(it) }
+                MonthMovementsResponse.Type.EXPENSE -> mapColors["red"]?.let { tvAmount.setTextColor(it) }
                 else -> {
                     mapColors["black"]?.let { tvAmount.setTextColor(it) }
                 }
             }
-            tvTitle.text = item.title
+            tvTitle.text = item.concept
             tvDate.text = item.date
             tvAmount.text = "${item.amount}€"
             rlMovementArea.setOnClickListener {
+                AllBottomSheets.showMovementBS(context, item, item.type)
                 onClick(item)
             }
 

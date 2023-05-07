@@ -86,7 +86,7 @@
     <string name="logout_confirmation_title">Do you want to log out?</string>
     <string name="delete_account_confirmation_title">Do you want to delete your account?</string>
     <string name="confirmation_twice">Do you still want it?</string>
-    <string name="delete_account_confirmation_message">This action is irreversible, you will delete all your data from the system.</string>
+    <string name="delete_account_confirmation_message">, you will delete all your data from the system.</string>
     <string name="descripting_message_for_help">Didn\'t find the answer you were looking for? \nContact our support center!</string>
     <string name="need_help">Need help?</string>
     <string name="go_to_our_website">Go to our website</string>
@@ -105,7 +105,7 @@
     <string name="pwdsDontMatch">Passwords don\'t match</string>
     <string name="weakPassword">Must contain at least 8 characters, numbers, uppercase and special characters.</string>
     <string name="invalidEmail">Invalid email.</string>
-    <string name="fill_this_field">You must fill this field</string>
+    <string name="field_obligatory">This field is obligatory.</string>
     <string name="collision_auth">The email address is already in use.</string>
     <string name="participants">Participants</string>
     <string name="category">Category</string>
@@ -123,6 +123,24 @@
     <string name="status">Status</string>
     <string name="select">Select</string>
     <string name="reached_max_categories">The maximum are 3</string>
+    <string name="type_anything">Type anything first.</string>
+    <string name="changes_will_lost">Changes will be lost</string>
+    <string name="confirm_lost_changes_message">If you continue, unsaved changes will be lost.</string>
+    <string name="err_end_date_incorrect">The end date has to be the same or later than the start date</string>
+    <string name="concept">Concept</string>
+    <string name="amount">Amount</string>
+    <string name="account_title_hint">Account title</string>
+    <string name="copy_users_text_to_clipboard">Copy users text to clipboard</string>
+    <string name="copy_email_text_to_clipboard">Copy email text to clipboard.</string>
+    <string name="copy_password_text_to_clipboard">Copy password text to clipboard</string>
+    <string name="other">Other</string>
+    <string name="group_title_hint">Group title</string>
+    <string name="edit">Edit</string>
+    <string name="edit_group">Edit group</string>
+    <string name="delete_group">Delete group</string>
+    <string name="delete_confirmation">Are you sure you want to remove it?</string>
+    <string name="delete_password_group_message">This action is irreversible, the group and all accounts within it will be deleted.</string>
+    <string name="delete_event_message">This action is irreversible, this plan will be deleted.</string>
 
 
     <string-array name="available_languages">

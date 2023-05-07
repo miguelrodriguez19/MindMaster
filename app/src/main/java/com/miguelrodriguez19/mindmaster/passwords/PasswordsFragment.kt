@@ -13,6 +13,7 @@ import com.miguelrodriguez19.mindmaster.databinding.FragmentPasswordsBinding
 import com.miguelrodriguez19.mindmaster.expenses.AllMovementsAdapter
 import com.miguelrodriguez19.mindmaster.models.GroupPasswordsResponse
 import com.miguelrodriguez19.mindmaster.models.MonthMovementsResponse
+import com.miguelrodriguez19.mindmaster.utils.AllBottomSheets.Companion.showPasswordsBS
 
 class PasswordsFragment : Fragment() {
     private var _binding: FragmentPasswordsBinding? = null
@@ -36,7 +37,9 @@ class PasswordsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initWidget()
-
+        btnAddGroup.setOnClickListener {
+            showPasswordsBS(requireContext(), null)
+        }
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
@@ -84,19 +87,23 @@ class PasswordsFragment : Fragment() {
             accountsList = listOf(
                 GroupPasswordsResponse.Account(
                     codAccount = 1,
+                    name = "Account",
                     username = "user1",
                     email = "user1@gmail.com",
                     password = "password1",
+                    description = "",
                     note = null,
-                    type = "google"
+                    type = GroupPasswordsResponse.Type.GOOGLE
                 ),
                 GroupPasswordsResponse.Account(
                     codAccount = 2,
+                    name = "Account",
                     username = "miguel",
                     email = "user2@yahoo.com",
                     password = "password2",
+                    description = "",
                     note = "Note for account 2",
-                    type = "facebook"
+                    type = GroupPasswordsResponse.Type.OTHER
                 )
             )
         )
@@ -107,11 +114,13 @@ class PasswordsFragment : Fragment() {
             accountsList = listOf(
                 GroupPasswordsResponse.Account(
                     codAccount = 1,
+                    name = "Account",
                     username = "user3",
                     email = "example@gmail.com",
                     password = "password3",
+                    description = null,
                     note = null,
-                    type = "google"
+                    type = GroupPasswordsResponse.Type.OTHER
                 )
             )
         )
@@ -122,27 +131,33 @@ class PasswordsFragment : Fragment() {
             accountsList = listOf(
                 GroupPasswordsResponse.Account(
                     codAccount = 1,
+                    name = "Account",
                     username = "user4",
                     email = "user4@hotmail.com",
+                    description = null,
                     password = "password4",
                     note = null,
-                    type = "other"
+                    type = GroupPasswordsResponse.Type.OTHER
                 ),
                 GroupPasswordsResponse.Account(
                     codAccount = 2,
                     username = "user5",
+                    name = "Account",
                     email = "user5@gmail.com",
                     password = "password5",
+                    description = null,
                     note = "Note for account 5",
-                    type = "facebook"
+                    type = GroupPasswordsResponse.Type.EMAIL
                 ),
                 GroupPasswordsResponse.Account(
                     codAccount = 3,
                     username = "user6",
+                    name = "Account",
                     email = "user6@yahoo.com",
                     password = "password6",
+                    description = null,
                     note = null,
-                    type = "google"
+                    type = GroupPasswordsResponse.Type.GOOGLE
                 )
             )
         )

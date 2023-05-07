@@ -3,7 +3,6 @@ package com.miguelrodriguez19.mindmaster.models
 import android.content.Context
 import android.graphics.Color
 import com.miguelrodriguez19.mindmaster.R
-import java.util.*
 
 data class EventsResponse(
     val date: String,
@@ -49,7 +48,7 @@ data class Event(
 data class Reminder(
     override val cod: String,
     override val title: String,
-    val reminder_time: String,
+    val date_time: String,
     override val description: String?,
     override val category: List<String>?,
     override val color_tag: String,
