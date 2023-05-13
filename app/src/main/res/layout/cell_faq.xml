@@ -34,7 +34,6 @@
                 android:ellipsize="end"
                 android:fontFamily="@font/popings_medium_500"
                 android:maxLines="2"
-                android:text="Question"
                 android:textSize="17sp" />
 
             <ImageButton
@@ -69,7 +68,6 @@
                 android:layout_marginTop="6dp"
                 android:fontFamily="@font/popings_regular_400"
                 android:padding="7dp"
-                android:text="This is the answer."
                 android:textAlignment="textStart"
                 android:textSize="16sp" />
 

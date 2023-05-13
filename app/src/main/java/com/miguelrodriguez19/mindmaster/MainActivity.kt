@@ -1,20 +1,20 @@
 package com.miguelrodriguez19.mindmaster
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.customview.widget.Openable
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.bumptech.glide.Glide
 import com.miguelrodriguez19.mindmaster.databinding.ActivityMainBinding
+import com.miguelrodriguez19.mindmaster.databinding.DrawerHeaderBinding
+import com.miguelrodriguez19.mindmaster.models.UserResponse
 import com.miguelrodriguez19.mindmaster.utils.Preferences
 
 class MainActivity : AppCompatActivity() {
@@ -32,8 +32,10 @@ class MainActivity : AppCompatActivity() {
             false
         }
         drawerLayout = binding.drawerLayout
-        val token = Preferences.getToken()
-        val initialFragment = if (token != null && token.isNotEmpty()) {
+        val user = Preferences.getUser()
+        if (user != null) userSetUp(user)
+
+        val initialFragment = if (user != null) {
             R.id.calendarFragment
         } else {
             R.id.logInFragment
@@ -62,13 +64,21 @@ class MainActivity : AppCompatActivity() {
         binding.navView.setupWithNavController(navController)
     }
 
-    fun lockDrawer(){
+    fun userSetUp(user: UserResponse) {
+        val navHeaderBinding = DrawerHeaderBinding.bind(binding.navView.getHeaderView(0))
+        Glide.with(this)
+            .load(user.photoUrl)
+            .into(navHeaderBinding.civDrawerUserPhoto)
+    }
+
+    fun lockDrawer() {
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
     }
 
-    fun unlockDrawer(){
+    fun unlockDrawer() {
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
     }
+
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }

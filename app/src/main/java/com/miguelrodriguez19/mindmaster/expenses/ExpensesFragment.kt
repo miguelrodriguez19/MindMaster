@@ -30,12 +30,12 @@ class ExpensesFragment : Fragment() {
     private lateinit var btnAddExpense: ExtendedFloatingActionButton
     private lateinit var btnAddIncome: ExtendedFloatingActionButton
     private lateinit var pageAdapter: ViewPagerAdapter
-    var data = arrayListOf(
+    var data = ArrayList<MonthMovementsResponse.Movement>()/*arrayListOf(
         MonthMovementsResponse.Movement(1, "2022-01-01", "Movimiento 1.1",
             100.0, "", MonthMovementsResponse.Type.INCOME),
         MonthMovementsResponse.Movement(2, "2022-01-02", "Movimiento 1.2", -50.0, "", MonthMovementsResponse.Type.EXPENSE),
         MonthMovementsResponse.Movement(3, "2022-01-03", "Movimiento 1.3", 200.0, null, MonthMovementsResponse.Type.INCOME)
-    )
+    )*/
 
     override fun onCreateView(
         inflater: LayoutInflater,

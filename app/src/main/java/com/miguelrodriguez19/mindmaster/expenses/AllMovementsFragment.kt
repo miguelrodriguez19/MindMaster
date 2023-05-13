@@ -73,7 +73,7 @@ class AllMovementsFragment : Fragment() {
 
 
     private fun initWidget() {
-        createFakeData()
+        //createFakeData()
         searchView = binding.searchView
         btnAddMov = binding.btnAddMovement
         rvAllMovements = binding.rvAllMovements
@@ -86,7 +86,7 @@ class AllMovementsFragment : Fragment() {
 
         rvAllMovements.adapter = adapter
     }
-
+/*
     private fun createFakeData() {
         data.clear()
 
@@ -117,7 +117,7 @@ class AllMovementsFragment : Fragment() {
         val month3 = MonthMovementsResponse(3, "Marzo 2022", movements3)
         data.add(month3)
     }
-
+*/
 
     override fun onDestroyView() {
         super.onDestroyView()

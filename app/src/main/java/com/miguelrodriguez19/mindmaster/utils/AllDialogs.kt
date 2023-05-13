@@ -82,7 +82,7 @@ class AllDialogs {
             )
         )
 
-        fun colorPickerDialog(context: Context, callback: (Int) -> Unit) {
+        fun colorPickerDialog(context: Context, callback: (String) -> Unit) {
             ColorPalette
             MaterialDialog(context).show {
                 title(R.string.select_a_color)
@@ -93,43 +93,50 @@ class AllDialogs {
                     allowCustomArgb = true,
                     showAlphaSelector = false
                 ) { dialog, color ->
-                    callback(color)
+                    val hexColor = String.format("#%06X", (0xFFFFFF and color))
+                    callback(hexColor)
                 }
                 negativeButton(R.string.cancel)
                 positiveButton(R.string.select)
             }
         }
+
         fun showDateTimePicker(context: Context, listener: (String) -> Unit) {
             val currentDate = Calendar.getInstance()
-            val dateListener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
-                val selectedDate = Calendar.getInstance()
-                selectedDate.set(Calendar.YEAR, year)
-                selectedDate.set(Calendar.MONTH, monthOfYear)
-                selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+            val dateListener =
+                DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+                    val selectedDate = Calendar.getInstance()
+                    selectedDate.set(Calendar.YEAR, year)
+                    selectedDate.set(Calendar.MONTH, monthOfYear)
+                    selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-                val timeListener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
-                    selectedDate.set(Calendar.HOUR_OF_DAY, hourOfDay)
-                    selectedDate.set(Calendar.MINUTE, minute)
+                    val timeListener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+                        selectedDate.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                        selectedDate.set(Calendar.MINUTE, minute)
 
-                    val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault())
-                    val selectedDateTime = dateFormat.format(selectedDate.time)
-                    listener(selectedDateTime)
+                        val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault())
+                        val selectedDateTime = dateFormat.format(selectedDate.time)
+                        listener(selectedDateTime)
+                    }
+
+                    val timePickerDialog = TimePickerDialog(
+                        context, timeListener,
+                        currentDate.get(Calendar.HOUR_OF_DAY),
+                        currentDate.get(Calendar.MINUTE), false
+                    )
+                    timePickerDialog.show()
                 }
 
-                val timePickerDialog = TimePickerDialog(context, timeListener,
-                    currentDate.get(Calendar.HOUR_OF_DAY),
-                    currentDate.get(Calendar.MINUTE), false)
-                timePickerDialog.show()
-            }
-
-            val datePickerDialog = DatePickerDialog(context, dateListener,
+            val datePickerDialog = DatePickerDialog(
+                context, dateListener,
                 currentDate.get(Calendar.YEAR),
                 currentDate.get(Calendar.MONTH),
-                currentDate.get(Calendar.DAY_OF_MONTH))
+                currentDate.get(Calendar.DAY_OF_MONTH)
+            )
             datePickerDialog.show()
         }
 
-        fun showDatePicker(context:Context, callback: (String) -> Unit) {
+        fun showDatePicker(context: Context, callback: (String) -> Unit) {
             val calendar = Calendar.getInstance()
 
             val datePickerDialog = DatePickerDialog(
@@ -140,7 +147,8 @@ class AllDialogs {
                     selectedDate.set(Calendar.MONTH, monthOfYear)
                     selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-                    val formattedDate = String.format("%02d-%02d-%04d",
+                    val formattedDate = String.format(
+                        "%02d-%02d-%04d",
                         dayOfMonth,
                         monthOfYear + 1,
                         year

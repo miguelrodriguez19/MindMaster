@@ -3,12 +3,12 @@ package com.miguelrodriguez19.mindmaster.models
 import java.io.Serializable
 
 data class GroupPasswordsResponse(
-    val codGroup: Int,
+    val codGroup: String,
     val name: String,
     val accountsList: List<Account>,
 ) : Serializable {
     data class Account(
-        val codAccount: Int,
+        val codAccount: String,
         val name:String,
         val username: String?,
         val email: String?,

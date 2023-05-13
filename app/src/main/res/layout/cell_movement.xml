@@ -17,7 +17,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="3dp"
         android:fontFamily="@font/popings_regular_400"
-        android:text="Date"
         android:textAlignment="textEnd"
         android:textSize="13sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,7 +30,6 @@
         android:ellipsize="end"
         android:fontFamily="@font/popings_medium_500"
         android:maxLines="2"
-        android:text="Title"
         android:textSize="17sp"
         app:layout_constraintEnd_toStartOf="@+id/tv_movementsAmount"
         app:layout_constraintStart_toStartOf="@+id/tv_movementsDate"
@@ -43,7 +41,6 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="15dp"
         android:fontFamily="@font/popings_medium_500"
-        android:text="+50€"
         android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_movementsDate" />

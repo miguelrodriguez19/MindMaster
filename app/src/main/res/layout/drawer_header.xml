@@ -6,11 +6,10 @@
     android:layout_height="wrap_content">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/civ_userPhoto"
+        android:id="@+id/civ_drawerUserPhoto"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_margin="6dp"
-        android:src="@color/primaryColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -25,11 +24,10 @@
         android:ellipsize="end"
         android:fontFamily="@font/popings_medium_500"
         android:maxLines="1"
-        android:text="Miguel"
-        app:layout_constraintBottom_toBottomOf="@+id/civ_userPhoto"
+        app:layout_constraintBottom_toBottomOf="@+id/civ_drawerUserPhoto"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/civ_userPhoto"
-        app:layout_constraintTop_toTopOf="@+id/civ_userPhoto" />
+        app:layout_constraintStart_toEndOf="@+id/civ_drawerUserPhoto"
+        app:layout_constraintTop_toTopOf="@+id/civ_drawerUserPhoto" />
 
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="0dp"

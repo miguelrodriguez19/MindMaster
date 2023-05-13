@@ -15,15 +15,17 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentLogInBinding
+import com.miguelrodriguez19.mindmaster.models.UserResponse
+import com.miguelrodriguez19.mindmaster.utils.FirebaseManager
 import com.miguelrodriguez19.mindmaster.utils.FirebaseManager.getAuth
 import com.miguelrodriguez19.mindmaster.utils.FirebaseManager.logInEmailPwd
 import com.miguelrodriguez19.mindmaster.utils.Preferences
 import com.miguelrodriguez19.mindmaster.utils.Toolkit.checkFields
+import pl.droidsonroids.gif.GifImageView
 
 
 class LogInFragment : Fragment() {
@@ -55,6 +57,10 @@ class LogInFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         (requireActivity() as AppCompatActivity).supportActionBar?.hide()
         initBindingElements()
+        view.findViewById<LinearLayout>(R.id.ll_logo).setOnClickListener {
+            etEmail.setText("mr916086@gmail.com")
+            etPassword.setText("Abcd1234")
+        }
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
@@ -64,12 +70,12 @@ class LogInFragment : Fragment() {
         btnLogIn.setOnClickListener {
             checkFields(requireContext(), arrayOf(binding.tilEmail, binding.tilPassword)) {
                 if (it) {
-                    logInEmailPwd(
+                    logInEmailPwd(requireActivity(),
                         etEmail.text.toString(),
                         etPassword.text.toString()
-                    ) { ok, token ->
+                    ) { ok ->
                         if (ok) {
-                            updateUI(token)
+                            updateUI()
                         } else {
                             tvError.visibility = View.VISIBLE
                             tvError.text = getString(R.string.wrong_email_password)
@@ -111,9 +117,8 @@ class LogInFragment : Fragment() {
         }
     }
 
-    private fun updateUI(token: String) {
+    private fun updateUI() {
         clearFields()
-        Preferences.setToken(token)
         val action = LogInFragmentDirections.actionLogInFragmentToCalendarFragment()
         findNavController().navigate(action)
     }
@@ -137,12 +142,19 @@ class LogInFragment : Fragment() {
                         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
                         getAuth().signInWithCredential(credential).addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-                                val uid = getAuth().currentUser?.uid
-                                clearFields()
-                                Preferences.setToken(uid!!)
+                                val account = GoogleSignIn.getLastSignedInAccount(requireContext())
+                                val uid = getAuth().currentUser?.uid!!
+                                val actualUser = UserResponse(
+                                    uid,account?.givenName!!,account.familyName,
+                                    account.email!!,null,account.photoUrl!!.toString()
+                                )
+                                FirebaseManager.addNewUserToFirestore(actualUser)
+                                Preferences.setUser(actualUser)
+                                (requireActivity() as MainActivity).userSetUp(actualUser)
                                 val action =
                                     LogInFragmentDirections.actionLogInFragmentToCalendarFragment()
                                 findNavController().navigate(action)
+                                clearFields()
                             } else {
                                 Toast.makeText(
                                     context,

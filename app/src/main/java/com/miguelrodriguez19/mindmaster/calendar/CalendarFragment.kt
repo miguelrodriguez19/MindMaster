@@ -1,9 +1,6 @@
 package com.miguelrodriguez19.mindmaster.calendar
 
 import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.ColorFilter
-import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
@@ -23,9 +20,14 @@ import com.github.clans.fab.FloatingActionMenu
 import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentCalendarBinding
-import com.miguelrodriguez19.mindmaster.models.*
+import com.miguelrodriguez19.mindmaster.models.AbstractEvents
 import com.miguelrodriguez19.mindmaster.utils.AllBottomSheets
 import com.miguelrodriguez19.mindmaster.utils.AllDialogs
+import com.miguelrodriguez19.mindmaster.utils.FirebaseManager.loadScheduleByDate
+import com.miguelrodriguez19.mindmaster.utils.Toolkit.getCurrentDate
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -43,7 +45,7 @@ class CalendarFragment : Fragment() {
     private lateinit var btnMenuEvents: FloatingActionMenu
     private lateinit var adapter: CalendarEventsAdapter
     private lateinit var pbLoading: View
-    var data = ArrayList<AbstractEvents>()
+    private val data = ArrayList<AbstractEvents>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,28 +61,28 @@ class CalendarFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initWidgets()
-        createFakeData()
-        val mLayoutManager = StaggeredGridLayoutManager(1, 1)
-        rvCalendarEvents.layoutManager = mLayoutManager
-
-        adapter = CalendarEventsAdapter(requireContext(), data) { item ->
-            Log.i(TAG, "onViewCreated - event: ${item.title}")
+        CoroutineScope(Dispatchers.Main).launch {
+            setUpData(getCurrentDate())
         }
 
-        rvCalendarEvents.adapter = adapter
-
         btnAddEvent.setOnClickListener {
-            AllBottomSheets.showEventsBS(requireContext(), null)
+            AllBottomSheets.showEventsBS(requireContext(), null) {
+                adapter.addItem(it)
+            }
             btnMenuEvents.close(true)
         }
 
         btnAddReminder.setOnClickListener {
-            AllBottomSheets.showRemindersBS(requireContext(), null)
+            AllBottomSheets.showRemindersBS(requireContext(), null) {
+                adapter.addItem(it)
+            }
             btnMenuEvents.close(true)
         }
 
         btnAddTask.setOnClickListener {
-            AllBottomSheets.showTasksBS(requireContext(), null)
+            AllBottomSheets.showTasksBS(requireContext(), null) {
+                adapter.addItem(it)
+            }
             btnMenuEvents.close(true)
         }
 
@@ -89,7 +91,7 @@ class CalendarFragment : Fragment() {
             selectedDate.set(year, month, dayOfMonth)
             val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
             val formattedDate = dateFormat.format(selectedDate.time)
-            tvSelectedDateEvents.text = formattedDate
+            CoroutineScope(Dispatchers.Main).launch { setUpData(formattedDate) }
         }
 
         val itemTouchHelper =
@@ -126,9 +128,11 @@ class CalendarFragment : Fragment() {
                     actionState: Int,
                     isCurrentlyActive: Boolean
                 ) {
-                    val icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete_24)?.mutate()
+                    val icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete_24)
+                        ?.mutate()
                     icon?.setTint(ContextCompat.getColor(requireContext(), android.R.color.white))
-                    val background = ColorDrawable(requireContext().getColor(R.color.red_bittersweet_200))
+                    val background =
+                        ColorDrawable(requireContext().getColor(R.color.red_bittersweet_200))
                     val itemView = viewHolder.itemView
                     val iconMargin = (itemView.height - icon!!.intrinsicHeight) / 2
                     val iconTop = itemView.top + (itemView.height - icon.intrinsicHeight) / 2
@@ -164,56 +168,30 @@ class CalendarFragment : Fragment() {
             })
         itemTouchHelper.attachToRecyclerView(rvCalendarEvents)
 
-
-        pbLoading.visibility = View.GONE
-
+        adapter.notifyDataSetChanged()
     }
 
-    private fun createFakeData() {
-        data.clear()
-        data.add(
-            Event(
-                cod = "1",
-                title = "Birthday Party",
-                start_time = "2022-05-21T19:00:00",
-                end_time = "2022-05-21T19:00:00",
-                location = "123 Main St.",
-                description = "Celebrate Jane's 30th birthday",
-                participants = listOf("Jane", "John", "Samantha"),
-                category = listOf("Celebration"),
-                repetition = Repetition.ONCE,
-                color_tag = "#F44336",
-                type = EventType.EVENT
-            )
-        )
-
-        data.add(
-            Reminder(
-                cod = "2",
-                title = "Meeting with Manager",
-                date_time = "2022-05-23T10:00:00",
-                description = "Discuss project progress",
-                category = listOf("Work"),
-                color_tag = "#4CAF50",
-                type = EventType.REMINDER
-            )
-        )
-
-        data.add(
-            Task(
-                cod = "3",
-                title = "Finish Report",
-                due_date = "2022-05-25",
-                description = "Complete final report for project",
-                priority = Priority.HIGH,
-                status = Status.IN_PROGRESS,
-                category = listOf("Work"),
-                color_tag = "#F44876",
-                type = EventType.TASK
-            )
-        )
-
-        tvCountOfEvents.text = data.size.toString()
+    private suspend fun setUpData(date: String) {
+        pbLoading.visibility = View.VISIBLE
+        tvSelectedDateEvents.text = date
+        this@CalendarFragment.data.clear()
+        /*FirebaseManager.loadScheduleByDate(requireContext(), date){ dayList ->
+            this@CalendarFragment.data.addAll(dayList)
+            adapter.setData(dayList)
+            tvCountOfEvents.text = this.data.size.toString()
+            if (data.size==0){
+                // Show icon
+            }
+            pbLoading.visibility = View.GONE
+        }*/
+        val dayList = loadScheduleByDate(requireContext(), date)
+        this@CalendarFragment.data.addAll(dayList)
+        adapter.setData(dayList)
+        tvCountOfEvents.text = this.data.size.toString()
+        if (data.size == 0) {
+            // Show icon
+        }
+        pbLoading.visibility = View.GONE
     }
 
     private fun initWidgets() {
@@ -226,18 +204,12 @@ class CalendarFragment : Fragment() {
         btnMenuEvents = binding.fambAddMenu
         rvCalendarEvents = binding.rvEvents
         pbLoading = binding.pbLoading
-
-        tvSelectedDateEvents.text = getCurrentDate()
-        tvCountOfEvents.text = data.size.toString()
-
-    }
-
-    private fun getCurrentDate(): CharSequence? {
-        val calendar = Calendar.getInstance()
-        val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
-        val month = calendar.get(Calendar.MONTH) + 1
-        val year = calendar.get(Calendar.YEAR)
-        return String.format("%02d-%02d-%04d", dayOfMonth, month, year)
+        val mLayoutManager = StaggeredGridLayoutManager(1, 1)
+        rvCalendarEvents.layoutManager = mLayoutManager
+        adapter = CalendarEventsAdapter(requireContext(), data) { item ->
+            Log.i(TAG, "onViewCreated - event: ${item.title}")
+        }
+        rvCalendarEvents.adapter = adapter
     }
 
     override fun onDestroyView() {

@@ -7,13 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.appcompat.widget.AppCompatImageButton
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.android.material.textfield.TextInputLayout
 import com.miguelrodriguez19.mindmaster.databinding.FragmentAccountBinding
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -22,11 +22,12 @@ class AccountFragment : Fragment() {
     private var _binding: FragmentAccountBinding? = null
     private val binding get() = _binding!!
     private lateinit var tvName: TextView
-    private lateinit var btnEditPhoto: ImageButton
+    private lateinit var btnEditPhoto: MaterialButton
     private lateinit var civUserPhoto: CircleImageView
+    private lateinit var tilFirstName: TextInputLayout
     private lateinit var etFirstName: EditText
     private lateinit var etLastName: EditText
-    private lateinit var etEmail: EditText
+    private lateinit var tilBirthdate: TextInputLayout
     private lateinit var etBirthdate: EditText
     private lateinit var btnSave: ExtendedFloatingActionButton
     private lateinit var progressBar: ProgressBar
@@ -64,22 +65,9 @@ class AccountFragment : Fragment() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                tvName.text = "${s.toString()} ${etLastName.text}"
+                tvName.text = "${s.toString()}"
             }
         })
-
-        etLastName.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                tvName.text = "${s.toString()} ${etFirstName.text}"
-            }
-        })
-
     }
 
     private fun updateFirestoreData() {
@@ -98,7 +86,6 @@ class AccountFragment : Fragment() {
         tvName.text = "ejemplo"
         etFirstName.setText("ejemplo")
         etLastName.setText("ejemplo")
-        etEmail.setText("ejemplo")
         etBirthdate.setText("ejemplo")
 
 
@@ -109,10 +96,9 @@ class AccountFragment : Fragment() {
     private fun initWidgets() {
         tvName = binding.tvName
         btnEditPhoto = binding.btnEditPhoto
-        civUserPhoto = binding.civUserPhoto
+        civUserPhoto = binding.civProfileUserPhoto
         etFirstName = binding.txtName
         etLastName = binding.txtSurname
-        etEmail = binding.txtEmail
         etBirthdate = binding.txtDateBirthdate
         btnSave = binding.efabSaveChanges
         progressBar = binding.progressBar

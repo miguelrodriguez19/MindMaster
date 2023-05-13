@@ -17,11 +17,12 @@ import com.miguelrodriguez19.mindmaster.calendar.CalendarEventsAdapter
 import com.miguelrodriguez19.mindmaster.databinding.CellDayAllEventsBinding
 import com.miguelrodriguez19.mindmaster.models.*
 import com.miguelrodriguez19.mindmaster.utils.AllDialogs
+import com.miguelrodriguez19.mindmaster.utils.FirebaseManager
 
 
 class AllEventsAdapter(
     private val context: Context,
-    var data: ArrayList<EventsResponse>
+    private val data: ArrayList<EventsResponse>
     ) :
     RecyclerView.Adapter<AllEventsAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -35,6 +36,13 @@ class AllEventsAdapter(
     }
 
     override fun getItemCount(): Int = data.size
+
+    fun setData(newData: List<EventsResponse>) {
+        this.data.clear()
+        this.data.addAll(newData)
+        notifyDataSetChanged()
+    }
+
     inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         private val bind = CellDayAllEventsBinding.bind(v)
         private val btnMonth = bind.btnMonthTitle

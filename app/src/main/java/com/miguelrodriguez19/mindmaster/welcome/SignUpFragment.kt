@@ -78,7 +78,12 @@ class SignUpFragment : Fragment() {
             ) { ok ->
                 if (ok) {
                     createUserFirebase(
-                        requireContext(), etEmail.text.toString(), etPassword.text.toString()
+                        requireContext(),
+                        etName.text.toString(),
+                        etSurname.text.toString() ?: null,
+                        etBirthdate.text.toString(),
+                        etEmail.text.toString(),
+                        etPassword.text.toString()
                     ) { wasAdded ->
                         if (wasAdded) {
                             clearFields()
@@ -95,9 +100,11 @@ class SignUpFragment : Fragment() {
             if (!s.isNullOrBlank()) {
                 if (!s.matches(PASSWORD_PATTERN.toRegex())) {
                     tilPassword.error = getString(R.string.weakPassword)
-                }else{
+                } else {
                     tilPassword.error = null
                 }
+            } else {
+                tilPassword.error = null
             }
         }
 
@@ -115,6 +122,9 @@ class SignUpFragment : Fragment() {
                     tilPassword.error = null
                     tilRepeatPassword.error = null
                 }
+            } else {
+                tilPassword.error = null
+                tilRepeatPassword.error = null
             }
         }
 
@@ -127,7 +137,11 @@ class SignUpFragment : Fragment() {
             if (!s.isNullOrBlank()) {
                 if (!s.matches(PatternsCompat.EMAIL_ADDRESS.toRegex())) {
                     tilEmail.error = getString(R.string.invalidEmail)
+                } else {
+                    tilEmail.error = null
                 }
+            } else {
+                tilEmail.error = null
             }
         }
 

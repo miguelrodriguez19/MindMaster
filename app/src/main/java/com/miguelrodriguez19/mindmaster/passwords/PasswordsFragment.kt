@@ -80,7 +80,7 @@ class PasswordsFragment : Fragment() {
         rvAccountsGroups.adapter = adapter
     }
 
-    private fun createFakeData(){
+    private fun createFakeData(){/*
         val group1 = GroupPasswordsResponse(
             codGroup = 1,
             name = "Netflix",
@@ -163,7 +163,7 @@ class PasswordsFragment : Fragment() {
         )
 
         data = arrayListOf(group1, group2, group3)
-
+*/
     }
 
     override fun onDestroyView() {

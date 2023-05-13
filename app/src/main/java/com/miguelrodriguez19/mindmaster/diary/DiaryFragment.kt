@@ -1,11 +1,13 @@
 package com.miguelrodriguez19.mindmaster.diary
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.clans.fab.FloatingActionButton
@@ -13,6 +15,7 @@ import com.github.clans.fab.FloatingActionMenu
 import com.miguelrodriguez19.mindmaster.databinding.FragmentDiaryBinding
 import com.miguelrodriguez19.mindmaster.models.*
 import com.miguelrodriguez19.mindmaster.utils.AllBottomSheets
+import com.miguelrodriguez19.mindmaster.utils.FirebaseManager
 
 
 class DiaryFragment : Fragment() {
@@ -26,9 +29,8 @@ class DiaryFragment : Fragment() {
     private lateinit var btnMenuEvents: FloatingActionMenu
     private lateinit var rvEventsPerMonth: RecyclerView
     private lateinit var adapter: AllEventsAdapter
-    var data: ArrayList<EventsResponse> = ArrayList()
+    private val data: ArrayList<EventsResponse> = ArrayList()
     private var dataFiltered: ArrayList<EventsResponse> = ArrayList()
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,20 +43,23 @@ class DiaryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setUpData()
         initWidget()
 
         btnAddEvent.setOnClickListener {
-            AllBottomSheets.showEventsBS(requireContext(), null)
+            AllBottomSheets.showEventsBS(requireContext(), null) {
+
+            }
             btnMenuEvents.close(true)
         }
 
         btnAddReminder.setOnClickListener {
-            AllBottomSheets.showRemindersBS(requireContext(), null)
+            AllBottomSheets.showRemindersBS(requireContext(), null) {}
             btnMenuEvents.close(true)
         }
 
         btnAddTask.setOnClickListener {
-            AllBottomSheets.showTasksBS(requireContext(), null)
+            AllBottomSheets.showTasksBS(requireContext(), null) {}
             btnMenuEvents.close(true)
         }
 
@@ -70,6 +75,17 @@ class DiaryFragment : Fragment() {
         })
     }
 
+    private fun setUpData() {
+        binding.progressBarSchedule.visibility = View.VISIBLE
+        this@DiaryFragment.data.clear()
+        FirebaseManager.loadAllSchedule(requireContext()) { allEvents ->
+            this@DiaryFragment.data.addAll(allEvents)
+            dataFiltered = data
+            adapter.setData(allEvents)
+            binding.progressBarSchedule.visibility = View.GONE
+        }
+    }
+
     private fun search(text: String) {
         val filteredData = ArrayList<EventsResponse>()
         for (item in data) {
@@ -83,12 +99,11 @@ class DiaryFragment : Fragment() {
                 filteredData.add(EventsResponse(item.date, filteredEvents.toList()))
             }
         }
-        adapter.data = filteredData
-        adapter.notifyDataSetChanged()
+        adapter.setData(filteredData)
     }
 
     private fun initWidget() {
-        createFakeData()
+        binding.progressBarSchedule.visibility = View.VISIBLE
         searchView = binding.searchView
         btnAddEvent = binding.fabAddEvent
         btnAddTask = binding.fabAddTask
@@ -96,96 +111,9 @@ class DiaryFragment : Fragment() {
         btnMenuEvents = binding.fambAddMenu
         rvEventsPerMonth = binding.rvAllEvents
 
-        val mLayoutManager = StaggeredGridLayoutManager(1, 1)
-        rvEventsPerMonth.layoutManager = mLayoutManager
-
+        rvEventsPerMonth.layoutManager = StaggeredGridLayoutManager(1, 1)
         adapter = AllEventsAdapter(requireContext(), data)
-
-        dataFiltered.addAll(data)
-
         rvEventsPerMonth.adapter = adapter
-    }
-
-    private fun createFakeData() {
-        val eventsList = arrayListOf(
-            EventsResponse(
-                date = "2022-06-25",
-                allEventsList = listOf(
-                    Event(
-                        cod = "1",
-                        title = "Concierto de rock",
-                        start_time = "2022-06-25 19:00",
-                        end_time = "2022-06-25 19:00",
-                        location = "Estadio de futbol",
-                        description = "Un gran concierto con muchas bandas famosas",
-                        participants = listOf("Banda 1", "Banda 2", "Banda 3"),
-                        category = listOf("Entretenimiento"),
-                        repetition = Repetition.ONCE,
-                        color_tag = "#F44336",
-                        type = EventType.EVENT
-                    ),
-                    Reminder(
-                        cod ="2",
-                        title = "Recordatorio de cumpleaños",
-                        date_time = "2022-06-25 09:00",
-                        description = "El cumpleaños de mi mejor amigo",
-                        category = listOf("Personal"),
-                        color_tag = "#FF9800",
-                        type = EventType.REMINDER
-                    ),
-                    Task(
-                        cod = "3",
-                        title = "Enviar informe de ventas",
-                        due_date = "2022-06-25 17:00",
-                        description = "Informe mensual de ventas de la compañía",
-                        priority = Priority.HIGH,
-                        status = Status.PENDING,
-                        category = listOf("Trabajo"),
-                        color_tag = "#4CAF50",
-                        type = EventType.TASK
-                    )
-                )
-            ),
-            EventsResponse(
-                date = "2022-06-26",
-                allEventsList = listOf(
-                    Event(
-                        cod = "4",
-                        title = "Festival de comida",
-                        start_time = "2022-06-26 12:00",
-                        end_time = "2022-06-26 12:00",
-                        location = "Parque central",
-                        description = "Disfruta de diferentes comidas de todo el mundo",
-                        participants = null,
-                        category = listOf("Entretenimiento"),
-                        repetition = Repetition.ANNUAL,
-                        color_tag = "#F44336",
-                        type = EventType.EVENT
-                    ),
-                    Reminder(
-                        cod = "5",
-                        title = "Recordatorio de cita médica",
-                        date_time = "2022-06-26 16:30",
-                        description = "Ir al dentista",
-                        category = listOf("Salud"),
-                        color_tag = "#FF9800",
-                        type = EventType.REMINDER
-                    ),
-                    Task(
-                        cod = "6",
-                        title = "Comprar boletos de avión",
-                        due_date = "2022-06-26 23:59",
-                        description = null,
-                        priority = Priority.MEDIUM,
-                        status = Status.PENDING,
-                        category = listOf("Viajes"),
-                        color_tag = "#4CAF50",
-                        type = EventType.TASK
-                    )
-                )
-            )
-        )
-        data = eventsList
     }
 
     override fun onDestroyView() {

@@ -14,7 +14,7 @@
     <string name="settings">Ajustes</string>
     <string name="management_settings">Ajustes de gestión</string>
     <string name="account">Cuenta</string>
-    <string name="help_faqs">Preguntas frecuentes y soporte</string>
+    <string name="help_faqs">Soporte y FAQs</string>
     <string name="share_with_friends">Compartir con amigos</string>
     <string name="rate_app">Calificar la aplicación</string>
     <string name="confirmation">Continuar</string>
@@ -88,7 +88,7 @@
     <string name="need_help">¿Necesita ayuda?</string>
     <string name="go_to_our_website">Ir a nuestro sitio web</string>
     <string name="terms_and_conditions">Términos y condiciones</string>
-    <string name="email_us">Envíenos un correo electrónico</string>
+    <string name="email_us">Envíenos un correo</string>
     <string name="find_question">Encontrar pregunta…</string>
     <string name="save">Guardar</string>
     <string name="done">Listo</string>

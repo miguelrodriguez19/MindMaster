@@ -5,6 +5,7 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.core.view.size
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -18,17 +19,21 @@ import com.miguelrodriguez19.mindmaster.utils.AllDialogs.Companion.colorPickerDi
 import com.miguelrodriguez19.mindmaster.utils.AllDialogs.Companion.showConfirmationDialog
 import com.miguelrodriguez19.mindmaster.utils.AllDialogs.Companion.showDatePicker
 import com.miguelrodriguez19.mindmaster.utils.AllDialogs.Companion.showDateTimePicker
+import com.miguelrodriguez19.mindmaster.utils.FirebaseManager.saveInShedule
 import com.miguelrodriguez19.mindmaster.utils.Toolkit.checkFields
 import com.miguelrodriguez19.mindmaster.utils.Toolkit.compareDates
 import com.miguelrodriguez19.mindmaster.utils.Toolkit.makeChip
+import com.miguelrodriguez19.mindmaster.utils.Toolkit.processChipGroup
 
 class AllBottomSheets {
     companion object {
-        fun showEventsBS(context: Context, e: Event?) {
+        fun showEventsBS(context: Context, e: Event?, callback: (Event) -> Unit) {
             val botSheet = BottomSheetDialog(context)
             val bottomSheetView =
                 LayoutInflater.from(context).inflate(R.layout.bottom_sheet_events, null)
             val bind = BottomSheetEventsBinding.bind(bottomSheetView)
+            var color = Integer.toHexString(ContextCompat.getColor(context, R.color.primaryColor))
+
             if (e != null) {
                 bind.etTitle.setText(e.title)
                 bind.etStartTime.setText(e.start_time)
@@ -37,15 +42,16 @@ class AllBottomSheets {
                 // bind.tilRepetition
                 bind.etDescription.setText(e.description)
                 bind.tilColorTag.setStartIconTintList(ColorStateList.valueOf(Color.parseColor(e.color_tag)))
-                for (cat in e.category ?: ArrayList()) {
+                for (cat in e.category) {
                     val chip = makeChip(context, cat)
                     bind.cgCategory.addView(chip)
                 }
-                for (part in e.participants ?: ArrayList()) {
+                for (part in e.participants) {
                     val chip = makeChip(context, part)
                     bind.cgParticipants.addView(chip)
                 }
             }
+
             bind.cgParticipants.setOnCheckedChangeListener { group, checkedId ->
                 val chip = bind.cgParticipants.findViewById<Chip>(checkedId)
                 bind.cgParticipants.removeView(chip)
@@ -60,7 +66,6 @@ class AllBottomSheets {
                     bind.tilParticipants.error = context.getString(R.string.type_anything)
                 }
             }
-
             bind.etStartTime.setOnClickListener {
                 showDateTimePicker(context) { datetime ->
                     bind.etStartTime.setText(datetime)
@@ -69,7 +74,6 @@ class AllBottomSheets {
                     }
                 }
             }
-
             bind.etEndTime.setOnClickListener {
                 showDateTimePicker(context) { datetime ->
                     bind.etEndTime.setText(datetime)
@@ -103,13 +107,13 @@ class AllBottomSheets {
                     }
                 }
             }
-
             bind.etColorTag.setOnClickListener {
-                colorPickerDialog(context) { color ->
-                    bind.tilColorTag.setStartIconTintList(ColorStateList.valueOf(color))
+                colorPickerDialog(context) {
+                    val colorStateList = ColorStateList.valueOf(Color.parseColor(it))
+                    bind.tilColorTag.setStartIconTintList(colorStateList)
+                    color = it
                 }
             }
-
             bind.ibtnClose.setOnClickListener {
                 showConfirmationDialog(
                     context,
@@ -121,32 +125,49 @@ class AllBottomSheets {
                     }
                 }
             }
-
             bind.efabSave.setOnClickListener {
                 checkFields(
                     context, arrayOf(bind.tilTitle, bind.tilStartTime, bind.tilEndTime)
                 ) { ok ->
                     if (ok) {
+                        val event = Event(
+                            bind.etTitle.text.toString(),
+                            bind.etStartTime.text.toString(),
+                            bind.etEndTime.text.toString(),
+                            bind.etLocation.text.toString(),
+                            bind.etDescription.text.toString(),
+                            processChipGroup(bind.cgParticipants),
+                            processChipGroup(bind.cgCategory),
+                            Repetition.NONE,
+                            color,
+                            EventType.EVENT
+                        )
+                        saveInShedule(context, event) { added ->
+                            callback(added as Event)
+                        }
                         botSheet.dismiss()
                     }
                 }
             }
+
             botSheet.setContentView(bottomSheetView)
             botSheet.show()
         }
 
-        fun showRemindersBS(context: Context, e: Reminder?) {
+        fun showRemindersBS(context: Context, r: Reminder?, callback: (Reminder) -> Unit) {
             val botSheet = BottomSheetDialog(context)
             val bottomSheetView =
                 LayoutInflater.from(context).inflate(R.layout.bottom_sheet_reminder, null)
             val bind = BottomSheetReminderBinding.bind(bottomSheetView)
-            if (e != null) {
-                bind.etTitle.setText(e.title)
-                bind.etDate.setText(e.date_time)
+            var color = Integer.toHexString(ContextCompat.getColor(context, R.color.primaryColor))
+
+            if (r != null) {
+                bind.etTitle.setText(r.title)
+                bind.etDate.setText(r.date_time)
                 // bind.tilRepetition
-                bind.etDescription.setText(e.description)
-                bind.tilColorTag.setStartIconTintList(ColorStateList.valueOf(Color.parseColor(e.color_tag)))
-                for (cat in e.category ?: ArrayList()) {
+                bind.etDescription.setText(r.description)
+                bind.tilColorTag.setStartIconTintList(ColorStateList.valueOf(Color.parseColor(r.color_tag)))
+                for (cat in r.category ?: ArrayList()) {
                     val chip = makeChip(context, cat)
                     bind.cgCategory.addView(chip)
                 }
@@ -175,13 +196,13 @@ class AllBottomSheets {
                     }
                 }
             }
-
             bind.etColorTag.setOnClickListener {
                 colorPickerDialog(context) {
-                    bind.tilColorTag.setStartIconTintList(ColorStateList.valueOf(it))
+                    val colorStateList = ColorStateList.valueOf(Color.parseColor(it))
+                    bind.tilColorTag.setStartIconTintList(colorStateList)
+                    color = it
                 }
             }
-
             bind.ibtnClose.setOnClickListener {
                 showConfirmationDialog(
                     context,
@@ -193,10 +214,20 @@ class AllBottomSheets {
                     }
                 }
             }
-
             bind.efabSave.setOnClickListener {
                 checkFields(context, arrayOf(bind.tilTitle, bind.tilDate)) { ok ->
                     if (ok) {
+                        val reminder = Reminder(
+                            bind.etTitle.text.toString(),
+                            bind.etDate.text.toString(),
+                            bind.etDescription.text.toString(),
+                            processChipGroup(bind.cgCategory),
+                            color,
+                            EventType.REMINDER
+                        )
+                        saveInShedule(context, reminder) {
+                            callback(it as Reminder)
+                        }
                         botSheet.dismiss()
                     }
                 }
@@ -205,11 +236,12 @@ class AllBottomSheets {
             botSheet.show()
         }
 
-        fun showTasksBS(context: Context, e: Task?) {
+        fun showTasksBS(context: Context, e: Task?, callback: (Task) -> Unit) {
             val botSheet = BottomSheetDialog(context)
             val bottomSheetView =
                 LayoutInflater.from(context).inflate(R.layout.bottom_sheet_tasks, null)
             val bind = BottomSheetTasksBinding.bind(bottomSheetView)
+            var color = Integer.toHexString(ContextCompat.getColor(context, R.color.primaryColor))
 
             if (e != null) {
                 bind.etTitle.setText(e.title)
@@ -247,13 +279,13 @@ class AllBottomSheets {
                     }
                 }
             }
-
             bind.etColorTag.setOnClickListener {
                 colorPickerDialog(context) {
-                    bind.tilColorTag.setStartIconTintList(ColorStateList.valueOf(it))
+                    val colorStateList = ColorStateList.valueOf(Color.parseColor(it))
+                    bind.tilColorTag.setStartIconTintList(colorStateList)
+                    color = it
                 }
             }
-
             bind.ibtnClose.setOnClickListener {
                 showConfirmationDialog(
                     context,
@@ -265,10 +297,21 @@ class AllBottomSheets {
                     }
                 }
             }
-
             bind.efabSave.setOnClickListener {
                 checkFields(context, arrayOf(bind.tilTitle, bind.tilDueDate)) { ok ->
                     if (ok) {
+                        val t = Task(
+                            bind.etTitle.text.toString(),
+                            bind.etDueDate.text.toString(),
+                            bind.etDescription.text.toString(),
+                            Priority.URGENT, Status.PENDING,
+                            processChipGroup(bind.cgCategory),
+                            color,
+                            EventType.TASK
+                        )
+                        saveInShedule(context, t) { added ->
+                            callback(added as Task)
+                        }
                         botSheet.dismiss()
                     }
                 }
@@ -309,7 +352,6 @@ class AllBottomSheets {
                     bind.etDate.setText(date)
                 }
             }
-
             bind.ibtnClose.setOnClickListener {
                 showConfirmationDialog(
                     context,
@@ -321,7 +363,6 @@ class AllBottomSheets {
                     }
                 }
             }
-
             bind.efabSave.setOnClickListener {
                 checkFields(context, arrayOf(bind.tilConcept, bind.tilDate, bind.tilAmount)) { ok ->
                     if (ok) {
@@ -343,7 +384,9 @@ class AllBottomSheets {
             val bind = BottomSheetPasswordBinding.bind(bottomSheetView)
 
             bind.etTitleGroup.setText(group?.name)
-            val adapter = FormAccountAdapter(context, group?.accountsList?.let { ArrayList(it) } ?: arrayListOf(null))
+            val adapter = FormAccountAdapter(
+                context,
+                group?.accountsList?.let { ArrayList(it) } ?: arrayListOf(null))
             bind.rvAccountsBS.adapter = adapter
             bind.rvAccountsBS.layoutManager = StaggeredGridLayoutManager(1, 1)
 
@@ -376,9 +419,7 @@ class AllBottomSheets {
         }
 
         private fun checkPwdBSFields(
-            context: Context,
-            rv: RecyclerView,
-            callback: (Boolean) -> Unit
+            context: Context, rv: RecyclerView, callback: (Boolean) -> Unit
         ) {
             val adapter = rv.adapter
             if (adapter != null) {

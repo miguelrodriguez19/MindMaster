@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".settings.AccountFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,11 +26,10 @@
                 android:layout_height="match_parent">
 
                 <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/civ_userPhoto"
+                    android:id="@+id/civ_profileUserPhoto"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_centerInParent="true"
-                    android:src="@drawable/facebook_logo" />
+                    android:layout_centerInParent="true" />
 
                 <View
                     android:layout_width="match_parent"
@@ -38,14 +37,17 @@
                     android:layout_centerInParent="true"
                     android:background="@color/black_translucent" />
 
-                <ImageButton
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_editPhoto"
+                    style="@style/Widget.Material3.Button.IconButton"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerInParent="true"
                     android:backgroundTint="@color/transparent"
-                    android:src="@drawable/ic_edit_24"
-                    app:tint="@color/white" />
+                    app:icon="@drawable/ic_edit_24"
+                    app:iconGravity="textEnd"
+                    app:iconSize="25dp"
+                    app:iconTint="@color/white" />
             </RelativeLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -57,7 +59,6 @@
             android:layout_marginTop="15dp"
             android:breakStrategy="balanced"
             android:gravity="center"
-            android:text="Miguel Rodriguez"
             android:textColor="@color/gray_scorpion_200"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -83,11 +84,10 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_name"
+                style="@style/form_text_input_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                app:startIconDrawable="@drawable/ic_person_24"
-                app:startIconTint="@color/gray_dove_500">
+                app:startIconDrawable="@drawable/ic_person_24">
 
                 <EditText
                     android:id="@+id/txt_name"
@@ -98,16 +98,15 @@
                     android:maxEms="25"
                     android:singleLine="true"
                     android:textSize="18sp" />
-
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_surname"
+                style="@style/form_text_input_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                app:startIconDrawable="@drawable/ic_person_24"
-                app:startIconTint="@color/gray_dove_500">
+                app:startIconDrawable="@drawable/ic_person_24">
 
                 <EditText
                     android:id="@+id/txt_surname"
@@ -118,41 +117,16 @@
                     android:maxEms="25"
                     android:singleLine="true"
                     android:textSize="18sp" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                app:boxCornerRadiusBottomEnd="5dp"
-                app:boxCornerRadiusBottomStart="5dp"
-                app:boxCornerRadiusTopEnd="5dp"
-                app:boxCornerRadiusTopStart="5dp"
-                app:startIconDrawable="@drawable/ic_email_24"
-                app:startIconTint="@color/gray_dove_500">
-
-                <EditText
-                    android:id="@+id/txt_email"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/hint_email"
-                    android:inputType="textEmailAddress"
-                    android:maxEms="250"
-                    android:singleLine="true" />
-
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_DateBirthdate"
+                style="@style/form_text_input_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
                 android:clickable="false"
                 android:focusable="false"
-                app:startIconDrawable="@drawable/ic_calendar_month_24"
-                app:startIconTint="@color/gray_dove_500">
+                app:startIconDrawable="@drawable/ic_calendar_month_24">
 
                 <EditText
                     android:id="@+id/txt_DateBirthdate"

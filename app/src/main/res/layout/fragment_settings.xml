@@ -23,10 +23,9 @@
             android:padding="16dp">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/civ_userPhoto"
+                android:id="@+id/settingsUserPhoto"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
-                android:src="@color/blue_primary_light_200"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -38,11 +37,10 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:ellipsize="end"
-                android:text="Miguel"
                 android:textSize="25sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/civ_userPhoto"
-                app:layout_constraintTop_toTopOf="@+id/civ_userPhoto" />
+                app:layout_constraintStart_toEndOf="@+id/settingsUserPhoto"
+                app:layout_constraintTop_toTopOf="@+id/settingsUserPhoto" />
 
             <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                 android:id="@+id/efab_editProfile"
@@ -52,7 +50,7 @@
                 android:layout_marginTop="10dp"
                 android:text="@string/edit_profile"
                 android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/civ_userPhoto"
+                app:layout_constraintBottom_toBottomOf="@+id/settingsUserPhoto"
                 app:layout_constraintStart_toStartOf="@+id/tv_name"
                 app:layout_constraintTop_toBottomOf="@+id/tv_name"
                 app:strokeColor="@color/primaryColor" />
@@ -171,6 +169,7 @@
             android:padding="0dp"
             android:text="@string/security"
             android:textAllCaps="false"
+            android:paddingEnd="10dp"
             android:textColor="@color/gray_dark_700"
             android:textSize="19sp"
             app:icon="@drawable/ic_arrow_forward_24"
@@ -182,40 +181,27 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/ll_advancedOptions"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_advancedOptions"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/popings_regular_400"
                 android:gravity="start|center"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/tv_advancedOptions"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="90"
-                    android:fontFamily="@font/popings_regular_400"
-                    android:text="@string/advanced_options"
-                    android:textColor="@color/primaryColorDark"
-                    android:textSize="19sp" />
-
-                <ImageButton
-                    android:id="@+id/btn_seeMore"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="10"
-                    android:background="@android:color/transparent"
-                    android:padding="3dp"
-                    android:src="@drawable/ic_keyboard_arrow_down_24"
-                    app:tint="@color/primaryColorDark" />
-
-            </LinearLayout>
+                android:padding="0dp"
+                android:paddingEnd="10dp"
+                android:text="@string/advanced_options"
+                android:textAllCaps="false"
+                android:textColor="@color/primaryColorDark"
+                android:textSize="19sp"
+                app:icon="@drawable/ic_keyboard_arrow_down_24"
+                app:iconGravity="end"
+                app:iconSize="25dp"
+                app:iconTint="@color/gray_scorpion_200"
+                app:strokeWidth="0dp" />
 
             <LinearLayout
                 android:id="@+id/ll_expandableAdvancedOptions"
@@ -223,6 +209,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="start|center"
                 android:orientation="vertical"
+                android:layout_marginBottom="25dp"
                 android:visibility="gone">
 
                 <com.google.android.material.button.MaterialButton
@@ -231,6 +218,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
+                    android:paddingEnd="10dp"
                     android:fontFamily="@font/popings_regular_400"
                     android:gravity="start|center"
                     android:padding="0dp"
@@ -246,38 +234,44 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_deleteAccount"
-                    style="@style/secondary_titles"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
-                    android:background="@android:color/transparent"
-                    android:gravity="start|bottom"
+                    android:fontFamily="@font/popings_regular_400"
+                    android:gravity="start|center"
                     android:padding="0dp"
                     android:text="@string/delete_account"
                     android:textAllCaps="false"
                     android:textColor="@color/red_error_500"
+                    android:textSize="19sp"
                     app:icon="@drawable/ic_delete_24"
+                    app:iconGravity="start"
                     app:iconSize="25dp"
-                    app:iconTint="@color/red_error_500" />
+                    app:iconTint="@color/red_error_500"
+                    app:strokeWidth="0dp" />
             </LinearLayout>
 
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_logOut"
-            style="@style/secondary_titles"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            android:background="@android:color/transparent"
-            android:gravity="start|bottom"
+            android:fontFamily="@font/popings_regular_400"
+            android:gravity="start|center"
             android:padding="0dp"
             android:text="@string/log_out"
             android:textAllCaps="false"
             android:textColor="@color/red_error_500"
+            android:textSize="19sp"
             app:icon="@drawable/ic_logout_24"
+            app:iconGravity="start"
             app:iconSize="25dp"
-            app:iconTint="@color/red_error_500" />
+            app:iconTint="@color/red_error_500"
+            app:strokeWidth="0dp" />
     </LinearLayout>
 
 </LinearLayout>

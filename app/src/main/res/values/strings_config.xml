@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="database" translatable="false">Firebase</string>
+    <string name="users" translatable="false">users</string>
+    <string name="schedule">schedule</string>
+    <string name="events" translatable="false">events</string>
+    <string name="reminder">reminder</string>
+    <string name="tasks" translatable="false">tasks</string>
+    <string name="date" translatable="false">date</string>
+    <string name="movements">movements</string>
+</resources>

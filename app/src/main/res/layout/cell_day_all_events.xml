@@ -15,7 +15,6 @@
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:fontFamily="@font/popings_medium_500"
         android:padding="3dp"
-        android:text="March 2023"
         android:textAlignment="textStart"
         android:textSize="15sp"
         app:strokeWidth="0dp"

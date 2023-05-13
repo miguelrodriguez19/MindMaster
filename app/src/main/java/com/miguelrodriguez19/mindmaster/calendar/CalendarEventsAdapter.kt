@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.CellCalendarEventsBinding
 import com.miguelrodriguez19.mindmaster.models.*
+import com.miguelrodriguez19.mindmaster.models.comparators.EventComparator
 import com.miguelrodriguez19.mindmaster.utils.AllBottomSheets.Companion.showEventsBS
 import com.miguelrodriguez19.mindmaster.utils.AllBottomSheets.Companion.showRemindersBS
 import com.miguelrodriguez19.mindmaster.utils.AllBottomSheets.Companion.showTasksBS
@@ -34,6 +35,19 @@ class CalendarEventsAdapter(
         data.removeAt(position)
         notifyItemRangeRemoved(position, 1)
     }
+
+    fun setData(newData: List<AbstractEvents>) {
+        this.data.clear()
+        this.data.addAll(newData.sortedWith(EventComparator()))
+        notifyDataSetChanged()
+    }
+
+    fun addItem(item:AbstractEvents) {
+        this.data.add(item)
+        this.data.sortedWith(EventComparator())
+        notifyDataSetChanged()
+    }
+
     inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         private val bind = CellCalendarEventsBinding.bind(v)
         private val cvEventArea = bind.cvEventArea
@@ -52,9 +66,15 @@ class CalendarEventsAdapter(
             cvEventArea.setOnClickListener {
                 onClick(item)
                 when (item.type){
-                    EventType.EVENT -> showEventsBS(context, item as Event)
-                    EventType.REMINDER -> showRemindersBS(context, item as Reminder)
-                    EventType.TASK -> showTasksBS(context, item as Task)
+                    EventType.EVENT -> showEventsBS(context, item as Event) {
+                        addItem(it)
+                    }
+                    EventType.REMINDER -> showRemindersBS(context, item as Reminder){
+                        addItem(it)
+                    }
+                    EventType.TASK -> showTasksBS(context, item as Task){
+                        addItem(it)
+                    }
                 }
             }
         }

@@ -141,6 +141,8 @@
     <string name="delete_confirmation">Are you sure you want to remove it?</string>
     <string name="delete_password_group_message">This action is irreversible, the group and all accounts within it will be deleted.</string>
     <string name="delete_event_message">This action is irreversible, this plan will be deleted.</string>
+    <string name="try_later">There was a problem please try again later.</string>
+    <string name="faqs">FAQs</string>
 
 
     <string-array name="available_languages">

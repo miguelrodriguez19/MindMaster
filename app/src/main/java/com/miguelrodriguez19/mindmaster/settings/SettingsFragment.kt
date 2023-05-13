@@ -34,9 +34,8 @@ class SettingsFragment : Fragment() {
     private lateinit var btnChangePassword: MaterialButton
     private lateinit var btnDeleteAccount: MaterialButton
     private lateinit var btnLogOut: MaterialButton
-    private lateinit var llAdvancedOptions: LinearLayout
+    private lateinit var btnAdvancedOptions: MaterialButton
     private lateinit var llExpandableAdvancedOptions: LinearLayout
-    private lateinit var btnSeeMore: ImageButton
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -88,13 +87,13 @@ class SettingsFragment : Fragment() {
             }
         }
 
-        llAdvancedOptions.setOnClickListener {
+        btnAdvancedOptions.setOnClickListener {
             setVisibilityAdvSet()
         }
         llExpandableAdvancedOptions.setOnClickListener {
             setVisibilityAdvSet()
         }
-        btnSeeMore.setOnClickListener {
+        btnAdvancedOptions.setOnClickListener {
             setVisibilityAdvSet()
         }
         spLanguage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -140,7 +139,7 @@ class SettingsFragment : Fragment() {
     }
 
     private fun initWidgets() {
-        ivUserPhoto = binding.civUserPhoto
+        ivUserPhoto = binding.settingsUserPhoto
         tvName = binding.tvName
         btnEditProfile = binding.efabEditProfile
         swNotifications = binding.swNotifications
@@ -168,24 +167,23 @@ class SettingsFragment : Fragment() {
         btnSecurity = binding.btnSecurity
         btnChangePassword = binding.btnChangePassword
         btnDeleteAccount = binding.btnDeleteAccount
-        btnSeeMore = binding.btnSeeMore
         llExpandableAdvancedOptions = binding.llExpandableAdvancedOptions
-        llAdvancedOptions = binding.llAdvancedOptions
+        btnAdvancedOptions = binding.btnAdvancedOptions
         btnLogOut = binding.btnLogOut
     }
 
     private fun setVisibilityAdvSet() {
         if (llExpandableAdvancedOptions.visibility == View.GONE) {
             llExpandableAdvancedOptions.visibility = View.VISIBLE
-            btnSeeMore.rotation = 180F
+            btnAdvancedOptions.icon = requireContext().getDrawable(R.drawable.ic_keyboard_arrow_up_24)
         } else {
             llExpandableAdvancedOptions.visibility = View.GONE
-            btnSeeMore.rotation = 0F
+            btnAdvancedOptions.icon = requireContext().getDrawable(R.drawable.ic_keyboard_arrow_down_24)
         }
     }
 
     private fun logout() {
-        Preferences.deleteToken()
+        Preferences.deleteUser()
         FirebaseAuth.getInstance().signOut()
         val intent = Intent(requireActivity(), MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

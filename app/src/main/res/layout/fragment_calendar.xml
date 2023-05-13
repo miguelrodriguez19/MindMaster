@@ -47,8 +47,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
-                    android:fontFamily="@font/popings_regular_400"
-                    android:text="25/05/2021" />
+                    android:fontFamily="@font/popings_regular_400" />
 
             </LinearLayout>
 
@@ -87,7 +86,6 @@
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
                             android:elevation="3dp"
-                            android:text="3"
                             android:textColor="@color/white"
                             android:textSize="15sp" />
                     </RelativeLayout>
@@ -95,7 +93,6 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
                         android:layout_marginStart="5dp"
                         android:layout_marginEnd="10dp"
                         android:elevation="3dp"

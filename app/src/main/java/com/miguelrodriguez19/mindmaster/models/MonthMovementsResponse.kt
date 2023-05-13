@@ -3,12 +3,12 @@ package com.miguelrodriguez19.mindmaster.models
 import java.io.Serializable
 
 data class MonthMovementsResponse(
-    val codMonthMovement: Int,
+    val codMonthMovement: String,
     val date: String,
     val movementsList: List<Movement>,
 ) : Serializable {
     data class Movement(
-        val codMovement: Int,
+        val codMovement: String,
         val date: String,
         val concept: String,
         val amount: Double,
