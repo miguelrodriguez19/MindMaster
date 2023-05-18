@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.Comparator
 
-class DateComparator : Comparator<EventsResponse> {
+class EventGroupComparator : Comparator<EventsResponse> {
     override fun compare(e1: EventsResponse, e2: EventsResponse): Int {
         val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
         val parsedDate1 = dateFormat.parse(e1.date)

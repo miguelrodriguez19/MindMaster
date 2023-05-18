@@ -143,6 +143,10 @@
     <string name="delete_event_message">This action is irreversible, this plan will be deleted.</string>
     <string name="try_later">There was a problem please try again later.</string>
     <string name="faqs">FAQs</string>
+    <string name="nothing_planned_yet">Nothing planned yet</string>
+    <string name="event_deleted">Selected item has been deleted</string>
+    <string name="undo">Undo</string>
+    <string name="error_unmodified_fields">Please update any field before save changes.</string>
 
 
     <string-array name="available_languages">

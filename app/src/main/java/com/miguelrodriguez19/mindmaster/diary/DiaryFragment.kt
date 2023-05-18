@@ -1,12 +1,10 @@
 package com.miguelrodriguez19.mindmaster.diary
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -43,23 +41,28 @@ class DiaryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpData()
         initWidget()
+        setUpData()
 
         btnAddEvent.setOnClickListener {
             AllBottomSheets.showEventsBS(requireContext(), null) {
+                adapter.addItem(it)
+            }
+            btnMenuEvents.close(true)
 
+        }
+
+        btnAddReminder.setOnClickListener {
+            AllBottomSheets.showRemindersBS(requireContext(), null) {
+                adapter.addItem(it)
             }
             btnMenuEvents.close(true)
         }
 
-        btnAddReminder.setOnClickListener {
-            AllBottomSheets.showRemindersBS(requireContext(), null) {}
-            btnMenuEvents.close(true)
-        }
-
         btnAddTask.setOnClickListener {
-            AllBottomSheets.showTasksBS(requireContext(), null) {}
+            AllBottomSheets.showTasksBS(requireContext(), null) {
+                adapter.addItem(it)
+            }
             btnMenuEvents.close(true)
         }
 
@@ -89,7 +92,7 @@ class DiaryFragment : Fragment() {
     private fun search(text: String) {
         val filteredData = ArrayList<EventsResponse>()
         for (item in data) {
-            val filteredEvents = ArrayList<AbstractEvents>()
+            val filteredEvents = ArrayList<AbstractEvent>()
             for (absEvent in item.allEventsList) {
                 if (absEvent.title.contains(text, true)) {
                     filteredEvents.add(absEvent)
@@ -99,7 +102,8 @@ class DiaryFragment : Fragment() {
                 filteredData.add(EventsResponse(item.date, filteredEvents.toList()))
             }
         }
-        adapter.setData(filteredData)
+        adapter.data = filteredData
+        adapter.notifyDataSetChanged()
     }
 
     private fun initWidget() {

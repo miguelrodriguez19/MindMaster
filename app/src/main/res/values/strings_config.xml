@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="database" translatable="false">Firebase</string>
-    <string name="users" translatable="false">users</string>
-    <string name="schedule">schedule</string>
-    <string name="events" translatable="false">events</string>
-    <string name="reminder">reminder</string>
-    <string name="tasks" translatable="false">tasks</string>
-    <string name="date" translatable="false">date</string>
-    <string name="movements">movements</string>
+    <string name="users_rute" translatable="false">users</string>
+    <string name="schedule_rute" translatable="false">schedule</string>
+    <string name="events_rute" translatable="false">events</string>
+    <string name="reminders_rute" translatable="false">reminders</string>
+    <string name="tasks_rute" translatable="false">tasks</string>
+    <string name="date_rute" translatable="false">date</string>
+    <string name="movements_rute" translatable="false">movements</string>
+    <string name="incomes_rute" translatable="false">incomes</string>
+    <string name="expenses_rute" translatable="false">expenses</string>
+
+    <string name="max_movements_to_show" translatable="false">3</string>
+
 </resources>

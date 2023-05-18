@@ -11,10 +11,18 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
+import com.miguelrodriguez19.mindmaster.MainActivity
+import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentAccountBinding
+import com.miguelrodriguez19.mindmaster.models.UserResponse
+import com.miguelrodriguez19.mindmaster.utils.AllDialogs
+import com.miguelrodriguez19.mindmaster.utils.FirebaseManager
+import com.miguelrodriguez19.mindmaster.utils.Preferences
+import com.miguelrodriguez19.mindmaster.utils.Toolkit.showToast
 import de.hdodenhof.circleimageview.CircleImageView
 
 class AccountFragment : Fragment() {
@@ -31,7 +39,7 @@ class AccountFragment : Fragment() {
     private lateinit var etBirthdate: EditText
     private lateinit var btnSave: ExtendedFloatingActionButton
     private lateinit var progressBar: ProgressBar
-
+    private lateinit var user: UserResponse
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -41,6 +49,7 @@ class AccountFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        user = Preferences.getUser()!!
         initWidgets()
         setUpWithUser()
 
@@ -49,12 +58,17 @@ class AccountFragment : Fragment() {
                 updateFirestoreData()
                 findNavController().popBackStack()
             } else {
-                // Show error
+                showToast(requireContext(), R.string.error_unmodified_fields)
             }
         }
-
         btnEditPhoto.setOnClickListener {
 
+        }
+
+        etBirthdate.setOnClickListener {
+            AllDialogs.showDatePicker(requireContext()) { date ->
+                etBirthdate.setText(date)
+            }
         }
 
         etFirstName.addTextChangedListener(object : TextWatcher {
@@ -72,8 +86,15 @@ class AccountFragment : Fragment() {
 
     private fun updateFirestoreData() {
         progressBar.visibility = View.VISIBLE
-        // TODO
-        progressBar.visibility = View.GONE
+        FirebaseManager.updateUser(
+            UserResponse(
+                user, etFirstName.text.toString(),
+                etLastName.text.toString(), etBirthdate.text.toString()
+            )
+        ) {
+            Preferences.setUser(it)
+            progressBar.visibility = View.GONE
+        }
     }
 
     private fun areFieldsModified(): Boolean {
@@ -82,15 +103,14 @@ class AccountFragment : Fragment() {
     }
 
     private fun setUpWithUser() {
-        progressBar.visibility = View.VISIBLE
-        tvName.text = "ejemplo"
-        etFirstName.setText("ejemplo")
-        etLastName.setText("ejemplo")
-        etBirthdate.setText("ejemplo")
+        etFirstName.setText(user.firstName)
+        etLastName.setText(user.lastName)
+        etBirthdate.setText(user.birthdate)
+        tvName.text = etFirstName.text.toString()
 
-
-
-        progressBar.visibility = View.GONE
+        Glide.with(requireActivity())
+            .load(user.photoUrl)
+            .into(civUserPhoto)
     }
 
     private fun initWidgets() {
@@ -104,8 +124,22 @@ class AccountFragment : Fragment() {
         progressBar = binding.progressBar
     }
 
+    override fun onPause() {
+        super.onPause()
+        val activity = (requireActivity() as MainActivity)
+        activity.userSetUp(Preferences.getUser()!!)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        val activity = (requireActivity() as MainActivity)
+        activity.userSetUp(Preferences.getUser()!!)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        user = Preferences.getUser()!!
+        setUpWithUser()
     }
 }

@@ -3,12 +3,13 @@ package com.miguelrodriguez19.mindmaster.models
 import android.content.Context
 import android.graphics.Color
 import com.miguelrodriguez19.mindmaster.R
+import com.miguelrodriguez19.mindmaster.utils.Toolkit.getDateFromDatetime
 
 data class EventsResponse(
-    val date: String, val allEventsList: List<AbstractEvents>
+    val date: String, val allEventsList: List<AbstractEvent>
 ) : java.io.Serializable
 
-abstract class AbstractEvents : java.io.Serializable {
+abstract class AbstractEvent : java.io.Serializable {
     abstract var uid: String
     abstract val title: String
     abstract val description: String?
@@ -16,19 +17,29 @@ abstract class AbstractEvents : java.io.Serializable {
     abstract val color_tag: String
     abstract val type: EventType
 
-    fun getItemType(context: Context, type: EventType): String {
-        return when (type) {
-            EventType.EVENT -> context.getString(R.string.event)
-            EventType.REMINDER -> context.getString(R.string.reminder)
-            EventType.TASK -> context.getString(R.string.task)
+    companion object {
+        fun getItemType(context: Context, type: EventType): String {
+            return when (type) {
+                EventType.EVENT -> context.getString(R.string.event)
+                EventType.REMINDER -> context.getString(R.string.reminder)
+                EventType.TASK -> context.getString(R.string.task)
+            }
         }
-    }
 
-    fun getColor(context: Context, hexColor: String): Int {
-        return try {
-            Color.parseColor(hexColor)
-        } catch (e: IllegalArgumentException) {
-            context.resources.getColor(R.color.primaryColor, null)
+        fun getColor(context: Context, hexColor: String): Int {
+            return try {
+                Color.parseColor(hexColor)
+            } catch (e: IllegalArgumentException) {
+                context.resources.getColor(R.color.primaryColor, null)
+            }
+        }
+
+        fun getDateOf(absEvent: AbstractEvent): String {
+            return when (absEvent.type) {
+                EventType.EVENT -> getDateFromDatetime((absEvent as Event).start_time)
+                EventType.REMINDER -> (absEvent as Reminder).date_time
+                EventType.TASK -> (absEvent as Task).due_date
+            }
         }
     }
 }
@@ -45,8 +56,21 @@ data class Event(
     val repetition: Repetition,
     override val color_tag: String,
     override val type: EventType
-) : AbstractEvents() {
-    constructor() : this("", "", "", "", "", null, emptyList(), emptyList(), Repetition.NONE, "", EventType.EVENT)
+) : AbstractEvent() {
+    constructor() : this(
+        "",
+        "",
+        "",
+        "",
+        "",
+        null,
+        emptyList(),
+        emptyList(),
+        Repetition.NONE,
+        "",
+        EventType.EVENT
+    )
+
     constructor(
         title: String, start_time: String, end_time: String,
         location: String, description: String?, participants: List<String>,
@@ -72,8 +96,8 @@ data class Reminder(
     override val category: List<String>?,
     override val color_tag: String,
     override val type: EventType
-) : AbstractEvents() {
-    constructor(): this("", "", "", null, null, "", EventType.REMINDER)
+) : AbstractEvent() {
+    constructor() : this("", "", "", null, null, "", EventType.REMINDER)
     constructor(
         title: String, date_time: String, description: String?,
         category: List<String>?, color_tag: String, type: EventType
@@ -95,7 +119,7 @@ data class Task(
     override val category: List<String>?,
     override val color_tag: String,
     override val type: EventType
-) : AbstractEvents() {
+) : AbstractEvent() {
     constructor() : this("", "", "", null, Priority.LOW, Status.PENDING, null, "", EventType.TASK)
 
     constructor(

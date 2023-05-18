@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
             false
         }
         drawerLayout = binding.drawerLayout
+
         val user = Preferences.getUser()
         if (user != null) userSetUp(user)
 
@@ -44,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.findNavController()
-        navController.navigate(initialFragment) // Navega al fragmento inicial
+        navController.navigate(initialFragment)
 
         appBarConfiguration = AppBarConfiguration(
             setOf(
@@ -69,6 +70,8 @@ class MainActivity : AppCompatActivity() {
         Glide.with(this)
             .load(user.photoUrl)
             .into(navHeaderBinding.civDrawerUserPhoto)
+
+        navHeaderBinding.tvName.text = user.firstName
     }
 
     fun lockDrawer() {

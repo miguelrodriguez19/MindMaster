@@ -14,12 +14,17 @@ import com.google.android.material.chip.Chip
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.*
 import com.miguelrodriguez19.mindmaster.models.*
+import com.miguelrodriguez19.mindmaster.models.MonthMovementsResponse.Movement
+import com.miguelrodriguez19.mindmaster.models.MonthMovementsResponse.Type
 import com.miguelrodriguez19.mindmaster.passwords.FormAccountAdapter
 import com.miguelrodriguez19.mindmaster.utils.AllDialogs.Companion.colorPickerDialog
 import com.miguelrodriguez19.mindmaster.utils.AllDialogs.Companion.showConfirmationDialog
 import com.miguelrodriguez19.mindmaster.utils.AllDialogs.Companion.showDatePicker
 import com.miguelrodriguez19.mindmaster.utils.AllDialogs.Companion.showDateTimePicker
-import com.miguelrodriguez19.mindmaster.utils.FirebaseManager.saveInShedule
+import com.miguelrodriguez19.mindmaster.utils.FirebaseManager.saveInSchedule
+import com.miguelrodriguez19.mindmaster.utils.FirebaseManager.saveMovement
+import com.miguelrodriguez19.mindmaster.utils.FirebaseManager.updateInSchedule
+import com.miguelrodriguez19.mindmaster.utils.FirebaseManager.updateMovement
 import com.miguelrodriguez19.mindmaster.utils.Toolkit.checkFields
 import com.miguelrodriguez19.mindmaster.utils.Toolkit.compareDates
 import com.miguelrodriguez19.mindmaster.utils.Toolkit.makeChip
@@ -32,7 +37,7 @@ class AllBottomSheets {
             val bottomSheetView =
                 LayoutInflater.from(context).inflate(R.layout.bottom_sheet_events, null)
             val bind = BottomSheetEventsBinding.bind(bottomSheetView)
-            var color = Integer.toHexString(ContextCompat.getColor(context, R.color.primaryColor))
+            var color = e?.color_tag ?: String.format("#%06X", 0xFFFFFF and ContextCompat.getColor(context, R.color.primaryColor))
 
             if (e != null) {
                 bind.etTitle.setText(e.title)
@@ -142,8 +147,14 @@ class AllBottomSheets {
                             color,
                             EventType.EVENT
                         )
-                        saveInShedule(context, event) { added ->
-                            callback(added as Event)
+                        if (e == null) {
+                            saveInSchedule(context, event) { added ->
+                                callback(added as Event)
+                            }
+                        } else {
+                            updateInSchedule(context, Event(e.uid, event)){
+                                callback(it as Event)
+                            }
                         }
                         botSheet.dismiss()
                     }
@@ -159,7 +170,7 @@ class AllBottomSheets {
             val bottomSheetView =
                 LayoutInflater.from(context).inflate(R.layout.bottom_sheet_reminder, null)
             val bind = BottomSheetReminderBinding.bind(bottomSheetView)
-            var color = Integer.toHexString(ContextCompat.getColor(context, R.color.primaryColor))
+            var color = r?.color_tag ?: String.format("#%06X", 0xFFFFFF and ContextCompat.getColor(context, R.color.primaryColor))
 
             if (r != null) {
                 bind.etTitle.setText(r.title)
@@ -225,8 +236,14 @@ class AllBottomSheets {
                             color,
                             EventType.REMINDER
                         )
-                        saveInShedule(context, reminder) {
-                            callback(it as Reminder)
+                        if (r == null) {
+                            saveInSchedule(context, reminder) { added ->
+                                callback(added as Reminder)
+                            }
+                        } else {
+                            updateInSchedule(context, Reminder(r.uid, reminder)){
+                                callback(it as Reminder)
+                            }
                         }
                         botSheet.dismiss()
                     }
@@ -236,21 +253,21 @@ class AllBottomSheets {
             botSheet.show()
         }
 
-        fun showTasksBS(context: Context, e: Task?, callback: (Task) -> Unit) {
+        fun showTasksBS(context: Context, t: Task?, callback: (Task) -> Unit) {
             val botSheet = BottomSheetDialog(context)
             val bottomSheetView =
                 LayoutInflater.from(context).inflate(R.layout.bottom_sheet_tasks, null)
             val bind = BottomSheetTasksBinding.bind(bottomSheetView)
-            var color = Integer.toHexString(ContextCompat.getColor(context, R.color.primaryColor))
+            var color = t?.color_tag ?: String.format("#%06X", 0xFFFFFF and ContextCompat.getColor(context, R.color.primaryColor))
 
-            if (e != null) {
-                bind.etTitle.setText(e.title)
-                bind.etDueDate.setText(e.due_date)
+            if (t != null) {
+                bind.etTitle.setText(t.title)
+                bind.etDueDate.setText(t.due_date)
                 // bind.tilStatus
                 // bind.priority
-                bind.etDescription.setText(e.description)
-                bind.tilColorTag.setStartIconTintList(ColorStateList.valueOf(Color.parseColor(e.color_tag)))
-                for (cat in e.category ?: ArrayList()) {
+                bind.etDescription.setText(t.description)
+                bind.tilColorTag.setStartIconTintList(ColorStateList.valueOf(Color.parseColor(t.color_tag)))
+                for (cat in t.category ?: ArrayList()) {
                     val chip = makeChip(context, cat)
                     bind.cgCategory.addView(chip)
                 }
@@ -300,7 +317,7 @@ class AllBottomSheets {
             bind.efabSave.setOnClickListener {
                 checkFields(context, arrayOf(bind.tilTitle, bind.tilDueDate)) { ok ->
                     if (ok) {
-                        val t = Task(
+                        val task = Task(
                             bind.etTitle.text.toString(),
                             bind.etDueDate.text.toString(),
                             bind.etDescription.text.toString(),
@@ -309,13 +326,18 @@ class AllBottomSheets {
                             color,
                             EventType.TASK
                         )
-                        saveInShedule(context, t) { added ->
-                            callback(added as Task)
+                        if (t == null) {
+                            saveInSchedule(context, task) { added ->
+                                callback(added as Task)
+                            }
+                        } else {
+                            updateInSchedule(context, Task(t.uid, task)){
+                                callback(it as Task)
+                            }
                         }
                         botSheet.dismiss()
                     }
                 }
-
             }
 
             botSheet.setContentView(bottomSheetView)
@@ -323,18 +345,24 @@ class AllBottomSheets {
         }
 
         fun showMovementBS(
-            context: Context, m: MonthMovementsResponse.Movement?,
-            typeMov: MonthMovementsResponse.Type?
+            context: Context, m: Movement?, typeMov: Type?, callback: (Movement) -> Unit
         ) {
             val botSheet = BottomSheetDialog(context)
             val bottomSheetView =
                 LayoutInflater.from(context).inflate(R.layout.bottom_sheet_movements, null)
             val bind = BottomSheetMovementsBinding.bind(bottomSheetView)
+            var selectedType = Type.INCOME
 
             if (m != null) {
-                when (m.type) {
-                    MonthMovementsResponse.Type.INCOME -> bind.toggleTypeMovement.check(R.id.btn_typeIncome)
-                    MonthMovementsResponse.Type.EXPENSE -> bind.toggleTypeMovement.check(R.id.btn_typeExpense)
+                selectedType = when (m.type) {
+                    Type.INCOME -> {
+                        bind.toggleTypeMovement.check(R.id.btn_typeIncome)
+                        Type.INCOME
+                    }
+                    Type.EXPENSE -> {
+                        bind.toggleTypeMovement.check(R.id.btn_typeExpense)
+                        Type.EXPENSE
+                    }
                 }
                 bind.etConcept.setText(m.concept)
                 bind.etDate.setText(m.date)
@@ -342,11 +370,22 @@ class AllBottomSheets {
                 bind.etDescription.setText(m.description)
             }
 
-            when (typeMov) {
-                MonthMovementsResponse.Type.INCOME, null -> bind.toggleTypeMovement.check(R.id.btn_typeIncome)
-                MonthMovementsResponse.Type.EXPENSE -> bind.toggleTypeMovement.check(R.id.btn_typeExpense)
+            selectedType = when (typeMov) {
+                Type.INCOME, null -> {
+                    bind.toggleTypeMovement.check(R.id.btn_typeIncome)
+                    Type.INCOME
+                }
+                Type.EXPENSE -> {
+                    bind.toggleTypeMovement.check(R.id.btn_typeExpense)
+                    Type.EXPENSE
+                }
             }
-
+            bind.toggleTypeMovement.addOnButtonCheckedListener { group, checkedId, isChecked ->
+                when (checkedId) {
+                    R.id.btn_typeIncome -> selectedType = Type.INCOME
+                    R.id.btn_typeExpense -> selectedType = Type.EXPENSE
+                }
+            }
             bind.etDate.setOnClickListener {
                 showDatePicker(context) { date ->
                     bind.etDate.setText(date)
@@ -366,6 +405,22 @@ class AllBottomSheets {
             bind.efabSave.setOnClickListener {
                 checkFields(context, arrayOf(bind.tilConcept, bind.tilDate, bind.tilAmount)) { ok ->
                     if (ok) {
+                        val move = Movement(
+                            bind.etDate.text.toString(),
+                            bind.etConcept.text.toString(),
+                            bind.etAmount.text.toString().toFloat(),
+                            bind.etDescription.text.toString(),
+                            selectedType
+                        )
+                        if(m == null){
+                            saveMovement(context, move) { added ->
+                                callback(added)
+                            }
+                        }else{
+                            updateMovement(context, Movement(m.uid, move)){ updated ->
+                                callback(updated!!)
+                            }
+                        }
                         botSheet.dismiss()
                     }
                 }

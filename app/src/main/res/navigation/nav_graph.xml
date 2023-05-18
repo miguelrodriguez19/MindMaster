@@ -89,4 +89,14 @@
             app:popUpTo="@id/logInFragment"
             app:popUpToInclusive="true" />
     </fragment>
+    <fragment
+        android:id="@+id/pieChartFragment"
+        android:name="com.miguelrodriguez19.mindmaster.expenses.PieChartFragment"
+        android:label="fragment_pie_chart"
+        tools:layout="@layout/fragment_pie_chart" />
+    <fragment
+        android:id="@+id/barsChartFragment"
+        android:name="com.miguelrodriguez19.mindmaster.expenses.BarsChartFragment"
+        android:label="fragment_bars_chart"
+        tools:layout="@layout/fragment_bars_chart" />
 </navigation>

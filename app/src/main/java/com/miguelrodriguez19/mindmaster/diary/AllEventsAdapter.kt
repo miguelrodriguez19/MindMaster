@@ -3,11 +3,9 @@ package com.miguelrodriguez19.mindmaster.diary
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.drawable.ColorDrawable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -15,15 +13,20 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.calendar.CalendarEventsAdapter
 import com.miguelrodriguez19.mindmaster.databinding.CellDayAllEventsBinding
-import com.miguelrodriguez19.mindmaster.models.*
+import com.miguelrodriguez19.mindmaster.models.AbstractEvent
+import com.miguelrodriguez19.mindmaster.models.AbstractEvent.Companion.getDateOf
+import com.miguelrodriguez19.mindmaster.models.EventsResponse
+import com.miguelrodriguez19.mindmaster.models.comparators.EventComparator
+import com.miguelrodriguez19.mindmaster.models.comparators.EventGroupComparator
 import com.miguelrodriguez19.mindmaster.utils.AllDialogs
 import com.miguelrodriguez19.mindmaster.utils.FirebaseManager
+import com.miguelrodriguez19.mindmaster.utils.Toolkit
 
 
 class AllEventsAdapter(
     private val context: Context,
-    private val data: ArrayList<EventsResponse>
-    ) :
+    var data: ArrayList<EventsResponse>
+) :
     RecyclerView.Adapter<AllEventsAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view =
@@ -40,6 +43,55 @@ class AllEventsAdapter(
     fun setData(newData: List<EventsResponse>) {
         this.data.clear()
         this.data.addAll(newData)
+        notifyItemRangeChanged(0, data.size)
+    }
+
+    private fun isDateGroupEmptyOf(
+        absEvent: AbstractEvent,
+        callback: (Int, Boolean) -> Unit
+    ) {
+        val index = getGroupOf(absEvent)
+        val isEmpty = data[index].allEventsList.size <= 1
+        callback(index, isEmpty)
+    }
+
+    private fun removeDateGroupAt(index: Int) {
+        data.removeAt(index)
+        notifyItemRemoved(index)
+    }
+
+    private fun removeEventAt(groupPosition: Int, eventPosition: Int) {
+        val group = data[groupPosition]
+        val newList = ArrayList(group.allEventsList)
+        newList.removeAt(eventPosition)
+        data[groupPosition] = group.copy(allEventsList = newList)
+        notifyItemChanged(groupPosition)
+    }
+
+    private fun getGroupOf(absEvent: AbstractEvent): Int {
+        val date = getDateOf(absEvent)
+        var index = -1
+        data.stream()
+            .filter { it.date == date }
+            .findFirst()
+            .ifPresent {
+                index = data.indexOf(it)
+            }
+        return index
+    }
+
+    fun addItem(absEvent: AbstractEvent) {
+        val index = getGroupOf(absEvent)
+        if (index != -1) {
+            val oldGroup = data[index]
+            val arr = oldGroup.allEventsList.toMutableList().apply { add(absEvent) }
+                .sortedWith(EventComparator())
+            data[index] = EventsResponse(oldGroup.date, arr)
+        } else {
+            val newGroup = EventsResponse(getDateOf(absEvent), listOf(absEvent))
+            data.add(newGroup)
+        }
+        data = ArrayList(data.sortedWith(EventGroupComparator()))
         notifyDataSetChanged()
     }
 
@@ -48,7 +100,7 @@ class AllEventsAdapter(
         private val btnMonth = bind.btnMonthTitle
         private val rvMonthEvents = bind.rvMonthEvents
         private lateinit var adapter: CalendarEventsAdapter
-
+        private val view = v
         fun bind(item: EventsResponse) {
             initRecyclerView(item.allEventsList)
             btnMonth.text = item.date
@@ -61,14 +113,10 @@ class AllEventsAdapter(
             }
         }
 
-        private fun initRecyclerView(data: List<AbstractEvents>) {
+        private fun initRecyclerView(data: List<AbstractEvent>) {
             val mLayoutManager = StaggeredGridLayoutManager(1, 1)
             rvMonthEvents.layoutManager = mLayoutManager
-
-            adapter = CalendarEventsAdapter(context, ArrayList(data)) {
-
-            }
-
+            adapter = CalendarEventsAdapter(context, ArrayList(data)) { }
             rvMonthEvents.adapter = adapter
 
             val itemTouchHelper =
@@ -89,7 +137,27 @@ class AllEventsAdapter(
                         ) {
                             val position = viewHolder.adapterPosition
                             if (it) {
-                                adapter.removeAt(position)
+                                FirebaseManager.deleteInSchedule(
+                                    context, adapter.getItemAt(position)
+                                ) { absEvent ->
+                                    Toolkit.showUndoSnackBar(context, view) { ok ->
+                                        if (ok) {
+                                            FirebaseManager.saveInSchedule(
+                                                context,
+                                                absEvent
+                                            ) { item ->
+                                                addItem(item)
+                                            }
+                                        }
+                                    }
+                                    isDateGroupEmptyOf(absEvent) { index, isEmpty ->
+                                        removeEventAt(index, position)
+                                        adapter.removeAt(position)
+                                        if (isEmpty) {
+                                            removeDateGroupAt(index)
+                                        }
+                                    }
+                                }
                             } else {
                                 adapter.notifyDataSetChanged()
                             }
@@ -97,17 +165,14 @@ class AllEventsAdapter(
                     }
 
                     override fun onChildDraw(
-                        c: Canvas,
-                        recyclerView: RecyclerView,
-                        viewHolder: RecyclerView.ViewHolder,
-                        dX: Float,
-                        dY: Float,
-                        actionState: Int,
-                        isCurrentlyActive: Boolean
+                        c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
+                        dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean
                     ) {
-                        val icon = ContextCompat.getDrawable(context, R.drawable.ic_delete_24)?.mutate()
+                        val icon =
+                            ContextCompat.getDrawable(context, R.drawable.ic_delete_24)?.mutate()
                         icon?.setTint(ContextCompat.getColor(context, android.R.color.white))
-                        val background = ColorDrawable(context.getColor(R.color.red_bittersweet_200))
+                        val background =
+                            ColorDrawable(context.getColor(R.color.red_bittersweet_200))
                         val itemView = viewHolder.itemView
                         val iconMargin = (itemView.height - icon!!.intrinsicHeight) / 2
                         val iconTop = itemView.top + (itemView.height - icon.intrinsicHeight) / 2
@@ -143,6 +208,5 @@ class AllEventsAdapter(
                 })
             itemTouchHelper.attachToRecyclerView(rvMonthEvents)
         }
-
     }
 }

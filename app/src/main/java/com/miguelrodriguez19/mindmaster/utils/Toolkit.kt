@@ -6,9 +6,11 @@ import android.widget.Toast
 import androidx.core.view.children
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.Gson
 import com.miguelrodriguez19.mindmaster.R
+import com.miguelrodriguez19.mindmaster.models.MonthMovementsResponse.Movement
 import com.miguelrodriguez19.mindmaster.models.UserResponse
 import java.text.SimpleDateFormat
 import java.util.*
@@ -41,6 +43,26 @@ object Toolkit {
         Toast.makeText(context, context.getString(message), Toast.LENGTH_SHORT).show()
     }
 
+    fun showUndoSnackBar(context: Context, parent: View, isUndone: (Boolean) -> Unit) {
+        val snackbar = Snackbar.make(
+            context, parent,
+            context.getString(R.string.event_deleted),
+            Snackbar.LENGTH_LONG
+        )
+        snackbar.setAction(R.string.undo) {
+            isUndone(true)
+        }
+        snackbar.addCallback(object : Snackbar.Callback() {
+            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                if (event != DISMISS_EVENT_ACTION) {
+                    isUndone(false)
+                }
+            }
+        })
+        snackbar.show()
+    }
+
+
     fun makeChip(context: Context, text: String): View {
         val chip = Chip(context, null, R.style.ChipStyle)
         chip.text = text
@@ -61,7 +83,7 @@ object Toolkit {
     fun getCurrentDate(): String {
         val calendar = Calendar.getInstance()
         val day = calendar.get(Calendar.DAY_OF_MONTH)
-        val month = calendar.get(Calendar.MONTH) + 1 // Los meses empiezan en 0
+        val month = calendar.get(Calendar.MONTH) + 1
         val year = calendar.get(Calendar.YEAR)
         return String.format("%02d-%02d-%04d", day, month, year)
     }
@@ -69,7 +91,6 @@ object Toolkit {
     fun getDateFromDatetime(dateTime: String): String {
         val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
         val date = dateFormat.parse(dateTime)
-
         return dateFormat.format(date)
     }
 
@@ -80,4 +101,20 @@ object Toolkit {
     fun UserResponse.toJson(): String {
         return Gson().toJson(this)
     }
+
+    fun getMonthYearOf(currentDate: String): String {
+        val date = currentDate.split("-")
+        return "${date[1]}-${date[2]}"
+    }
+
+
+    fun getAmount(list: List<Movement>): Float {
+        var amount = 0.0F
+        for (move in list) {
+            amount += move.amount
+        }
+        return amount
+    }
+
+
 }

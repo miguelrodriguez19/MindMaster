@@ -9,12 +9,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.CellMovementBinding
 import com.miguelrodriguez19.mindmaster.models.MonthMovementsResponse
+import com.miguelrodriguez19.mindmaster.models.MonthMovementsResponse.*
+import com.miguelrodriguez19.mindmaster.models.comparators.MovementComparator
 import com.miguelrodriguez19.mindmaster.utils.AllBottomSheets
 
 class MovementAdapter(
     private val context: Context,
-    private val data: ArrayList<MonthMovementsResponse.Movement>,
-    val onClick: (MonthMovementsResponse.Movement) -> Unit
+    private val data: ArrayList<Movement>,
+    val onClick: (Movement) -> Unit
 ) :
     RecyclerView.Adapter<MovementAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -28,6 +30,40 @@ class MovementAdapter(
     }
 
     override fun getItemCount(): Int = data.size
+
+    fun removeAt(position: Int){
+        data.removeAt(position)
+        notifyItemRangeRemoved(position, 1)
+    }
+
+    fun getItemAt(index: Int): Movement {
+        return data[index]
+    }
+
+    fun setData(newData: List<Movement>) {
+        this.data.clear()
+        this.data.addAll(newData.sortedWith(MovementComparator()))
+        notifyDataSetChanged()
+    }
+
+    fun addItem(item:Movement) {
+        this.data.add(item)
+        this.data.sortedWith(MovementComparator())
+        notifyDataSetChanged()
+    }
+
+    fun foundAndUpdateIt(movement: Movement) {
+        var index = 0
+        data.stream()
+            .filter { it.uid == movement.uid }
+            .findFirst()
+            .ifPresent {
+                index = data.indexOf(it)
+                data[index] = movement
+            }
+        notifyItemChanged(index, movement)
+    }
+
     inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         private val bind = CellMovementBinding.bind(v)
         private val rlMovementArea = bind.rlLatestMovementsCell
@@ -43,8 +79,16 @@ class MovementAdapter(
             )
 
             when (item.type) {
-                MonthMovementsResponse.Type.INCOME -> mapColors["green"]?.let { tvAmount.setTextColor(it) }
-                MonthMovementsResponse.Type.EXPENSE -> mapColors["red"]?.let { tvAmount.setTextColor(it) }
+                Type.INCOME -> mapColors["green"]?.let {
+                    tvAmount.setTextColor(
+                        it
+                    )
+                }
+                Type.EXPENSE -> mapColors["red"]?.let {
+                    tvAmount.setTextColor(
+                        it
+                    )
+                }
                 else -> {
                     mapColors["black"]?.let { tvAmount.setTextColor(it) }
                 }
@@ -53,10 +97,11 @@ class MovementAdapter(
             tvDate.text = item.date
             tvAmount.text = "${item.amount}€"
             rlMovementArea.setOnClickListener {
-                AllBottomSheets.showMovementBS(context, item, item.type)
                 onClick(item)
+                AllBottomSheets.showMovementBS(context, item, item.type){
+                    foundAndUpdateIt(it)
+                }
             }
-
         }
     }
 }

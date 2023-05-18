@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.switchmaterial.SwitchMaterial
@@ -15,8 +16,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentSettingsBinding
+import com.miguelrodriguez19.mindmaster.models.UserResponse
 import com.miguelrodriguez19.mindmaster.utils.Preferences
 import com.miguelrodriguez19.mindmaster.utils.AllDialogs.Companion.showConfirmationDialog
+import com.miguelrodriguez19.mindmaster.utils.FirebaseManager
 import de.hdodenhof.circleimageview.CircleImageView
 
 class SettingsFragment : Fragment() {
@@ -36,6 +39,7 @@ class SettingsFragment : Fragment() {
     private lateinit var btnLogOut: MaterialButton
     private lateinit var btnAdvancedOptions: MaterialButton
     private lateinit var llExpandableAdvancedOptions: LinearLayout
+    private lateinit var user:UserResponse
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -46,8 +50,9 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        user = Preferences.getUser()!!
         initWidgets()
-
+        setUpData()
         btnEditProfile.setOnClickListener {
             val action = SettingsFragmentDirections.actionSettingsFragmentToAccountFragment()
             findNavController().navigate(action)
@@ -133,8 +138,17 @@ class SettingsFragment : Fragment() {
         }
     }
 
+    private fun setUpData() {
+        Glide.with(requireActivity())
+            .load(user?.photoUrl)
+            .into(ivUserPhoto)
+        tvName.text = user?.firstName ?: ""
+
+        // TODO()
+    }
+
     private fun deleteAccountFromFirestore() {
-        // TODO("Method to delete all user info from the database")
+        FirebaseManager.deleteUser(user!!)
         logout()
     }
 
@@ -193,5 +207,16 @@ class SettingsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onStart() {
+        super.onStart()
+        user = Preferences.getUser()!!
+        setUpData()
+    }
+    override fun onResume() {
+        super.onResume()
+        user = Preferences.getUser()!!
+        setUpData()
     }
 }

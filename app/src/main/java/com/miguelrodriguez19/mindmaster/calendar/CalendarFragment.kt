@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CalendarView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -20,14 +21,19 @@ import com.github.clans.fab.FloatingActionMenu
 import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentCalendarBinding
-import com.miguelrodriguez19.mindmaster.models.AbstractEvents
+import com.miguelrodriguez19.mindmaster.models.AbstractEvent
 import com.miguelrodriguez19.mindmaster.utils.AllBottomSheets
 import com.miguelrodriguez19.mindmaster.utils.AllDialogs
+import com.miguelrodriguez19.mindmaster.utils.FirebaseManager.deleteInSchedule
 import com.miguelrodriguez19.mindmaster.utils.FirebaseManager.loadScheduleByDate
+import com.miguelrodriguez19.mindmaster.utils.FirebaseManager.saveInSchedule
 import com.miguelrodriguez19.mindmaster.utils.Toolkit.getCurrentDate
+import com.miguelrodriguez19.mindmaster.utils.Toolkit.showUndoSnackBar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import pl.droidsonroids.gif.GifDrawable
+import pl.droidsonroids.gif.GifImageView
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -45,7 +51,10 @@ class CalendarFragment : Fragment() {
     private lateinit var btnMenuEvents: FloatingActionMenu
     private lateinit var adapter: CalendarEventsAdapter
     private lateinit var pbLoading: View
-    private val data = ArrayList<AbstractEvents>()
+    private lateinit var gifView: GifImageView
+    private lateinit var llNoEvents: LinearLayout
+    private val data = ArrayList<AbstractEvent>()
+    private val listGifs = listOf(R.drawable.gif_no_data_found_1, R.drawable.gif_no_data_found_2)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -67,21 +76,21 @@ class CalendarFragment : Fragment() {
 
         btnAddEvent.setOnClickListener {
             AllBottomSheets.showEventsBS(requireContext(), null) {
-                adapter.addItem(it)
+                addToView(it)
             }
             btnMenuEvents.close(true)
         }
 
         btnAddReminder.setOnClickListener {
             AllBottomSheets.showRemindersBS(requireContext(), null) {
-                adapter.addItem(it)
+                addToView(it)
             }
             btnMenuEvents.close(true)
         }
 
         btnAddTask.setOnClickListener {
             AllBottomSheets.showTasksBS(requireContext(), null) {
-                adapter.addItem(it)
+                addToView(it)
             }
             btnMenuEvents.close(true)
         }
@@ -109,9 +118,20 @@ class CalendarFragment : Fragment() {
                         requireContext(),
                         requireContext().getString(R.string.delete_confirmation),
                         requireContext().getString(R.string.delete_event_message)
-                    ) {
+                    ) { it ->
                         val position = viewHolder.adapterPosition
                         if (it) {
+                            deleteInSchedule(
+                                requireContext(), adapter.getItemAt(position)
+                            ) { absEvent ->
+                                showUndoSnackBar(requireContext(), requireView()) { ok ->
+                                    if (ok) {
+                                        saveInSchedule(requireContext(), absEvent) { item ->
+                                            adapter.addItem(item)
+                                        }
+                                    }
+                                }
+                            }
                             adapter.removeAt(position)
                         } else {
                             adapter.notifyDataSetChanged()
@@ -120,13 +140,8 @@ class CalendarFragment : Fragment() {
                 }
 
                 override fun onChildDraw(
-                    c: Canvas,
-                    recyclerView: RecyclerView,
-                    viewHolder: RecyclerView.ViewHolder,
-                    dX: Float,
-                    dY: Float,
-                    actionState: Int,
-                    isCurrentlyActive: Boolean
+                    c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
+                    dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean
                 ) {
                     val icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete_24)
                         ?.mutate()
@@ -167,29 +182,32 @@ class CalendarFragment : Fragment() {
                 }
             })
         itemTouchHelper.attachToRecyclerView(rvCalendarEvents)
+    }
 
-        adapter.notifyDataSetChanged()
+    private fun addToView(absEvent: AbstractEvent) {
+        val date = AbstractEvent.getDateOf(absEvent)
+        if (getCurrentDate() == date) {
+            data.add(absEvent)
+            tvCountOfEvents.text = data.size.toString()
+            adapter.addItem(absEvent)
+            llNoEvents.visibility = View.GONE
+        }
     }
 
     private suspend fun setUpData(date: String) {
         pbLoading.visibility = View.VISIBLE
         tvSelectedDateEvents.text = date
         this@CalendarFragment.data.clear()
-        /*FirebaseManager.loadScheduleByDate(requireContext(), date){ dayList ->
-            this@CalendarFragment.data.addAll(dayList)
-            adapter.setData(dayList)
-            tvCountOfEvents.text = this.data.size.toString()
-            if (data.size==0){
-                // Show icon
-            }
-            pbLoading.visibility = View.GONE
-        }*/
         val dayList = loadScheduleByDate(requireContext(), date)
         this@CalendarFragment.data.addAll(dayList)
         adapter.setData(dayList)
         tvCountOfEvents.text = this.data.size.toString()
         if (data.size == 0) {
-            // Show icon
+            llNoEvents.visibility = View.VISIBLE
+            val gifDrawable = GifDrawable.createFromResource(resources, listGifs.shuffled()[0])
+            gifView.setImageDrawable(gifDrawable)
+        } else {
+            llNoEvents.visibility = View.GONE
         }
         pbLoading.visibility = View.GONE
     }
@@ -204,6 +222,8 @@ class CalendarFragment : Fragment() {
         btnMenuEvents = binding.fambAddMenu
         rvCalendarEvents = binding.rvEvents
         pbLoading = binding.pbLoading
+        gifView = binding.givNoEvents
+        llNoEvents = binding.llNoEvents
         val mLayoutManager = StaggeredGridLayoutManager(1, 1)
         rvCalendarEvents.layoutManager = mLayoutManager
         adapter = CalendarEventsAdapter(requireContext(), data) { item ->

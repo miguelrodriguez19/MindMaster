@@ -2,11 +2,11 @@ package com.miguelrodriguez19.mindmaster.expenses
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.navigation.fragment.findNavController
@@ -16,8 +16,16 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentExpensesBinding
 import com.miguelrodriguez19.mindmaster.models.MonthMovementsResponse
+import com.miguelrodriguez19.mindmaster.models.MonthMovementsResponse.Movement
+import com.miguelrodriguez19.mindmaster.models.comparators.MovementComparator
 import com.miguelrodriguez19.mindmaster.utils.AllBottomSheets.Companion.showMovementBS
-import kotlin.collections.ArrayList
+import com.miguelrodriguez19.mindmaster.utils.FirebaseManager.loadActualMonthMovements
+import com.miguelrodriguez19.mindmaster.utils.Toolkit
+import com.miguelrodriguez19.mindmaster.utils.Toolkit.getCurrentDate
+import com.miguelrodriguez19.mindmaster.utils.Toolkit.getMonthYearOf
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class ExpensesFragment : Fragment() {
     private val TAG = "ExpensesFragment"
@@ -25,18 +33,13 @@ class ExpensesFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var rvLastMovements: RecyclerView
     private lateinit var movementAdapter: MovementAdapter
-    private lateinit var pbLoading: View
     private lateinit var btnSeeAllMovements: Button
     private lateinit var btnAddExpense: ExtendedFloatingActionButton
+    private lateinit var pbLoading: View
     private lateinit var btnAddIncome: ExtendedFloatingActionButton
     private lateinit var pageAdapter: ViewPagerAdapter
-    var data = ArrayList<MonthMovementsResponse.Movement>()/*arrayListOf(
-        MonthMovementsResponse.Movement(1, "2022-01-01", "Movimiento 1.1",
-            100.0, "", MonthMovementsResponse.Type.INCOME),
-        MonthMovementsResponse.Movement(2, "2022-01-02", "Movimiento 1.2", -50.0, "", MonthMovementsResponse.Type.EXPENSE),
-        MonthMovementsResponse.Movement(3, "2022-01-03", "Movimiento 1.3", 200.0, null, MonthMovementsResponse.Type.INCOME)
-    )*/
-
+    private val data = ArrayList<Movement>()
+    private val latestMoves = ArrayList<Movement>()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -50,14 +53,9 @@ class ExpensesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initWidgets()
         initTabs()
-        // Related to recycler view
-        val mLayoutManager = StaggeredGridLayoutManager(1, 1)
-        rvLastMovements.layoutManager = mLayoutManager
-
-        movementAdapter = MovementAdapter(requireContext(), data) { movement ->
-            Log.i(TAG, "onViewCreated - event: ${movement.concept}")
+        CoroutineScope(Dispatchers.Main).launch {
+            setUpData(getMonthYearOf(getCurrentDate()))
         }
-        rvLastMovements.adapter = movementAdapter
 
         // On CLick Listeners
         btnSeeAllMovements.setOnClickListener {
@@ -65,14 +63,47 @@ class ExpensesFragment : Fragment() {
             findNavController().navigate(action)
         }
         btnAddExpense.setOnClickListener {
-            showMovementBS(requireContext(), null, MonthMovementsResponse.Type.EXPENSE)
+            showMovementBS(requireContext(), null, MonthMovementsResponse.Type.EXPENSE) {
+                addToLastestMoves(it)
+            }
         }
         btnAddIncome.setOnClickListener {
-            showMovementBS(requireContext(), null, MonthMovementsResponse.Type.INCOME)
+            showMovementBS(requireContext(), null, MonthMovementsResponse.Type.INCOME) {
+                addToLastestMoves(it)
+            }
         }
 
         pbLoading.visibility = View.GONE
+    }
 
+    private fun addToLastestMoves(move: Movement) {
+        if (move.date.matches(("..-" + getMonthYearOf(getCurrentDate())).toRegex())) {
+            if (latestMoves.size>=3){
+                latestMoves.removeAt(0)
+            }else{
+                latestMoves.add(move)
+                movementAdapter.setData(latestMoves)
+            }
+        }
+    }
+
+    private suspend fun setUpData(currentMonth: String) {
+        pbLoading.visibility = View.VISIBLE
+        this@ExpensesFragment.data.clear()
+        this@ExpensesFragment.latestMoves.clear()
+        val eventMove = loadActualMonthMovements(
+            requireContext(), currentMonth
+        )
+        val moves = ArrayList(eventMove.expensesList + eventMove.incomeList)
+        moves.sortedWith(MovementComparator())
+        this@ExpensesFragment.data.addAll(moves)
+        val max = requireContext().getString(R.string.max_movements_to_show).toInt()
+        this@ExpensesFragment.latestMoves.addAll(moves.reversed().subList(0, moves.size.coerceAtMost(max)))
+        movementAdapter.setData(latestMoves)
+        //val pieChart =
+        //    requireActivity().supportFragmentManager.findFragmentById(R.id.pieChartFragment) as PieChartFragment
+        //pieChart.setPieChart(eventMove)
+        pbLoading.visibility = View.GONE
     }
 
     private fun initTabs() {
@@ -90,6 +121,14 @@ class ExpensesFragment : Fragment() {
         btnAddExpense = binding.efabAddExpense
         btnAddIncome = binding.efabAddIncome
 
+        // Related to recycler view
+        val mLayoutManager = StaggeredGridLayoutManager(1, 1)
+        rvLastMovements.layoutManager = mLayoutManager
+
+        movementAdapter = MovementAdapter(requireContext(), data) { movement ->
+            Log.i(TAG, "onViewCreated - event: ${movement.concept}")
+        }
+        rvLastMovements.adapter = movementAdapter
     }
 
     override fun onDestroyView() {

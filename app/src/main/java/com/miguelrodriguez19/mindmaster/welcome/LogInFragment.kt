@@ -25,7 +25,6 @@ import com.miguelrodriguez19.mindmaster.utils.FirebaseManager.getAuth
 import com.miguelrodriguez19.mindmaster.utils.FirebaseManager.logInEmailPwd
 import com.miguelrodriguez19.mindmaster.utils.Preferences
 import com.miguelrodriguez19.mindmaster.utils.Toolkit.checkFields
-import pl.droidsonroids.gif.GifImageView
 
 
 class LogInFragment : Fragment() {
@@ -148,7 +147,7 @@ class LogInFragment : Fragment() {
                                     uid,account?.givenName!!,account.familyName,
                                     account.email!!,null,account.photoUrl!!.toString()
                                 )
-                                FirebaseManager.addNewUserToFirestore(actualUser)
+                                FirebaseManager.saveUser(actualUser)
                                 Preferences.setUser(actualUser)
                                 (requireActivity() as MainActivity).userSetUp(actualUser)
                                 val action =

@@ -15,8 +15,8 @@ import com.miguelrodriguez19.mindmaster.utils.AllBottomSheets.Companion.showTask
 
 class CalendarEventsAdapter(
     private val context: Context,
-    private val data: ArrayList<AbstractEvents>,
-    val onClick: (AbstractEvents) -> Unit
+    private val data: ArrayList<AbstractEvent>,
+    val onClick: (AbstractEvent) -> Unit
 ) :
     RecyclerView.Adapter<CalendarEventsAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -36,17 +36,34 @@ class CalendarEventsAdapter(
         notifyItemRangeRemoved(position, 1)
     }
 
-    fun setData(newData: List<AbstractEvents>) {
+    fun getItemAt(index: Int):AbstractEvent{
+        return data[index]
+    }
+
+    fun setData(newData: List<AbstractEvent>) {
         this.data.clear()
         this.data.addAll(newData.sortedWith(EventComparator()))
         notifyDataSetChanged()
     }
 
-    fun addItem(item:AbstractEvents) {
+    fun addItem(item:AbstractEvent) {
         this.data.add(item)
         this.data.sortedWith(EventComparator())
         notifyDataSetChanged()
     }
+
+    fun foundAndUpdateIt(abs: AbstractEvent) {
+        var index = 0
+        data.stream()
+            .filter { it.uid == abs.uid }
+            .findFirst()
+            .ifPresent {
+                index = data.indexOf(it)
+                data[index] = abs
+            }
+        notifyItemChanged(index, abs)
+    }
+
 
     inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         private val bind = CellCalendarEventsBinding.bind(v)
@@ -55,25 +72,25 @@ class CalendarEventsAdapter(
         private val tvEventTitle = bind.tvEventTitle
         private val civColorTag = bind.civColorTag
 
-        fun bind(item: AbstractEvents) {
+        fun bind(item: AbstractEvent) {
             tvEventTitle.text = item.title
-            val header = StringBuilder(item.getItemType(context, item.type))
+            val header = StringBuilder(AbstractEvent.getItemType(context, item.type))
             if (!item.category.isNullOrEmpty()) {
                 header.append(" - ").append(item.category!!.joinToString(", "))
             }
             tvEventType.text = header
-            civColorTag.setCardBackgroundColor(item.getColor(context, item.color_tag))
+            civColorTag.setCardBackgroundColor(AbstractEvent.getColor(context, item.color_tag))
             cvEventArea.setOnClickListener {
                 onClick(item)
                 when (item.type){
                     EventType.EVENT -> showEventsBS(context, item as Event) {
-                        addItem(it)
+                        foundAndUpdateIt(it)
                     }
                     EventType.REMINDER -> showRemindersBS(context, item as Reminder){
-                        addItem(it)
+                        foundAndUpdateIt(it)
                     }
                     EventType.TASK -> showTasksBS(context, item as Task){
-                        addItem(it)
+                        foundAndUpdateIt(it)
                     }
                 }
             }

@@ -1,11 +1,11 @@
 package com.miguelrodriguez19.mindmaster.models.comparators
 
-import com.miguelrodriguez19.mindmaster.models.AbstractEvents
+import com.miguelrodriguez19.mindmaster.models.AbstractEvent
 import com.miguelrodriguez19.mindmaster.models.Priority
 import com.miguelrodriguez19.mindmaster.models.Task
 
-class EventComparator : Comparator<AbstractEvents> {
-    override fun compare(a: AbstractEvents, b: AbstractEvents): Int {
+class EventComparator : Comparator<AbstractEvent> {
+    override fun compare(a: AbstractEvent, b: AbstractEvent): Int {
         // If both objects are tasks, they compare by priority
         if (a is Task && b is Task) {
             if (a.priority == Priority.URGENT && b.priority != Priority.URGENT) {
