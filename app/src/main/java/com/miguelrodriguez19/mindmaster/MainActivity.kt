@@ -14,8 +14,8 @@ import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
 import com.miguelrodriguez19.mindmaster.databinding.ActivityMainBinding
 import com.miguelrodriguez19.mindmaster.databinding.DrawerHeaderBinding
-import com.miguelrodriguez19.mindmaster.models.UserResponse
-import com.miguelrodriguez19.mindmaster.utils.Preferences
+import com.miguelrodriguez19.mindmaster.models.structures.UserResponse
+import com.miguelrodriguez19.mindmaster.models.utils.Preferences
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding

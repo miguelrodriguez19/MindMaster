@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/logInFragment"
-        android:name="com.miguelrodriguez19.mindmaster.welcome.LogInFragment"
+        android:name="com.miguelrodriguez19.mindmaster.views.welcome.LogInFragment"
         android:label="@string/welcome"
         tools:layout="@layout/fragment_log_in">
         <action
@@ -29,27 +29,27 @@
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
-        android:name="com.miguelrodriguez19.mindmaster.welcome.SignUpFragment"
+        android:name="com.miguelrodriguez19.mindmaster.views.welcome.SignUpFragment"
         android:label="@string/sign_up"
         tools:layout="@layout/fragment_sign_up" />
     <fragment
         android:id="@+id/calendarFragment"
-        android:name="com.miguelrodriguez19.mindmaster.calendar.CalendarFragment"
+        android:name="com.miguelrodriguez19.mindmaster.views.schedule.fragments.CalendarFragment"
         android:label="@string/calendar"
         tools:layout="@layout/fragment_calendar" />
     <fragment
         android:id="@+id/diaryFragment"
-        android:name="com.miguelrodriguez19.mindmaster.diary.DiaryFragment"
+        android:name="com.miguelrodriguez19.mindmaster.views.schedule.fragments.DiaryFragment"
         android:label="@string/schedule"
         tools:layout="@layout/fragment_diary" />
     <fragment
         android:id="@+id/passwordsFragment"
-        android:name="com.miguelrodriguez19.mindmaster.passwords.PasswordsFragment"
+        android:name="com.miguelrodriguez19.mindmaster.views.passwords.PasswordsFragment"
         android:label="@string/passwords_manager"
         tools:layout="@layout/fragment_passwords" />
     <fragment
         android:id="@+id/expensesFragment"
-        android:name="com.miguelrodriguez19.mindmaster.expenses.ExpensesFragment"
+        android:name="com.miguelrodriguez19.mindmaster.views.expenses.fragments.ExpensesFragment"
         android:label="@string/expenses_manager"
         tools:layout="@layout/fragment_expenses" >
         <action
@@ -58,22 +58,22 @@
     </fragment>
     <fragment
         android:id="@+id/allMovementsFragment"
-        android:name="com.miguelrodriguez19.mindmaster.expenses.AllMovementsFragment"
+        android:name="com.miguelrodriguez19.mindmaster.views.expenses.fragments.AllMovementsFragment"
         android:label="@string/all_movements"
         tools:layout="@layout/fragment_all_movements" />
     <fragment
         android:id="@+id/accountFragment"
-        android:name="com.miguelrodriguez19.mindmaster.settings.AccountFragment"
+        android:name="com.miguelrodriguez19.mindmaster.views.settings.fragments.AccountFragment"
         android:label="@string/account"
         tools:layout="@layout/fragment_account" />
     <fragment
         android:id="@+id/helpFragment"
-        android:name="com.miguelrodriguez19.mindmaster.settings.HelpFragment"
+        android:name="com.miguelrodriguez19.mindmaster.views.settings.fragments.HelpFragment"
         android:label="@string/help_faqs"
         tools:layout="@layout/fragment_help" />
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.miguelrodriguez19.mindmaster.settings.SettingsFragment"
+        android:name="com.miguelrodriguez19.mindmaster.views.settings.fragments.SettingsFragment"
         android:label="@string/settings"
         tools:layout="@layout/fragment_settings" >
         <action
@@ -91,12 +91,12 @@
     </fragment>
     <fragment
         android:id="@+id/pieChartFragment"
-        android:name="com.miguelrodriguez19.mindmaster.expenses.PieChartFragment"
+        android:name="com.miguelrodriguez19.mindmaster.views.expenses.fragments.PieChartFragment"
         android:label="fragment_pie_chart"
         tools:layout="@layout/fragment_pie_chart" />
     <fragment
         android:id="@+id/barsChartFragment"
-        android:name="com.miguelrodriguez19.mindmaster.expenses.BarsChartFragment"
+        android:name="com.miguelrodriguez19.mindmaster.views.expenses.fragments.BarsChartFragment"
         android:label="fragment_bars_chart"
         tools:layout="@layout/fragment_bars_chart" />
 </navigation>
