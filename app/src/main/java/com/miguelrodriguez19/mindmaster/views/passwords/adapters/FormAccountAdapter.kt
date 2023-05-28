@@ -13,7 +13,7 @@ import com.miguelrodriguez19.mindmaster.models.utils.Toolkit
 
 class FormAccountAdapter(
     private val context: Context,
-    private val accountsGroup: ArrayList<GroupPasswordsResponse.Account?>
+    private val data: ArrayList<GroupPasswordsResponse.Account?>
 ) : RecyclerView.Adapter<FormAccountAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -23,14 +23,23 @@ class FormAccountAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(accountsGroup[position])
+        holder.bind(data[position])
     }
 
-    override fun getItemCount(): Int = accountsGroup.size
+    override fun getItemCount(): Int = data.size
 
     fun addNewForm() {
-        accountsGroup.add(null)
-        notifyDataSetChanged()
+        data.add(null)
+        notifyItemInserted(data.size-1)
+    }
+
+    private fun deleteItemAt(index:Int) {
+        if (data.size > 1){
+            data.removeAt(index)
+            notifyItemRemoved(index)
+        }else{
+            Toolkit.showToast(context, R.string.at_least_one_account)
+        }
     }
 
     inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
@@ -45,6 +54,7 @@ class FormAccountAdapter(
         private val tilPassword = bind.tilPassword
         private val etPassword = bind.etPassword
         private val btnGeneratePwd = bind.btnRandomPassword
+        private val btnDelete = bind.btnDeleteAccount
         private val tilDescription = bind.tilDescription
         private val etDescription = bind.etDescription
 
@@ -66,6 +76,11 @@ class FormAccountAdapter(
                     }
                 }
             }
+
+            btnDelete.setOnClickListener {
+                deleteItemAt(adapterPosition)
+            }
+
             btnGeneratePwd.setOnClickListener {
                 etPassword.setText(generateSecurePwd())
             }
@@ -75,17 +90,17 @@ class FormAccountAdapter(
             val length = 12
             val characters =
                 "ABCDEFGHIJKLMNÑOPQRSTUVWXYZabcdefghijklmnñopqrstuvwxyz0123456789@#$%/;:.,+_"
-            var sb = ""
-            while (!sb.matches(Toolkit.PASSWORD_PATTERN.toRegex())) {
-                sb = ""
+            var str = ""
+            while (!str.matches(Toolkit.PASSWORD_PATTERN.toRegex())) {
+                str = ""
                 val charMix = characters.toList().shuffled().joinToString("")
                 for (i in 0 until length) {
                     val randomIndex = (characters.indices).random()
-                    sb += charMix[randomIndex]
+                    str += charMix[randomIndex]
                 }
             }
 
-            return sb
+            return str
         }
 
         private fun setUpData(item: GroupPasswordsResponse.Account) {
@@ -142,5 +157,4 @@ class FormAccountAdapter(
             }
         }
     }
-
 }

@@ -51,7 +51,9 @@ class GroupAdapter(private val context: Context, var data: ArrayList<GroupPasswo
                 menu.setOnMenuItemClickListener { menuItem ->
                     when (menuItem.itemId) {
                         R.id.edit_group -> {
-                            AllBottomSheets.showPasswordsBS(context, item)
+                            AllBottomSheets.showPasswordsBS(context, item){
+                                //TODO()
+                            }
                             true
                         }
                         R.id.delete_group -> {
@@ -61,7 +63,9 @@ class GroupAdapter(private val context: Context, var data: ArrayList<GroupPasswo
                                 context.getString(R.string.delete_password_group_message)
                             ) {
                                 if (it) {
-                                    FirebaseManager.deletePasswordsGroup(context, item)
+                                    FirebaseManager.deleteGroup(context, item){
+
+                                    }
                                 }
                                 data.removeAt(adapterPosition)
                                 notifyItemRangeRemoved(adapterPosition, 1)

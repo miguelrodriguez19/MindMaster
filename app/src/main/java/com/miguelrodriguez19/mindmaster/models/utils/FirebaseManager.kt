@@ -2,10 +2,12 @@ package com.miguelrodriguez19.mindmaster.models.utils
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
+import com.google.android.gms.stats.CodePackage.REMINDERS
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.firestore.DocumentSnapshot
@@ -14,12 +16,11 @@ import com.google.firebase.firestore.ktx.firestoreSettings
 import com.google.firebase.storage.FirebaseStorage
 import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.R
+import com.miguelrodriguez19.mindmaster.models.comparators.*
+import com.miguelrodriguez19.mindmaster.models.structures.*
+import com.miguelrodriguez19.mindmaster.models.structures.GroupPasswordsResponse.Account
 import com.miguelrodriguez19.mindmaster.models.structures.MonthMovementsResponse.Movement
 import com.miguelrodriguez19.mindmaster.models.structures.MonthMovementsResponse.Type
-import com.miguelrodriguez19.mindmaster.models.comparators.EventComparator
-import com.miguelrodriguez19.mindmaster.models.comparators.EventGroupComparator
-import com.miguelrodriguez19.mindmaster.models.comparators.MovementsGroupComparator
-import com.miguelrodriguez19.mindmaster.models.structures.*
 import com.miguelrodriguez19.mindmaster.models.utils.Preferences.getUserUID
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.getMonthYearOf
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.showToast
@@ -27,10 +28,14 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import java.io.ByteArrayOutputStream
 import java.util.*
+import javax.crypto.SecretKey
+import javax.crypto.spec.SecretKeySpec
+import kotlin.collections.ArrayList
 
 object FirebaseManager {
 
     private const val TAG = "FIREBASE_MANAGER"
+    private const val SECURITY = "security"
     private const val USERS = "users"
     private const val SCHEDULE = "schedule"
     private const val EVENTS = "events"
@@ -40,6 +45,9 @@ object FirebaseManager {
     private const val MOVEMENTS = "movements"
     private const val INCOMES = "incomes"
     private const val EXPENSES = "expenses"
+    private const val GROUPS = "groups"
+    private const val ACCOUNTS = "accounts"
+    private const val KEY = "key"
 
     fun getAuth(): FirebaseAuth {
         return FirebaseAuth.getInstance()
@@ -98,15 +106,6 @@ object FirebaseManager {
     ) {
         getAuth().signInWithEmailAndPassword(email, password).addOnCompleteListener {
             if (it.isSuccessful) {
-                /*it.result.user?.getIdToken(false)?.addOnCompleteListener { t ->
-                    if (t.isSuccessful) {
-                        Log.i("TOKEN", t.result.token!!)
-                        Log.i("TOKEN", t.result.expirationTimestamp.toString())
-                        Log.i("TOKEN", t.result.signInProvider!!)
-                    } else {
-                        println(t.exception)
-                    }
-                }*/
                 it.result.user?.let { firebaseUser ->
                     getUserByUID(firebaseUser.uid) { user ->
                         Preferences.setUser(user!!)
@@ -118,14 +117,9 @@ object FirebaseManager {
         }
     }
 
-    fun createUserFirebase(
-        context: Context,
-        name: String,
-        lastname: String?,
-        birthdate: String,
-        email: String,
-        password: String,
-        result: (Boolean) -> Unit
+    fun createUser(
+        context: Context, name: String, lastname: String?, birthdate: String,
+        email: String, password: String, result: (Boolean) -> Unit
     ) {
         getAuth().createUserWithEmailAndPassword(email.trim(), password.trim())
             .addOnCompleteListener { task ->
@@ -445,7 +439,7 @@ object FirebaseManager {
             for (doc in movementsRef) {
 
                 val deferred = async {
-                    val response =  loadActualMonthMovements(context, doc.id)
+                    val response = loadActualMonthMovements(context, doc.id)
                     if (response.expensesList.isNotEmpty() || response.incomeList.isNotEmpty()) {
                         response
                     } else {
@@ -469,9 +463,7 @@ object FirebaseManager {
             .document(getMonthYearOf(movement.date))
 
         val collectionType = when (movement.type) {
-            Type.INCOME -> {
-                collectionRef.collection(INCOMES)
-            }
+            Type.INCOME -> collectionRef.collection(INCOMES)
             Type.EXPENSE -> collectionRef.collection(EXPENSES)
         }
         collectionType.document(movement.uid).delete()
@@ -484,7 +476,39 @@ object FirebaseManager {
     }
 
     // PASSWORDS
-    fun deletePasswordsGroup(context: Context, item: GroupPasswordsResponse) {
+    fun saveGroup(
+        context: Context, group: GroupPasswordsResponse,
+        onSuccess: (GroupPasswordsResponse) -> Unit
+    ) {
 
     }
+
+    fun updateGroup(
+        context: Context, group: GroupPasswordsResponse,
+        onUpdated: (GroupPasswordsResponse?) -> Unit
+    ) {
+
+    }
+
+    private suspend fun loadGroup(
+        context: Context,
+        groupUID: String
+    ): GroupPasswordsResponse = withContext(Dispatchers.IO) {
+        return@withContext GroupPasswordsResponse()
+    }
+
+    fun loadAllGroups(
+        context: Context, onSuccess: (List<GroupPasswordsResponse>) -> Unit
+    ) {
+
+    }
+
+    fun deleteGroup(
+        context: Context,
+        group: GroupPasswordsResponse,
+        onDeleted: (GroupPasswordsResponse) -> Unit
+    ) {
+
+    }
+
 }

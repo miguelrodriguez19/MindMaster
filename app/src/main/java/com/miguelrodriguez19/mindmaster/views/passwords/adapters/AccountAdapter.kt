@@ -90,7 +90,7 @@ class AccountAdapter(
                     llUsername.visibility = View.GONE
                     etEmail.setText(item.email!!)
                     llPassword.visibility = View.GONE
-                    if (item.note != null) etDescription.setText(item.note)
+                    if (item.description != null) etDescription.setText(item.description)
                     else tilDescription.visibility = View.GONE
                 }
 
@@ -103,7 +103,7 @@ class AccountAdapter(
 
                     etPassword.setText(item.password!!)
 
-                    if (item.note != null) etDescription.setText(item.note)
+                    if (item.description != null) etDescription.setText(item.description)
                     else tilDescription.visibility = View.GONE
                 }
             }

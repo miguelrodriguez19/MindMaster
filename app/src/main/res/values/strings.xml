@@ -147,6 +147,8 @@
     <string name="event_deleted">Selected item has been deleted</string>
     <string name="undo">Undo</string>
     <string name="error_unmodified_fields">Please update any field before save changes.</string>
+    <string name="delete">Delete</string>
+    <string name="at_least_one_account">There must be at least one account</string>
 
 
     <string-array name="available_languages">

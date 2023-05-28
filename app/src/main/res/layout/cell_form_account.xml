@@ -181,12 +181,25 @@
     </LinearLayout>
 
     <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/materialDivider2"
         android:layout_width="0dp"
         android:layout_height="2dp"
         android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ll_fields" />
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="wrap_content"
+        android:id="@+id/btn_deleteAccount"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:text="@string/delete"
+        android:textAlignment="textEnd"
+        android:textSize="15sp"
+        android:textColor="@color/gray_dove_500"
+        app:layout_constraintTop_toBottomOf="@+id/materialDivider2" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

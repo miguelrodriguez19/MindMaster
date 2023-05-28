@@ -20,7 +20,7 @@ import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentSignUpBinding
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs.Companion.showDatePicker
-import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.createUserFirebase
+import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.createUser
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.PASSWORD_PATTERN
 
@@ -77,7 +77,7 @@ class SignUpFragment : Fragment() {
                 arrayOf(tilEmail, tilName, tilBirthdate, tilPassword, tilRepeatPassword)
             ) { ok ->
                 if (ok) {
-                    createUserFirebase(
+                    createUser(
                         requireContext(),
                         etName.text.toString(),
                         etSurname.text.toString() ?: null,

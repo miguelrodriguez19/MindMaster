@@ -19,6 +19,8 @@ class CalendarEventsAdapter(
     val onClick: (AbstractEvent) -> Unit
 ) :
     RecyclerView.Adapter<CalendarEventsAdapter.ViewHolder>() {
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.cell_calendar_events, parent, false)

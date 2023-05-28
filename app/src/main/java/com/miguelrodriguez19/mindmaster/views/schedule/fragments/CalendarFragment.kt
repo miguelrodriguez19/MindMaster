@@ -129,11 +129,17 @@ class CalendarFragment : Fragment() {
                                     if (ok) {
                                         saveInSchedule(requireContext(), absEvent) { item ->
                                             adapter.addItem(item)
+                                            llNoEvents.visibility = View.GONE
+                                            tvCountOfEvents.text = adapter.itemCount.toString()
                                         }
                                     }
                                 }
                             }
                             adapter.removeAt(position)
+                            if (adapter.itemCount < 1) {
+                                tvCountOfEvents.text = adapter.itemCount.toString()
+                                setNoDataVisible()
+                            }
                         } else {
                             adapter.notifyDataSetChanged()
                         }
@@ -187,10 +193,10 @@ class CalendarFragment : Fragment() {
 
     private fun addToView(absEvent: AbstractEvent) {
         val date = AbstractEvent.getDateOf(absEvent)
-        if (getCurrentDate() == date) {
-            data.add(absEvent)
-            tvCountOfEvents.text = data.size.toString()
+        if (tvSelectedDateEvents.text == date) {
+            //this.data.add(absEvent)
             adapter.addItem(absEvent)
+            tvCountOfEvents.text = adapter.itemCount.toString()
             llNoEvents.visibility = View.GONE
         }
     }
@@ -204,13 +210,17 @@ class CalendarFragment : Fragment() {
         adapter.setData(dayList)
         tvCountOfEvents.text = this.data.size.toString()
         if (data.size == 0) {
-            llNoEvents.visibility = View.VISIBLE
-            val gifDrawable = GifDrawable.createFromResource(resources, listGifs.shuffled()[0])
-            gifView.setImageDrawable(gifDrawable)
+            setNoDataVisible()
         } else {
             llNoEvents.visibility = View.GONE
         }
         pbLoading.visibility = View.GONE
+    }
+
+    private fun setNoDataVisible() {
+        llNoEvents.visibility = View.VISIBLE
+        val gifDrawable = GifDrawable.createFromResource(resources, listGifs.shuffled()[0])
+        gifView.setImageDrawable(gifDrawable)
     }
 
     private fun initWidgets() {

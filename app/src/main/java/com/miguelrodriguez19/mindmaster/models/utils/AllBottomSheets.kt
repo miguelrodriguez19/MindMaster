@@ -13,10 +13,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.*
+import com.miguelrodriguez19.mindmaster.models.structures.*
+import com.miguelrodriguez19.mindmaster.models.structures.GroupPasswordsResponse.Account
 import com.miguelrodriguez19.mindmaster.models.structures.MonthMovementsResponse.Movement
 import com.miguelrodriguez19.mindmaster.models.structures.MonthMovementsResponse.Type
-import com.miguelrodriguez19.mindmaster.models.structures.*
-import com.miguelrodriguez19.mindmaster.views.passwords.adapters.FormAccountAdapter
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs.Companion.colorPickerDialog
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs.Companion.showConfirmationDialog
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs.Companion.showDatePicker
@@ -29,6 +29,7 @@ import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.checkFields
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.compareDates
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.makeChip
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.processChipGroup
+import com.miguelrodriguez19.mindmaster.views.passwords.adapters.FormAccountAdapter
 
 class AllBottomSheets {
     companion object {
@@ -37,11 +38,15 @@ class AllBottomSheets {
             val bottomSheetView =
                 LayoutInflater.from(context).inflate(R.layout.bottom_sheet_events, null)
             val bind = BottomSheetEventsBinding.bind(bottomSheetView)
-            var color = e?.color_tag ?: String.format("#%06X", 0xFFFFFF and ContextCompat.getColor(context, R.color.primaryColor))
+            var color = e?.color_tag ?: String.format(
+                "#%06X",
+                0xFFFFFF and ContextCompat.getColor(context, R.color.primaryColor)
+            )
 
             if (e != null) {
                 bind.etTitle.setText(e.title)
                 bind.etStartTime.setText(e.start_time)
+                bind.etStartTime.isEnabled = false
                 bind.etEndTime.setText(e.end_time)
                 bind.etLocation.setText(e.location)
                 // bind.tilRepetition
@@ -152,7 +157,7 @@ class AllBottomSheets {
                                 callback(added as Event)
                             }
                         } else {
-                            updateInSchedule(context, Event(e.uid, event)){
+                            updateInSchedule(context, Event(e.uid, event)) {
                                 callback(it as Event)
                             }
                         }
@@ -170,11 +175,15 @@ class AllBottomSheets {
             val bottomSheetView =
                 LayoutInflater.from(context).inflate(R.layout.bottom_sheet_reminder, null)
             val bind = BottomSheetReminderBinding.bind(bottomSheetView)
-            var color = r?.color_tag ?: String.format("#%06X", 0xFFFFFF and ContextCompat.getColor(context, R.color.primaryColor))
+            var color = r?.color_tag ?: String.format(
+                "#%06X",
+                0xFFFFFF and ContextCompat.getColor(context, R.color.primaryColor)
+            )
 
             if (r != null) {
                 bind.etTitle.setText(r.title)
                 bind.etDate.setText(r.date_time)
+                bind.etDate.isEnabled = false
                 // bind.tilRepetition
                 bind.etDescription.setText(r.description)
                 bind.tilColorTag.setStartIconTintList(ColorStateList.valueOf(Color.parseColor(r.color_tag)))
@@ -241,7 +250,7 @@ class AllBottomSheets {
                                 callback(added as Reminder)
                             }
                         } else {
-                            updateInSchedule(context, Reminder(r.uid, reminder)){
+                            updateInSchedule(context, Reminder(r.uid, reminder)) {
                                 callback(it as Reminder)
                             }
                         }
@@ -258,11 +267,15 @@ class AllBottomSheets {
             val bottomSheetView =
                 LayoutInflater.from(context).inflate(R.layout.bottom_sheet_tasks, null)
             val bind = BottomSheetTasksBinding.bind(bottomSheetView)
-            var color = t?.color_tag ?: String.format("#%06X", 0xFFFFFF and ContextCompat.getColor(context, R.color.primaryColor))
+            var color = t?.color_tag ?: String.format(
+                "#%06X",
+                0xFFFFFF and ContextCompat.getColor(context, R.color.primaryColor)
+            )
 
             if (t != null) {
                 bind.etTitle.setText(t.title)
                 bind.etDueDate.setText(t.due_date)
+                bind.etDueDate.isEnabled = false
                 // bind.tilStatus
                 // bind.priority
                 bind.etDescription.setText(t.description)
@@ -331,7 +344,7 @@ class AllBottomSheets {
                                 callback(added as Task)
                             }
                         } else {
-                            updateInSchedule(context, Task(t.uid, task)){
+                            updateInSchedule(context, Task(t.uid, task)) {
                                 callback(it as Task)
                             }
                         }
@@ -345,7 +358,7 @@ class AllBottomSheets {
         }
 
         fun showMovementBS(
-            context: Context, m: Movement?, typeMov: Type?, callback: (Movement) -> Unit
+            context: Context, m: Movement?, typeMov: Type?, onSuccess: (Movement) -> Unit
         ) {
             val botSheet = BottomSheetDialog(context)
             val bottomSheetView =
@@ -366,6 +379,7 @@ class AllBottomSheets {
                 }
                 bind.etConcept.setText(m.concept)
                 bind.etDate.setText(m.date)
+                bind.etDate.isEnabled = false
                 bind.etAmount.setText(m.amount.toString())
                 bind.etDescription.setText(m.description)
             }
@@ -412,13 +426,13 @@ class AllBottomSheets {
                             bind.etDescription.text.toString(),
                             selectedType
                         )
-                        if(m == null){
+                        if (m == null) {
                             saveMovement(context, move) { added ->
-                                callback(added)
+                                onSuccess(added)
                             }
-                        }else{
-                            updateMovement(context, Movement(m.uid, move)){ updated ->
-                                callback(updated!!)
+                        } else {
+                            updateMovement(context, Movement(m.uid, move)) { updated ->
+                                onSuccess(updated!!)
                             }
                         }
                         botSheet.dismiss()
@@ -431,7 +445,7 @@ class AllBottomSheets {
         }
 
         fun showPasswordsBS(
-            context: Context, group: GroupPasswordsResponse?
+            context: Context, group: GroupPasswordsResponse?, onSuccess: (GroupPasswordsResponse) -> Unit
         ) {
             val botSheet = BottomSheetDialog(context)
             val bottomSheetView =
@@ -464,6 +478,15 @@ class AllBottomSheets {
             bind.efabSave.setOnClickListener {
                 checkPwdBSFields(context, bind.rvAccountsBS) { ok ->
                     if (ok) {
+                        FirebaseManager.saveGroup(
+                            context,
+                            GroupPasswordsResponse(
+                                bind.etTitleGroup.text.toString(),
+                                getAccounts(bind.rvAccountsBS)
+                            )
+                        ){
+                            onSuccess
+                        }
                         botSheet.dismiss()
                     }
                 }
@@ -471,6 +494,30 @@ class AllBottomSheets {
 
             botSheet.setContentView(bottomSheetView)
             botSheet.show()
+        }
+
+        private fun getAccounts(rv: RecyclerView): List<Account> {
+            val adapter = rv.adapter
+            val accountsList = ArrayList<Account>()
+            if (adapter != null) {
+                for (i in 0 until adapter.itemCount) {
+                    val view = rv.getChildAt(i)
+                    val bind = CellFormAccountBinding.bind(view)
+                    val title = bind.etTitleAccount.text.toString()
+                    val username = bind.etUsername.text.toString()
+                    val email = bind.etEmail.text.toString()
+                    val password = bind.etPassword.text.toString()
+                    val description = bind.etDescription.text.toString()
+                    val type = when (bind.toggleTypeSignIn.checkedButtonId) {
+                        R.id.btn_typeEmail -> GroupPasswordsResponse.Type.EMAIL
+                        R.id.btn_typeGoogle -> GroupPasswordsResponse.Type.GOOGLE
+                        R.id.btn_typeOther -> GroupPasswordsResponse.Type.OTHER
+                        else -> GroupPasswordsResponse.Type.OTHER
+                    }
+                    accountsList.add(Account(title, username, email, password, description, type))
+                }
+            }
+            return accountsList
         }
 
         private fun checkPwdBSFields(
