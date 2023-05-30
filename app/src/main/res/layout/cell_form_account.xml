@@ -129,6 +129,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="90"
                 android:hint="@string/password_label"
+                app:errorIconDrawable="@null"
+                app:helperTextEnabled="true"
                 app:boxStrokeErrorColor="@color/red_error_500"
                 app:endIconMode="password_toggle">
 

@@ -15,8 +15,9 @@ object Encrypter {
     private const val SHA = "SHA-256"
     private const val wordCount = 20
 
-    private fun encrypt(text: String, pwd: String): String {
+    fun encrypt(text: String): String {
         try {
+            val pwd = "123456789"
             val key = generateHash(pwd)
             val secretKey = SecretKeySpec(key, ENCRYPTION_ALGORITHM)
 
@@ -31,9 +32,10 @@ object Encrypter {
         return ""
     }
 
-    private fun decrypt(nota: String, pass: String): String {
+    fun decrypt(nota: String): String {
         try {
-            val key = generateHash(pass)
+            val pwd = "123456789"
+            val key = generateHash(pwd)
             val secretKey = SecretKeySpec(key, ENCRYPTION_ALGORITHM)
 
             val cipher = Cipher.getInstance(ENCRYPTION_ALGORITHM)
@@ -49,7 +51,7 @@ object Encrypter {
         return ""
     }
 
-    private fun generateHash(pass: String): ByteArray {
+    fun generateHash(pass: String): ByteArray {
         val md = MessageDigest.getInstance(SHA)
         return md.digest(pass.toByteArray())
     }

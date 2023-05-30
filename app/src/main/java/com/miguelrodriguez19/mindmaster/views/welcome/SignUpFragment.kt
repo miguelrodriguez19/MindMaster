@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.PatternsCompat
@@ -23,6 +24,10 @@ import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs.Companion.showDa
 import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.createUser
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.PASSWORD_PATTERN
+import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.showToast
+import java.time.LocalDate
+import java.time.Period
+import java.time.format.DateTimeFormatter
 
 class SignUpFragment : Fragment() {
     private var _binding: FragmentSignUpBinding? = null
@@ -42,6 +47,7 @@ class SignUpFragment : Fragment() {
     private lateinit var btnSignUp: ExtendedFloatingActionButton
     private lateinit var btnLogIn: Button
     private lateinit var checkTerms: MaterialCheckBox
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -63,9 +69,23 @@ class SignUpFragment : Fragment() {
         etEmail.addTextChangedListener(emailWatcher)
         etBirthdate.setOnClickListener {
             showDatePicker(requireContext()) { date ->
-                etBirthdate.setText(date)
+                val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+                val birthdate = LocalDate.parse(date, formatter)
+                val now = LocalDate.now()
+                val period = Period.between(birthdate, now)
+                val minAge = getString(R.string.minAgeToRegister).toInt()
+                if (period.years < minAge) {
+                    tilBirthdate.isErrorEnabled = true
+                    tilBirthdate.error = getString(R.string.minAgeError, minAge)
+                } else {
+                    tilBirthdate.error = null
+                    tilBirthdate.isErrorEnabled = false
+                    etBirthdate.setText(date)
+                }
             }
         }
+
+
         btnLogIn.setOnClickListener {
             clearFields()
             findNavController().popBackStack()
@@ -77,18 +97,23 @@ class SignUpFragment : Fragment() {
                 arrayOf(tilEmail, tilName, tilBirthdate, tilPassword, tilRepeatPassword)
             ) { ok ->
                 if (ok) {
-                    createUser(
-                        requireContext(),
-                        etName.text.toString(),
-                        etSurname.text.toString() ?: null,
-                        etBirthdate.text.toString(),
-                        etEmail.text.toString(),
-                        etPassword.text.toString()
-                    ) { wasAdded ->
-                        if (wasAdded) {
-                            clearFields()
-                            findNavController().popBackStack()
+                    if (checkTerms.isChecked){
+                        progressBar.visibility = View.VISIBLE
+                        createUser(
+                            requireContext(), etName.text.toString(),
+                            etSurname.text.toString(), etBirthdate.text.toString(),
+                            etEmail.text.toString(), etPassword.text.toString()
+                        ) { wasAdded ->
+                            if (wasAdded) {
+                                clearFields()
+                                progressBar.visibility = View.GONE
+                                findNavController().popBackStack()
+                            }
                         }
+                    }else{
+                        checkTerms.isErrorShown = true
+                        checkTerms.error = requireContext().getString(R.string.field_obligatory)
+                        showToast(requireContext(), R.string.check_terms_and_conditions)
                     }
                 }
             }
@@ -98,12 +123,22 @@ class SignUpFragment : Fragment() {
     private val pwdWatcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
             if (!s.isNullOrBlank()) {
-                if (!s.matches(PASSWORD_PATTERN.toRegex())) {
+                if (!s.toString().matches(PASSWORD_PATTERN.toRegex())) {
+                    tilPassword.isErrorEnabled = true
                     tilPassword.error = getString(R.string.weakPassword)
                 } else {
+                    tilPassword.isErrorEnabled = false
                     tilPassword.error = null
+                    if (etRepeatPassword.text.toString() != s.toString()) {
+                        tilRepeatPassword.isErrorEnabled = true
+                        tilRepeatPassword.error = getString(R.string.pwdsDontMatch)
+                    } else {
+                        tilRepeatPassword.error = null
+                        resetErrorEnabled()
+                    }
                 }
             } else {
+                tilPassword.isErrorEnabled = false
                 tilPassword.error = null
             }
         }
@@ -114,17 +149,13 @@ class SignUpFragment : Fragment() {
 
     private val pwdReptWatcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
-            if (!s.isNullOrBlank()) {
-                if (etPassword.text != s) {
-                    tilRepeatPassword.error = getString(R.string.pwdsDontMatch)
-                    tilPassword.error = getString(R.string.pwdsDontMatch)
-                } else {
-                    tilPassword.error = null
-                    tilRepeatPassword.error = null
-                }
-            } else {
-                tilPassword.error = null
+            if (s.isNullOrBlank() || etPassword.text.toString() == s.toString()) {
                 tilRepeatPassword.error = null
+                tilPassword.error = null
+                resetErrorEnabled()
+            } else {
+                tilRepeatPassword.isErrorEnabled = true
+                tilRepeatPassword.error = getString(R.string.pwdsDontMatch)
             }
         }
 
@@ -132,15 +163,23 @@ class SignUpFragment : Fragment() {
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
     }
 
+    private fun resetErrorEnabled() {
+        tilPassword.isErrorEnabled = false
+        tilRepeatPassword.isErrorEnabled = false
+    }
+
     private val emailWatcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
             if (!s.isNullOrBlank()) {
-                if (!s.matches(PatternsCompat.EMAIL_ADDRESS.toRegex())) {
+                if (!s.toString().matches(PatternsCompat.EMAIL_ADDRESS.toRegex())) {
+                    tilEmail.isErrorEnabled = true
                     tilEmail.error = getString(R.string.invalidEmail)
                 } else {
+                    tilEmail.isErrorEnabled = false
                     tilEmail.error = null
                 }
             } else {
+                tilEmail.isErrorEnabled = false
                 tilEmail.error = null
             }
         }
@@ -165,26 +204,31 @@ class SignUpFragment : Fragment() {
         tilBirthdate = binding.tilDateBirthdate
         tilPassword = binding.tilPassword
         tilRepeatPassword = binding.tilRepeatPassword
+        progressBar = binding.progressBarSignUp
     }
 
     private fun clearFields() {
-        etName.text = null
-        etSurname.text = null
-        etEmail.text = null
-        etEmail.error = null
-        etBirthdate.text = null
-        etPassword.text = null
-        etPassword.error = null
-        etRepeatPassword.text = null
-        etRepeatPassword.error = null
-        tilName.error = null
-        tilEmail.error = null
-        tilBirthdate.error = null
-        tilPassword.error = null
-        tilRepeatPassword.error = null
-        tvError.visibility = View.GONE
-        tvError.text = ""
+        val editTexts = listOf(etName, etSurname, etEmail, etBirthdate, etPassword, etRepeatPassword)
+        val textInputLayouts = listOf(tilName, tilEmail, tilBirthdate, tilPassword, tilRepeatPassword)
+
+        for (editText in editTexts) {
+            editText.text = null
+            editText.error = null
+        }
+
+        for (textInputLayout in textInputLayouts) {
+            textInputLayout.error = null
+            textInputLayout.isErrorEnabled = false
+        }
+
+        tvError.apply {
+            visibility = View.GONE
+            text = ""
+        }
+
         checkTerms.isChecked = false
+        checkTerms.isErrorShown = false
+        checkTerms.error = null
     }
 
     override fun onDestroyView() {

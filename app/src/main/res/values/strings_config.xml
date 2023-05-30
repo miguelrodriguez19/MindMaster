@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="users_rute" translatable="false">users</string>
-    <string name="schedule_rute" translatable="false">schedule</string>
-    <string name="events_rute" translatable="false">events</string>
-    <string name="reminders_rute" translatable="false">reminders</string>
-    <string name="tasks_rute" translatable="false">tasks</string>
-    <string name="date_rute" translatable="false">date</string>
-    <string name="movements_rute" translatable="false">movements</string>
-    <string name="incomes_rute" translatable="false">incomes</string>
-    <string name="expenses_rute" translatable="false">expenses</string>
+<resources translatable="false">
+    <!-- Values -->
+    <string name="peek_height_percent_botSheet">95</string>
+    <string name="secure_pwd_lenght">14</string>
+    <string name="secure_pwd_characters">ABCDEFGHIJKLMNÑOPQRSTUVWXYZabcdefghijklmnñopqrstuvwxyz0123456789!@#$€%.~*^&amp;()_+:ç/</string>
+
+    <!-- Rutes -->
+    <string name="users_rute">users</string>
+    <string name="schedule_rute">schedule</string>
+    <string name="events_rute">events</string>
+    <string name="reminders_rute">reminders</string>
+    <string name="tasks_rute">tasks</string>
+    <string name="date_rute">date</string>
+    <string name="movements_rute">movements</string>
+    <string name="incomes_rute">incomes</string>
+    <string name="expenses_rute">expenses</string>
 
     <string name="max_movements_to_show" translatable="false">3</string>
+    <string name="minAgeToRegister">14</string>
+    <string name="photo_themes">motorbikes,bikes,cars,automotive,landscape,random,animals,winter,summer,spring,autmn,cute,sports,flowers,plants,wild,freedom,free,coffee</string>
+    <string name="photo_url_request">https://source.unsplash.com/200x200/?%s</string>
+
 
 </resources>

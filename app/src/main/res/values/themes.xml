@@ -20,4 +20,5 @@
         <item name="windowSplashScreenAnimationDuration">300</item>
         <item name="postSplashScreenTheme">@style/Theme.MindMaster</item>
     </style>
+
 </resources>

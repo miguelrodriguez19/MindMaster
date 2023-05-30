@@ -65,7 +65,8 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_name"
-                style="@style/form_text_input_layout"                android:layout_width="match_parent"
+                style="@style/form_text_input_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:startIconDrawable="@drawable/ic_person_24">
 
@@ -82,7 +83,8 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_surname"
-                style="@style/form_text_input_layout"                android:layout_width="match_parent"
+                style="@style/form_text_input_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 app:startIconDrawable="@drawable/ic_person_24">
@@ -100,7 +102,8 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_email"
-                style="@style/form_text_input_layout"                android:layout_width="match_parent"
+                style="@style/form_text_input_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:startIconDrawable="@drawable/ic_email_24">
 
@@ -116,7 +119,8 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_DateBirthdate"
-                style="@style/form_text_input_layout"                android:layout_width="match_parent"
+                style="@style/form_text_input_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="false"
                 android:focusable="false"
@@ -137,7 +141,8 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_password"
-                style="@style/form_text_input_layout"                android:layout_width="match_parent"
+                style="@style/form_text_input_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:endIconMode="password_toggle"
                 app:startIconDrawable="@drawable/ic_lock_24">
@@ -168,7 +173,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_repeatPassword"
                     android:inputType="textPassword"
-                    android:maxEms="20"/>
+                    android:maxEms="20" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -230,5 +235,12 @@
 
             </LinearLayout>
         </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/progressBarSignUp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
     </RelativeLayout>
 </ScrollView>

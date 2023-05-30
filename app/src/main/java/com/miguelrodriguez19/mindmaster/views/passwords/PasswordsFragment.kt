@@ -1,17 +1,19 @@
 package com.miguelrodriguez19.mindmaster.views.passwords
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.miguelrodriguez19.mindmaster.databinding.FragmentPasswordsBinding
 import com.miguelrodriguez19.mindmaster.models.structures.GroupPasswordsResponse
 import com.miguelrodriguez19.mindmaster.models.utils.AllBottomSheets.Companion.showPasswordsBS
+import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager
 import com.miguelrodriguez19.mindmaster.views.passwords.adapters.GroupAdapter
 
 class PasswordsFragment : Fragment() {
@@ -20,8 +22,9 @@ class PasswordsFragment : Fragment() {
     private lateinit var searchView: SearchView
     private lateinit var btnAddGroup: ExtendedFloatingActionButton
     private lateinit var rvAccountsGroups: RecyclerView
-    private lateinit var adapter : GroupAdapter
-    var data: ArrayList<GroupPasswordsResponse> = ArrayList()
+    private lateinit var adapter: GroupAdapter
+    private lateinit var progressBarAllAccounts: ProgressBar
+    private var data: ArrayList<GroupPasswordsResponse> = ArrayList()
     private var dataFiltered: ArrayList<GroupPasswordsResponse> = ArrayList()
 
     override fun onCreateView(
@@ -36,9 +39,10 @@ class PasswordsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initWidget()
+        setUpData()
         btnAddGroup.setOnClickListener {
-            showPasswordsBS(requireContext(), null){
-                // TODO()
+            showPasswordsBS(requireContext(), null) {
+                adapter.addItem(it)
             }
         }
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -53,30 +57,42 @@ class PasswordsFragment : Fragment() {
         })
     }
 
+    private fun setUpData() {
+        binding.progressBarAllAccounts.visibility = View.VISIBLE
+        this@PasswordsFragment.data.clear()
+        FirebaseManager.loadAllGroups(requireContext()) { accountsGroupsList ->
+            this@PasswordsFragment.data.addAll(accountsGroupsList)
+            dataFiltered = data
+            adapter.setData(accountsGroupsList)
+            binding.progressBarAllAccounts.visibility = View.GONE
+        }
+    }
+
     private fun search(text: String) {
         val filteredData = ArrayList<GroupPasswordsResponse>()
-        if (data.isNotEmpty()) {
-            for (item in data) {
-                if (item.name.contains(text, true)) {
-                    filteredData.add(item)
+        for (item in data) {
+            val filteredAccount = ArrayList<GroupPasswordsResponse.Account>()
+            for (account in item.accountsList) {
+                if (account.name.contains(text, true) || item.name.contains(text, true)) {
+                    filteredAccount.add(account)
                 }
             }
-            adapter.data = filteredData
-            adapter.notifyDataSetChanged()
+            if (filteredAccount.isNotEmpty()) {
+                filteredData.add(item.copy(accountsList = filteredAccount))
+            }
         }
+        adapter.data = filteredData
+        adapter.notifyDataSetChanged()
     }
 
     private fun initWidget() {
         searchView = binding.searchView
         btnAddGroup = binding.btnAddGroup
         rvAccountsGroups = binding.rvAccountsGroups
+        progressBarAllAccounts = binding.progressBarAllAccounts
 
-        val mLayoutManager = StaggeredGridLayoutManager(1, 1)
-        rvAccountsGroups.layoutManager = mLayoutManager
-
+        rvAccountsGroups.layoutManager = StaggeredGridLayoutManager(1, 1)
         adapter = GroupAdapter(requireContext(), data)
-        dataFiltered.addAll(data)
-
         rvAccountsGroups.adapter = adapter
     }
 

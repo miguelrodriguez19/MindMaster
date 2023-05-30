@@ -1,15 +1,22 @@
 package com.miguelrodriguez19.mindmaster.views.passwords.adapters
 
 import android.content.Context
+import android.content.res.ColorStateList
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.CellFormAccountBinding
 import com.miguelrodriguez19.mindmaster.models.structures.GroupPasswordsResponse
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit
+import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.evaluatePasswordSecurity
+import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.isPasswordStrong
+import kotlin.random.Random
 
 class FormAccountAdapter(
     private val context: Context,
@@ -30,14 +37,14 @@ class FormAccountAdapter(
 
     fun addNewForm() {
         data.add(null)
-        notifyItemInserted(data.size-1)
+        notifyItemInserted(data.size - 1)
     }
 
-    private fun deleteItemAt(index:Int) {
-        if (data.size > 1){
+    private fun deleteItemAt(index: Int) {
+        if (data.size > 1) {
             data.removeAt(index)
             notifyItemRemoved(index)
-        }else{
+        } else {
             Toolkit.showToast(context, R.string.at_least_one_account)
         }
     }
@@ -63,6 +70,19 @@ class FormAccountAdapter(
                 setUpData(item)
             }
 
+            etPassword.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    val pair = evaluatePasswordSecurity(s.toString())
+                    tilPassword.helperText = context.getString(pair.first)
+                    tilPassword.setHelperTextColor(ColorStateList.valueOf(context.getColor(pair.second)))
+                    tilPassword.boxStrokeColor = context.getColor(pair.second)
+                }
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            })
+
             tgTypeSignIn.addOnButtonCheckedListener { group, checkedId, isChecked ->
                 when (checkedId) {
                     R.id.btn_typeEmail -> {
@@ -82,25 +102,21 @@ class FormAccountAdapter(
             }
 
             btnGeneratePwd.setOnClickListener {
-                etPassword.setText(generateSecurePwd())
+                etPassword.setText(generateSafePassword())
             }
         }
 
-        private fun generateSecurePwd(): String {
-            val length = 12
-            val characters =
-                "ABCDEFGHIJKLMNÑOPQRSTUVWXYZabcdefghijklmnñopqrstuvwxyz0123456789@#$%/;:.,+_"
-            var str = ""
-            while (!str.matches(Toolkit.PASSWORD_PATTERN.toRegex())) {
-                str = ""
-                val charMix = characters.toList().shuffled().joinToString("")
-                for (i in 0 until length) {
-                    val randomIndex = (characters.indices).random()
-                    str += charMix[randomIndex]
-                }
-            }
-
-            return str
+        private fun generateSafePassword(): String {
+            val length = context.getString(R.string.secure_pwd_lenght).toInt()
+            val chars = context.getString(R.string.secure_pwd_characters).toList().shuffled()
+            var safePwd: String
+            do {
+                safePwd = (1..length)
+                    .map { Random.nextInt(0, chars.size) }
+                    .map(chars::get)
+                    .joinToString("")
+            } while (!isPasswordStrong(safePwd))
+            return safePwd
         }
 
         private fun setUpData(item: GroupPasswordsResponse.Account) {

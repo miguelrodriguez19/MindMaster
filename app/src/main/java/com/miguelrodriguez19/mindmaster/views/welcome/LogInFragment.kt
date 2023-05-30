@@ -39,6 +39,7 @@ class LogInFragment : Fragment() {
     private lateinit var btnForgottenPwd: Button
     private lateinit var btnSignUp: Button
     private lateinit var spLanguage: Spinner
+    private lateinit var progressBar: ProgressBar
 
     private lateinit var googleSignInClient: GoogleSignInClient
 
@@ -56,10 +57,7 @@ class LogInFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         (requireActivity() as AppCompatActivity).supportActionBar?.hide()
         initBindingElements()
-        view.findViewById<LinearLayout>(R.id.ll_logo).setOnClickListener {
-            etEmail.setText("mr916086@gmail.com")
-            etPassword.setText("Abcd1234")
-        }
+
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
@@ -69,13 +67,15 @@ class LogInFragment : Fragment() {
         btnLogIn.setOnClickListener {
             checkFields(requireContext(), arrayOf(binding.tilEmail, binding.tilPassword)) {
                 if (it) {
-                    logInEmailPwd(requireActivity(),
-                        etEmail.text.toString(),
-                        etPassword.text.toString()
+                    progressBar.visibility = View.VISIBLE
+                    logInEmailPwd(
+                        requireActivity(), etEmail.text.toString(), etPassword.text.toString()
                     ) { ok ->
                         if (ok) {
+                            progressBar.visibility = View.GONE
                             updateUI()
                         } else {
+                            progressBar.visibility = View.GONE
                             tvError.visibility = View.VISIBLE
                             tvError.text = getString(R.string.wrong_email_password)
                         }
@@ -127,6 +127,7 @@ class LogInFragment : Fragment() {
     }
 
     private fun signInGoogle() {
+        progressBar.visibility = View.VISIBLE
         val signInIntent = googleSignInClient.signInIntent
         launcher.launch(signInIntent)
     }
@@ -144,8 +145,8 @@ class LogInFragment : Fragment() {
                                 val account = GoogleSignIn.getLastSignedInAccount(requireContext())
                                 val uid = getAuth().currentUser?.uid!!
                                 val actualUser = UserResponse(
-                                    uid,account?.givenName!!,account.familyName,
-                                    account.email!!,null,account.photoUrl!!.toString()
+                                    uid, account?.givenName!!, account.familyName,
+                                    account.email!!, null, account.photoUrl!!.toString()
                                 )
                                 FirebaseManager.saveUser(actualUser)
                                 Preferences.setUser(actualUser)
@@ -154,16 +155,19 @@ class LogInFragment : Fragment() {
                                     LogInFragmentDirections.actionLogInFragmentToCalendarFragment()
                                 findNavController().navigate(action)
                                 clearFields()
+                                progressBar.visibility = View.GONE
                             } else {
                                 Toast.makeText(
                                     context,
                                     task.exception.toString(),
                                     Toast.LENGTH_SHORT
                                 ).show()
+                                progressBar.visibility = View.GONE
                             }
                         }
                     }
                 } else {
+                    progressBar.visibility = View.GONE
                     Toast.makeText(context, task.exception.toString(), Toast.LENGTH_SHORT).show()
                 }
             }
@@ -179,6 +183,7 @@ class LogInFragment : Fragment() {
         btnForgottenPwd = binding.btnForgottenPassword
         btnSignUp = binding.btnSignUp
         spLanguage = binding.spLanguage
+        progressBar = binding.progressBarLogIn
     }
 
     private fun clearFields() {

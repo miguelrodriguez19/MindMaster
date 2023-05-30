@@ -70,6 +70,11 @@ class CalendarFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        for (i in 0..10) {
+            val theme = requireContext().getString(R.string.photo_themes).split(",").shuffled()[0]
+            val url = requireContext().getString(R.string.photo_url_request, theme)
+            println(url)
+        }
         initWidgets()
         CoroutineScope(Dispatchers.Main).launch {
             setUpData(getCurrentDate())
@@ -119,7 +124,7 @@ class CalendarFragment : Fragment() {
                         requireContext(),
                         requireContext().getString(R.string.delete_confirmation),
                         requireContext().getString(R.string.delete_event_message)
-                    ) { it ->
+                    ) {
                         val position = viewHolder.adapterPosition
                         if (it) {
                             deleteInSchedule(
@@ -194,7 +199,6 @@ class CalendarFragment : Fragment() {
     private fun addToView(absEvent: AbstractEvent) {
         val date = AbstractEvent.getDateOf(absEvent)
         if (tvSelectedDateEvents.text == date) {
-            //this.data.add(absEvent)
             adapter.addItem(absEvent)
             tvCountOfEvents.text = adapter.itemCount.toString()
             llNoEvents.visibility = View.GONE

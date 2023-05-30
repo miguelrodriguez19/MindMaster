@@ -149,7 +149,10 @@
     <string name="error_unmodified_fields">Please update any field before save changes.</string>
     <string name="delete">Delete</string>
     <string name="at_least_one_account">There must be at least one account</string>
-
+    <string name="password_weak">Password is weak</string>
+    <string name="password_medium">Password is medium</string>
+    <string name="password_strong">Password is strong</string>
+    <string name="minAgeError">You must be at least %d years old to register.</string>
 
     <string-array name="available_languages">
         <item>English</item>

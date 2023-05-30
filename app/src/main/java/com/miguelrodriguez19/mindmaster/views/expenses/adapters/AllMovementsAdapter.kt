@@ -60,7 +60,7 @@ class AllMovementsAdapter(
         notifyItemRemoved(index)
     }
 
-    private fun removeEventAt(groupPosition: Int, eventPosition: Int) {
+    private fun removeItemAt(groupPosition: Int, eventPosition: Int) {
         val group = data[groupPosition]
         val newList = ArrayList((group.expensesList + group.incomeList).sortedWith(MovementComparator()))
         newList.removeAt(eventPosition)
@@ -174,7 +174,7 @@ class AllMovementsAdapter(
                                         }
                                     }
                                     isDateGroupEmptyOf(movement) { index, isEmpty ->
-                                        removeEventAt(index, position)
+                                        removeItemAt(index, position)
                                         adapter.removeAt(position)
                                         if (isEmpty) {
                                             removeDateGroupAt(index)

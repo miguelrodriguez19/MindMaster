@@ -2,21 +2,26 @@ package com.miguelrodriguez19.mindmaster.models.utils
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
-import com.google.android.gms.stats.CodePackage.REMINDERS
+import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestoreSettings
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.R
-import com.miguelrodriguez19.mindmaster.models.comparators.*
+import com.miguelrodriguez19.mindmaster.models.comparators.AccountsGroupsComparator
+import com.miguelrodriguez19.mindmaster.models.comparators.EventComparator
+import com.miguelrodriguez19.mindmaster.models.comparators.EventGroupComparator
+import com.miguelrodriguez19.mindmaster.models.comparators.MovementsGroupComparator
 import com.miguelrodriguez19.mindmaster.models.structures.*
 import com.miguelrodriguez19.mindmaster.models.structures.GroupPasswordsResponse.Account
 import com.miguelrodriguez19.mindmaster.models.structures.MonthMovementsResponse.Movement
@@ -28,9 +33,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import java.io.ByteArrayOutputStream
 import java.util.*
-import javax.crypto.SecretKey
-import javax.crypto.spec.SecretKeySpec
-import kotlin.collections.ArrayList
 
 object FirebaseManager {
 
@@ -113,6 +115,8 @@ object FirebaseManager {
                         callback(true)
                     }
                 }
+            }else{
+                callback(false)
             }
         }
     }
@@ -124,8 +128,10 @@ object FirebaseManager {
         getAuth().createUserWithEmailAndPassword(email.trim(), password.trim())
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
+                    val theme = context.getString(R.string.photo_themes).split(",").shuffled()[0]
+                    val url = context.getString(R.string.photo_url_request, theme)
                     saveImageInStorage(
-                        context, "https://source.unsplash.com/200x200/?random"
+                        context, url
                     ) { photoUrl ->
                         saveUser(
                             UserResponse(
@@ -275,7 +281,7 @@ object FirebaseManager {
                 .await()
         } catch (e: com.google.firebase.firestore.FirebaseFirestoreException) {
             System.err.println("${e.message}\n${e.printStackTrace()}")
-            return@withContext emptyList()
+            return@withContext dayList
         }
 
         val eventsDeferred =
@@ -480,6 +486,28 @@ object FirebaseManager {
         context: Context, group: GroupPasswordsResponse,
         onSuccess: (GroupPasswordsResponse) -> Unit
     ) {
+        val accountList = ArrayList<Account>()
+        val userUID = getUserUID()
+        val groupRef = getDB().collection(USERS).document(userUID).collection(GROUPS).document()
+
+        groupRef.set(mapOf(Pair("name", group.name)))
+        for (account in group.accountsList) {
+            val accJson = Gson().toJson(account.copy(uid=groupRef.id))
+            val encryptedAccount = Encrypter.encrypt(accJson)
+            val accountUid = groupRef.collection(ACCOUNTS).document().id
+            CoroutineScope(Dispatchers.IO).launch {
+                groupRef.collection(ACCOUNTS).document(accountUid)
+                    .set(mapOf(Pair("account", encryptedAccount))).addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        accountList.add(account.copy(uid = accountUid))
+                    }
+                }.await()
+            }.onJoin
+        }
+
+        if (accountList.size == group.accountsList.size) {
+            onSuccess(group.copy(accountsList = accountList))
+        }
 
     }
 
@@ -494,13 +522,61 @@ object FirebaseManager {
         context: Context,
         groupUID: String
     ): GroupPasswordsResponse = withContext(Dispatchers.IO) {
-        return@withContext GroupPasswordsResponse()
+        lateinit var groupName:String
+        val accountList = ArrayList<Account>()
+        val userUID = getUserUID()
+        val groupRef =
+            getDB().collection(USERS).document(userUID).collection(GROUPS).document(groupUID)
+
+
+        groupName = groupRef.get().await().data?.getOrDefault("name", null) as String
+
+        val docsSnap = groupRef.collection(ACCOUNTS).get().await().documents
+        for (accountDoc in docsSnap){
+            try {
+                val encryptedAcc = accountDoc.get("account") as String
+                val accJson = Encrypter.decrypt(encryptedAcc)
+                val account = Gson().fromJson(accJson, Account::class.java)
+                accountList.add(account)
+            }catch (e: JsonSyntaxException){
+                e.printStackTrace()
+            }
+        }
+
+        return@withContext GroupPasswordsResponse(groupUID, groupName, accountList)
     }
 
     fun loadAllGroups(
         context: Context, onSuccess: (List<GroupPasswordsResponse>) -> Unit
     ) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val movementsRef = getDB().collection(USERS)
+                .document(getUserUID())
+                .collection(GROUPS)
+                .get()
+                .await()
 
+            val deferredList = mutableListOf<Deferred<GroupPasswordsResponse?>>()
+
+            for (doc in movementsRef) {
+
+                val deferred = async {
+                    val response = loadGroup(context, doc.id)
+                    if (response.accountsList.isNotEmpty()) {
+                        response
+                    } else {
+                        null
+                    }
+                }
+                deferredList.add(deferred)
+            }
+
+            val allGroupsResponse = deferredList.awaitAll().filterNotNull()
+
+            withContext(Dispatchers.Main) {
+                onSuccess(allGroupsResponse.sortedWith(AccountsGroupsComparator()))
+            }
+        }
     }
 
     fun deleteGroup(

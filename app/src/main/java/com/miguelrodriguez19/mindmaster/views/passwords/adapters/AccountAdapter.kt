@@ -10,11 +10,14 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.CellAccountBinding
+import com.miguelrodriguez19.mindmaster.models.comparators.AccountComparator
 import com.miguelrodriguez19.mindmaster.models.structures.GroupPasswordsResponse
+import com.miguelrodriguez19.mindmaster.models.structures.GroupPasswordsResponse.*
 import com.miguelrodriguez19.mindmaster.models.structures.GroupPasswordsResponse.Type
+import com.miguelrodriguez19.mindmaster.models.structures.MonthMovementsResponse
 
 class AccountAdapter(
-    private val context: Context, private val data: ArrayList<GroupPasswordsResponse.Account>
+    private val context: Context, private val data: ArrayList<Account>
 ) : RecyclerView.Adapter<AccountAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.cell_account, parent, false)
@@ -26,6 +29,34 @@ class AccountAdapter(
     }
 
     override fun getItemCount(): Int = data.size
+
+    fun removeAt(position: Int){
+        data.removeAt(position)
+        notifyItemRangeRemoved(position, 1)
+    }
+
+    fun getItemAt(index: Int): Account {
+        return data[index]
+    }
+
+    fun setData(newData: List<Account>) {
+        this.data.clear()
+        this.data.addAll(newData.sortedWith(AccountComparator()))
+        notifyDataSetChanged()
+    }
+
+    fun foundAndUpdateIt(account: Account) {
+        var index = 0
+        data.stream()
+            .filter { it.uid == account.uid }
+            .findFirst()
+            .ifPresent {
+                index = data.indexOf(it)
+                data[index] = account
+            }
+        notifyItemChanged(index, account)
+    }
+
     inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         private val bind = CellAccountBinding.bind(v)
         //private val tilTitleAccount = bind.tilTitleAccount
@@ -46,7 +77,7 @@ class AccountAdapter(
         private val etDescription = bind.etDescription
         private val tilDescription = bind.tilDescription
 
-        fun bind(item: GroupPasswordsResponse.Account) {
+        fun bind(item: Account) {
             initWidgets(item)
 
             btnCopyUsername.setOnClickListener {

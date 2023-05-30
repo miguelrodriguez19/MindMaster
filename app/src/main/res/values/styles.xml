@@ -42,4 +42,12 @@
         <item name="startIconTint">@color/gray_dove_500</item>
     </style>
 
+    <style name="bottom_sheet_grip">
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">5dp</item>
+        <item name="android:background">@drawable/ellipse</item>
+        <item name="android:backgroundTint">@color/gray_light</item>
+        <item name="elevation">5dp</item>
+    </style>
+
 </resources>

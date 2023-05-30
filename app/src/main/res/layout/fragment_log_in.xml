@@ -162,24 +162,24 @@
                     android:layout_weight="1"
                     android:backgroundTint="#d1432c"
                     android:text="@string/google"
+                    android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="15sp"
-                    android:textAlignment="center"
-                    app:iconGravity="textStart"
                     app:icon="@drawable/google_logo"
+                    app:iconGravity="textStart"
                     app:iconTint="@color/white" />
 
                 <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                     android:id="@+id/efab_facebook"
-                    android:enabled="false"
-                    android:visibility="gone"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:backgroundTint="#315f93"
+                    android:enabled="false"
                     android:text="@string/facebook"
                     android:textColor="@color/white"
                     android:textSize="15sp"
+                    android:visibility="gone"
                     app:icon="@drawable/facebook_logo"
                     app:iconTint="@color/white" />
 
@@ -223,5 +223,11 @@
             </LinearLayout>
         </LinearLayout>
 
+        <ProgressBar
+            android:id="@+id/progressBarLogIn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
     </RelativeLayout>
 </ScrollView>
