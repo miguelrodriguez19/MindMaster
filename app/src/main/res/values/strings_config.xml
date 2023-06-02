@@ -20,6 +20,9 @@
     <string name="minAgeToRegister">14</string>
     <string name="photo_themes">motorbikes,bikes,cars,automotive,landscape,random,animals,winter,summer,spring,autmn,cute,sports,flowers,plants,wild,freedom,free,coffee</string>
     <string name="photo_url_request">https://source.unsplash.com/200x200/?%s</string>
+    <string name="AES_KEY_SIZE">256</string>
+    <string name="GCM_IV_LENGTH">12</string>
+    <string name="GCM_TAG_LENGTH">16</string>
 
 
 </resources>

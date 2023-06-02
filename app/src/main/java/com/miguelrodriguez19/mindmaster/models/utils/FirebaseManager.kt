@@ -493,7 +493,7 @@ object FirebaseManager {
         groupRef.set(mapOf(Pair("name", group.name)))
         for (account in group.accountsList) {
             val accJson = Gson().toJson(account.copy(uid=groupRef.id))
-            val encryptedAccount = Encrypter.encrypt(accJson)
+            val encryptedAccount = AESEncripter.encrypt(accJson)
             val accountUid = groupRef.collection(ACCOUNTS).document().id
             CoroutineScope(Dispatchers.IO).launch {
                 groupRef.collection(ACCOUNTS).document(accountUid)
@@ -535,7 +535,7 @@ object FirebaseManager {
         for (accountDoc in docsSnap){
             try {
                 val encryptedAcc = accountDoc.get("account") as String
-                val accJson = Encrypter.decrypt(encryptedAcc)
+                val accJson = AESEncripter.decrypt(encryptedAcc)
                 val account = Gson().fromJson(accJson, Account::class.java)
                 accountList.add(account)
             }catch (e: JsonSyntaxException){
@@ -585,6 +585,21 @@ object FirebaseManager {
         onDeleted: (GroupPasswordsResponse) -> Unit
     ) {
 
+    }
+
+    fun getWords(): List<String> {
+        return emptyList()
+    }
+
+    fun saveInitialisationVector(iv:ByteArray) {
+        TODO("")
+        val ivString = Base64.getEncoder().encodeToString(iv)
+    }
+
+    fun getInitialisationVector(): ByteArray {
+        TODO("")
+        val ivString = ""
+        return Base64.getDecoder().decode(ivString)
     }
 
 }

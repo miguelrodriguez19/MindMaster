@@ -70,11 +70,6 @@ class CalendarFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        for (i in 0..10) {
-            val theme = requireContext().getString(R.string.photo_themes).split(",").shuffled()[0]
-            val url = requireContext().getString(R.string.photo_url_request, theme)
-            println(url)
-        }
         initWidgets()
         CoroutineScope(Dispatchers.Main).launch {
             setUpData(getCurrentDate())

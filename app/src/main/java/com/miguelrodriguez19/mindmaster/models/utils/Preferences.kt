@@ -10,9 +10,12 @@ import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.toUserResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.util.*
 
 object Preferences {
+
     private const val USER_SETTINGS = "userSettings"
+    private const val IV = "initializationVector"
 
     private fun getEncryptedSharedPrefs(): SharedPreferences {
         val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
@@ -36,7 +39,7 @@ object Preferences {
         getEncryptedSharedPrefs().edit().putString(USER_SETTINGS, json).apply()
     }
 
-    fun deleteUser() {
+    fun clearUser() {
         getEncryptedSharedPrefs().edit().remove(USER_SETTINGS).apply()
     }
 
@@ -47,5 +50,27 @@ object Preferences {
     suspend fun getToken(): GetTokenResult? = withContext(Dispatchers.IO) {
         return@withContext FirebaseManager.getAuth().currentUser?.getIdToken(false)
             ?.await<GetTokenResult?>()
+    }
+
+    fun setSecurePhrase() {
+
+    }
+
+    fun getSecurePhrase(): String {
+        return "123456789"
+    }
+
+    fun setInitializationVector(iv: ByteArray) {
+        val ivStr = Base64.getEncoder().encodeToString(iv)
+        getEncryptedSharedPrefs().edit().putString(IV, ivStr).apply()
+    }
+
+    fun getInitializationVector(): ByteArray {
+        val iv = getEncryptedSharedPrefs().getString(IV, null)
+        return Base64.getDecoder().decode(iv)
+    }
+
+    fun clearSecurePhrase() {
+
     }
 }

@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide
 import com.miguelrodriguez19.mindmaster.databinding.ActivityMainBinding
 import com.miguelrodriguez19.mindmaster.databinding.DrawerHeaderBinding
 import com.miguelrodriguez19.mindmaster.models.structures.UserResponse
+import com.miguelrodriguez19.mindmaster.models.utils.AESEncripter
 import com.miguelrodriguez19.mindmaster.models.utils.Preferences
 
 class MainActivity : AppCompatActivity() {
@@ -29,16 +30,16 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         screenSplash.setKeepOnScreenCondition {
+            AESEncripter.init(applicationContext)
             false
         }
         drawerLayout = binding.drawerLayout
 
         val user = Preferences.getUser()
-        if (user != null) userSetUp(user)
-
-        val initialFragment = if (user != null) {
+        val initialFragment:Int = if (user != null) {
+            userSetUp(user)
             R.id.calendarFragment
-        } else {
+        }else {
             R.id.logInFragment
         }
 

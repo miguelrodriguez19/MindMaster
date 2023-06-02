@@ -12,8 +12,10 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.miguelrodriguez19.mindmaster.databinding.FragmentPasswordsBinding
 import com.miguelrodriguez19.mindmaster.models.structures.GroupPasswordsResponse
+import com.miguelrodriguez19.mindmaster.models.utils.AESEncripter.generateKey
 import com.miguelrodriguez19.mindmaster.models.utils.AllBottomSheets.Companion.showPasswordsBS
 import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager
+import com.miguelrodriguez19.mindmaster.models.utils.Preferences
 import com.miguelrodriguez19.mindmaster.views.passwords.adapters.GroupAdapter
 
 class PasswordsFragment : Fragment() {
@@ -40,6 +42,9 @@ class PasswordsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initWidget()
         setUpData()
+
+
+
         btnAddGroup.setOnClickListener {
             showPasswordsBS(requireContext(), null) {
                 adapter.addItem(it)

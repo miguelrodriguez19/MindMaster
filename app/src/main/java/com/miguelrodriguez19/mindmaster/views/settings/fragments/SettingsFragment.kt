@@ -197,7 +197,7 @@ class SettingsFragment : Fragment() {
     }
 
     private fun logout() {
-        Preferences.deleteUser()
+        Preferences.clearUser()
         FirebaseAuth.getInstance().signOut()
         val intent = Intent(requireActivity(), MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
