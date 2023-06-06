@@ -6,34 +6,34 @@
     android:orientation="vertical"
     android:paddingTop="8dp">
 
-        <TextView
-            android:id="@+id/et_titleAccount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text="Account"
-            android:paddingStart="4dp"
-            android:paddingEnd="4dp"
-            android:textAppearance="?attr/textAppearanceSubtitle1"
-            app:layout_constraintEnd_toStartOf="@+id/btn_moreOptions"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintHorizontal_bias="0"/>
-<!--
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_moreOptions"
-        style="@style/Widget.Material3.Button.IconButton"
+    <TextView
+        android:id="@+id/et_titleAccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="6dp"
-        app:icon="@drawable/ic_more_option_vert_24"
-        app:iconTint="@color/gray_dove_500"
-        app:layout_constraintBottom_toBottomOf="@id/et_titleAccount"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/et_titleAccount"
-        app:iconSize="20dp"/>
--->
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:text="Account"
+        android:textAppearance="?attr/textAppearanceSubtitle1"
+        app:layout_constraintEnd_toStartOf="@+id/btn_moreOptions"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <!--
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_moreOptions"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="6dp"
+            app:icon="@drawable/ic_more_option_vert_24"
+            app:iconTint="@color/gray_dove_500"
+            app:layout_constraintBottom_toBottomOf="@id/et_titleAccount"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/et_titleAccount"
+            app:iconSize="20dp"/>
+    -->
     <!-- Divider -->
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/divider_fields"
@@ -48,10 +48,10 @@
         android:id="@+id/tv_typeAccount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
         android:fontFamily="@font/popings_regular_400"
         android:textSize="14sp"
         android:visibility="gone"
-        android:layout_marginTop="6dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider_fields" />
 
@@ -59,9 +59,9 @@
         android:id="@+id/ll_fields"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:gravity="center|top"
         android:orientation="vertical"
-        android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_typeAccount">
@@ -85,10 +85,10 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_username"
+                    style="@style/cell_account_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:inputType="textPersonName"
-                    style="@style/cell_account_edittext"/>
+                    android:inputType="textPersonName" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -101,9 +101,9 @@
                 android:layout_weight="10"
                 android:contentDescription="@string/copy_users_text_to_clipboard"
                 app:icon="@drawable/ic_content_copy_24"
-                app:iconTint="@color/gray_dove_500"
                 app:iconGravity="textEnd"
-                app:iconSize="23dp"/>
+                app:iconSize="23dp"
+                app:iconTint="@color/gray_dove_500" />
         </LinearLayout>
 
         <!-- Email -->
@@ -125,10 +125,10 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_email"
+                    style="@style/cell_account_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:inputType="text"
-                    style="@style/cell_account_edittext"/>
+                    android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -141,9 +141,9 @@
                 android:layout_weight="10"
                 android:contentDescription="@string/copy_email_text_to_clipboard"
                 app:icon="@drawable/ic_content_copy_24"
-                app:iconTint="@color/gray_dove_500"
                 app:iconGravity="textEnd"
-                app:iconSize="23dp" />
+                app:iconSize="23dp"
+                app:iconTint="@color/gray_dove_500" />
         </LinearLayout>
 
         <!-- Password -->
@@ -166,25 +166,25 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_password"
+                    style="@style/cell_account_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:inputType="textPassword"
-                    style="@style/cell_account_edittext"/>
+                    android:inputType="textPassword" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_copyPassword"
+                style="@style/Widget.Material3.Button.IconButton"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
                 android:layout_weight="10"
-                style="@style/Widget.Material3.Button.IconButton"
                 android:contentDescription="@string/copy_password_text_to_clipboard"
                 app:icon="@drawable/ic_content_copy_24"
-                app:iconTint="@color/gray_dove_500"
                 app:iconGravity="textEnd"
-                app:iconSize="23dp" />
+                app:iconSize="23dp"
+                app:iconTint="@color/gray_dove_500" />
         </LinearLayout>
 
         <!-- Description -->
@@ -193,17 +193,16 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="90"
             android:layout_marginBottom="10dp"
+            android:layout_weight="90"
             android:hint="@string/description"
             app:boxStrokeErrorColor="@color/red_error_500">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_description"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
                 style="@style/cell_account_edittext"
-                />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

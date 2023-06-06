@@ -89,6 +89,7 @@
     <string name="delete_account_confirmation_message">, you will delete all your data from the system.</string>
     <string name="descripting_message_for_help">Didn\'t find the answer you were looking for? \nContact our support center!</string>
     <string name="need_help">Need help?</string>
+    <string name="help">Help</string>
     <string name="go_to_our_website">Go to our website</string>
     <string name="terms_and_conditions">Terms and Conditions</string>
     <string name="email_us">Email Us</string>
@@ -141,7 +142,7 @@
     <string name="delete_confirmation">Are you sure you want to remove it?</string>
     <string name="delete_password_group_message">This action is irreversible, the group and all accounts within it will be deleted.</string>
     <string name="delete_event_message">This action is irreversible, this plan will be deleted.</string>
-    <string name="try_later">There was a problem please try again later.</string>
+    <string name="try_later">Something went wrong, try again later.</string>
     <string name="faqs">FAQs</string>
     <string name="nothing_planned_yet">Nothing planned yet</string>
     <string name="event_deleted">Selected item has been deleted</string>
@@ -155,6 +156,25 @@
     <string name="minAgeError">You must be at least %d years old to register.</string>
     <string name="wordCount4PasswordPhrase">20</string>
     <string name="hash_algorithm">SHA-256</string>
+    <string name="information_about_security_phrase">This is your security phrase, it is unique to you and essential to access your account vault. Treat it like a physical key: only you should know it and you should keep it in a safe place, if you lose this phrase, you will lose access to your saved accounts and we will not be able to recover it, <b>so keep it safe!</b></string>
+    <string name="inner_welcome_2_user">Welcome to Mind Master,\n%s!</string>
+    <string name="inner_welcome_back_2_user">Welcome back,\n%s!</string>
+    <string name="security_phrase_hint">Security phrase</string>
+    <string name="responsibility_agreement_security_phrase">I agree that if I lose this passphrase, I will lose full access to my Account Vault.</string>
+    <string name="continue_">Continue</string>
+    <string name="continue_timer">Continue(%d)</string>
+    <string name="copied_2_clipboard">Copied to clipboard</string>
+    <string name="security_phrase">Security Phrase</string>
+    <string name="attach_security_phrase">Enter your secure phrase here or, alternatively, attach the complete file.</string>
+    <string name="attach">Attach</string>
+    <string name="attach_zone_content_description">Attach zone</string>
+    <string name="incorrect_secure_phrase_err">Incorrect secure phrase</string>
+    <string name="reading_file_err">Error reading file</string>
+    <string name="invalid_file_type_err">Invalid file type. Only .txt files are allowed.</string>
+    <string name="fill_secure_phrase_or_attach_file">You must fill in the field or attach a file</string>
+    <string name="clear">Clear</string>
+    <string name="unknown_file_name">Unknown name</string>
+    <string name="change_account">Change account</string>
 
     <string-array name="available_languages">
         <item>English</item>

@@ -72,8 +72,7 @@ class LogInFragment : Fragment() {
                         requireActivity(), etEmail.text.toString(), etPassword.text.toString()
                     ) { ok ->
                         if (ok) {
-                            progressBar.visibility = View.GONE
-                            updateUI()
+                            //updateUI()
                         } else {
                             progressBar.visibility = View.GONE
                             tvError.visibility = View.VISIBLE
@@ -118,8 +117,7 @@ class LogInFragment : Fragment() {
 
     private fun updateUI() {
         clearFields()
-        val action = LogInFragmentDirections.actionLogInFragmentToCalendarFragment()
-        findNavController().navigate(action)
+        progressBar.visibility = View.GONE
     }
 
     private fun getUserLanguage(): Int {
@@ -145,17 +143,12 @@ class LogInFragment : Fragment() {
                                 val account = GoogleSignIn.getLastSignedInAccount(requireContext())
                                 val uid = getAuth().currentUser?.uid!!
                                 val actualUser = UserResponse(
-                                    uid, account?.givenName!!, account.familyName,
-                                    account.email!!, null, account.photoUrl!!.toString()
+                                    uid, account?.givenName!!, account.familyName, account.email!!,
+                                    null, account.photoUrl!!.toString(), false
                                 )
                                 FirebaseManager.saveUser(actualUser)
-                                Preferences.setUser(actualUser)
                                 (requireActivity() as MainActivity).userSetUp(actualUser)
-                                val action =
-                                    LogInFragmentDirections.actionLogInFragmentToCalendarFragment()
-                                findNavController().navigate(action)
-                                clearFields()
-                                progressBar.visibility = View.GONE
+                                updateUI()
                             } else {
                                 Toast.makeText(
                                     context,
@@ -187,12 +180,13 @@ class LogInFragment : Fragment() {
     }
 
     private fun clearFields() {
+        binding.tilEmail.isErrorEnabled = false
         etEmail.text = null
         etEmail.error = null
+        binding.tilPassword.isErrorEnabled = false
         etPassword.text = null
         etPassword.error = null
         tvError.text = ""
-        tvError.visibility = View.GONE
     }
 
     override fun onDestroyView() {

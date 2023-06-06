@@ -18,14 +18,11 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
         <action
-            android:id="@+id/action_logInFragment_to_calendarFragment"
-            app:destination="@id/calendarFragment"
-            app:enterAnim="@anim/slide_in_bottom"
-            app:exitAnim="@anim/slide_out_top"
-            app:popEnterAnim="@anim/slide_in_top"
-            app:popExitAnim="@anim/slide_out_bottom"
-            app:popUpTo="@id/calendarFragment"
-            app:popUpToInclusive="true" />
+            android:id="@+id/action_logInFragment_to_welcomeFragment"
+            app:destination="@id/welcomeFragment" />
+        <action
+            android:id="@+id/action_logInFragment_to_securityPhraseLoaderFragment"
+            app:destination="@id/securityPhraseLoaderFragment" />
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
@@ -99,4 +96,22 @@
         android:name="com.miguelrodriguez19.mindmaster.views.expenses.fragments.BarsChartFragment"
         android:label="fragment_bars_chart"
         tools:layout="@layout/fragment_bars_chart" />
+    <fragment
+        android:id="@+id/welcomeFragment"
+        android:name="com.miguelrodriguez19.mindmaster.views.welcome.WelcomeFragment"
+        android:label="fragment_welcome"
+        tools:layout="@layout/fragment_welcome" >
+        <action
+            android:id="@+id/action_welcomeFragment_to_calendarFragment"
+            app:destination="@id/calendarFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/securityPhraseLoaderFragment"
+        android:name="com.miguelrodriguez19.mindmaster.views.welcome.SecurityPhraseLoaderFragment"
+        android:label="fragment_security_phrase_loader"
+        tools:layout="@layout/fragment_security_phrase_loader" >
+        <action
+            android:id="@+id/action_securityPhraseLoaderFragment_to_calendarFragment"
+            app:destination="@id/calendarFragment" />
+    </fragment>
 </navigation>

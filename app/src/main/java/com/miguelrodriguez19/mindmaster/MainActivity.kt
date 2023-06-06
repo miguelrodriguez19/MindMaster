@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -16,7 +17,15 @@ import com.miguelrodriguez19.mindmaster.databinding.ActivityMainBinding
 import com.miguelrodriguez19.mindmaster.databinding.DrawerHeaderBinding
 import com.miguelrodriguez19.mindmaster.models.structures.UserResponse
 import com.miguelrodriguez19.mindmaster.models.utils.AESEncripter
+import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager
+import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.getAuth
 import com.miguelrodriguez19.mindmaster.models.utils.Preferences
+import com.miguelrodriguez19.mindmaster.models.utils.Preferences.getToken
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -33,19 +42,26 @@ class MainActivity : AppCompatActivity() {
             AESEncripter.init(applicationContext)
             false
         }
-        drawerLayout = binding.drawerLayout
-
-        val user = Preferences.getUser()
-        val initialFragment:Int = if (user != null) {
-            userSetUp(user)
-            R.id.calendarFragment
-        }else {
-            R.id.logInFragment
-        }
-
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.findNavController()
+        drawerLayout = binding.drawerLayout
+
+        val user = Preferences.getUser()
+        val curToken = getToken() ?: "current"
+        val supToken = runBlocking {
+            withContext(CoroutineScope(Dispatchers.IO).coroutineContext) {
+                getAuth().currentUser?.getIdToken(false)?.await()?.token ?: "supposed"
+            }
+        }
+
+        val initialFragment: Int = if (user != null && curToken == supToken && Preferences.getSecurePhrase() != null) {
+            userSetUp(user)
+            R.id.calendarFragment
+        } else {
+            R.id.logInFragment
+        }
+
         navController.navigate(initialFragment)
 
         appBarConfiguration = AppBarConfiguration(
@@ -67,12 +83,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun userSetUp(user: UserResponse) {
+        Preferences.setUser(user)
         val navHeaderBinding = DrawerHeaderBinding.bind(binding.navView.getHeaderView(0))
+        navHeaderBinding.tvName.text = user.firstName
         Glide.with(this)
             .load(user.photoUrl)
             .into(navHeaderBinding.civDrawerUserPhoto)
 
-        navHeaderBinding.tvName.text = user.firstName
+        val nextFragment: Int =
+            if (user.hasLoggedInBefore) {
+                R.id.securityPhraseLoaderFragment
+            } else {
+                R.id.welcomeFragment
+            }
+
+        navController.navigate(nextFragment)
+    }
+
+    fun updateSecurityPreferences(newSecurePhrase: String, newInitializationVector: String) {
+        Preferences.setSecurePhrase(newSecurePhrase)
+        Preferences.setInitializationVector(newInitializationVector)
     }
 
     fun lockDrawer() {
@@ -85,6 +115,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    fun logOut() {
+        Preferences.clearAll()
     }
 
 }

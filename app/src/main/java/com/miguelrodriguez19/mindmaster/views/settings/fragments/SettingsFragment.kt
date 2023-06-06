@@ -20,6 +20,7 @@ import com.miguelrodriguez19.mindmaster.models.structures.UserResponse
 import com.miguelrodriguez19.mindmaster.models.utils.Preferences
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs.Companion.showConfirmationDialog
 import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager
+import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.getAuth
 import de.hdodenhof.circleimageview.CircleImageView
 
 class SettingsFragment : Fragment() {
@@ -197,8 +198,8 @@ class SettingsFragment : Fragment() {
     }
 
     private fun logout() {
-        Preferences.clearUser()
-        FirebaseAuth.getInstance().signOut()
+        getAuth().signOut()
+        (requireActivity() as MainActivity).logOut()
         val intent = Intent(requireActivity(), MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)

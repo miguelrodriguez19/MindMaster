@@ -23,6 +23,8 @@
     <string name="AES_KEY_SIZE">256</string>
     <string name="GCM_IV_LENGTH">12</string>
     <string name="GCM_TAG_LENGTH">16</string>
+    <string name="millisecond_2_continue_passphrase">10000</string>
+    <string name="filePassphraseName">key</string>
 
 
 </resources>

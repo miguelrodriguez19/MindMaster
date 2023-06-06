@@ -150,4 +150,12 @@ object Toolkit {
         }
         return result
     }
+
+    fun parseStringToByteArray(ivString: String): ByteArray {
+        return Base64.getDecoder().decode(ivString)
+    }
+
+    fun parseByteArrayToString(iv:ByteArray):String{
+        return Base64.getEncoder().encodeToString(iv)
+    }
 }

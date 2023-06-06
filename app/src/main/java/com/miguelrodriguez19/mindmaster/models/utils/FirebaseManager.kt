@@ -6,13 +6,11 @@ import androidx.fragment.app.FragmentActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
-import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestoreSettings
-import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
@@ -37,7 +35,7 @@ import java.util.*
 object FirebaseManager {
 
     private const val TAG = "FIREBASE_MANAGER"
-    private const val SECURITY = "security"
+    private const val SECURE = "secure"
     private const val USERS = "users"
     private const val SCHEDULE = "schedule"
     private const val EVENTS = "events"
@@ -50,6 +48,7 @@ object FirebaseManager {
     private const val GROUPS = "groups"
     private const val ACCOUNTS = "accounts"
     private const val KEY = "key"
+    private const val TEMPORAL = "temporal"
 
     fun getAuth(): FirebaseAuth {
         return FirebaseAuth.getInstance()
@@ -65,6 +64,18 @@ object FirebaseManager {
     }
 
     private fun getUserByUID(uid: String, callback: (UserResponse?) -> Unit) {
+        searchUserInUsers(uid) {
+            if (it == null) {
+                searchUserInTemporal(uid) { tempUser ->
+                    callback(tempUser)
+                }
+            } else {
+                callback(it)
+            }
+        }
+    }
+
+    private fun searchUserInUsers(uid: String, callback: (UserResponse?) -> Unit) {
         getDB().collection(USERS).document(uid).get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val documentSnapshot = task.result
@@ -77,6 +88,34 @@ object FirebaseManager {
             } else {
                 callback(null)
             }
+        }
+    }
+
+    private fun searchUserInTemporal(uid: String, callback: (UserResponse?) -> Unit) {
+        getDB().collection(TEMPORAL).document(uid).get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val documentSnapshot = task.result
+                if (documentSnapshot != null && documentSnapshot.exists()) {
+                    val userResponse = documentSnapshot.toObject(UserResponse::class.java)
+                    callback(userResponse)
+                } else {
+                    callback(null)
+                }
+            } else {
+                callback(null)
+            }
+        }
+    }
+
+    fun updateHasLoggedInBefore(user: UserResponse) {
+        // Add user in Real Users collection
+        saveUser(user)
+        // Remove user from Temporal
+        deleteTemporalUser(user.uid)
+        // Update hasLoggedInBefore -> True
+        val upUser = user.copy(hasLoggedInBefore = true)
+        updateUser(upUser) {
+            Preferences.setUser(upUser)
         }
     }
 
@@ -108,14 +147,21 @@ object FirebaseManager {
     ) {
         getAuth().signInWithEmailAndPassword(email, password).addOnCompleteListener {
             if (it.isSuccessful) {
-                it.result.user?.let { firebaseUser ->
-                    getUserByUID(firebaseUser.uid) { user ->
-                        Preferences.setUser(user!!)
-                        (activity as MainActivity).userSetUp(user)
-                        callback(true)
+                val user = it.result.user
+                if (user != null && user.isEmailVerified) {
+                    getUserByUID(user.uid) { u ->
+                        if (u != null) {
+                            Preferences.setToken(user.getIdToken(false).result.token)
+                            (activity as MainActivity).userSetUp(u)
+                            callback(true)
+                        } else {
+                            callback(false)
+                        }
                     }
+                } else {
+                    callback(false)
                 }
-            }else{
+            } else {
                 callback(false)
             }
         }
@@ -133,9 +179,11 @@ object FirebaseManager {
                     saveImageInStorage(
                         context, url
                     ) { photoUrl ->
-                        saveUser(
+                        task.result.user?.sendEmailVerification()
+                        saveTemporalUser(
                             UserResponse(
-                                task.result.user?.uid!!, name, lastname, email, birthdate, photoUrl
+                                task.result.user?.uid!!, name, lastname,
+                                email, birthdate, photoUrl, false
                             )
                         )
                         result(true)
@@ -159,6 +207,13 @@ object FirebaseManager {
             }
     }
 
+    private fun saveTemporalUser(user: UserResponse) {
+        getDB().collection(TEMPORAL).document(user.uid).set(user).addOnSuccessListener { }
+            .addOnFailureListener { e ->
+                e.printStackTrace()
+            }
+    }
+
     fun updateUser(user: UserResponse, onUpdated: (UserResponse) -> Unit) {
         val docRef = getDB().collection(USERS).document(user.uid)
         val userData = user.toMap()
@@ -173,6 +228,12 @@ object FirebaseManager {
 
     fun deleteUser(user: UserResponse) {
         getDB().collection(USERS).document(user.uid).delete().addOnFailureListener {
+            it.printStackTrace()
+        }
+    }
+
+    private fun deleteTemporalUser(uid: String) {
+        getDB().collection(TEMPORAL).document(uid).delete().addOnFailureListener {
             it.printStackTrace()
         }
     }
@@ -492,16 +553,16 @@ object FirebaseManager {
 
         groupRef.set(mapOf(Pair("name", group.name)))
         for (account in group.accountsList) {
-            val accJson = Gson().toJson(account.copy(uid=groupRef.id))
+            val accJson = Gson().toJson(account.copy(uid = groupRef.id))
             val encryptedAccount = AESEncripter.encrypt(accJson)
             val accountUid = groupRef.collection(ACCOUNTS).document().id
             CoroutineScope(Dispatchers.IO).launch {
                 groupRef.collection(ACCOUNTS).document(accountUid)
                     .set(mapOf(Pair("account", encryptedAccount))).addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        accountList.add(account.copy(uid = accountUid))
-                    }
-                }.await()
+                        if (it.isSuccessful) {
+                            accountList.add(account.copy(uid = accountUid))
+                        }
+                    }.await()
             }.onJoin
         }
 
@@ -522,7 +583,7 @@ object FirebaseManager {
         context: Context,
         groupUID: String
     ): GroupPasswordsResponse = withContext(Dispatchers.IO) {
-        lateinit var groupName:String
+        lateinit var groupName: String
         val accountList = ArrayList<Account>()
         val userUID = getUserUID()
         val groupRef =
@@ -532,13 +593,13 @@ object FirebaseManager {
         groupName = groupRef.get().await().data?.getOrDefault("name", null) as String
 
         val docsSnap = groupRef.collection(ACCOUNTS).get().await().documents
-        for (accountDoc in docsSnap){
+        for (accountDoc in docsSnap) {
             try {
                 val encryptedAcc = accountDoc.get("account") as String
                 val accJson = AESEncripter.decrypt(encryptedAcc)
                 val account = Gson().fromJson(accJson, Account::class.java)
                 accountList.add(account)
-            }catch (e: JsonSyntaxException){
+            } catch (e: JsonSyntaxException) {
                 e.printStackTrace()
             }
         }
@@ -587,19 +648,36 @@ object FirebaseManager {
 
     }
 
-    fun getWords(): List<String> {
-        return emptyList()
+    suspend fun getWords(): List<String> = withContext(Dispatchers.IO) {
+        return@withContext getDB().collection(SECURE).document("secureWords").get().await()
+            .get("words") as List<String>
     }
 
-    fun saveInitialisationVector(iv:ByteArray) {
-        TODO("")
-        val ivString = Base64.getEncoder().encodeToString(iv)
+    fun saveCredentials(passPhraseHash: String, iv: String) {
+        val user = Preferences.getUser()
+        if (user != null) {
+            val fields = mapOf(Pair("hash", passPhraseHash), Pair("iv", iv))
+            getDB().collection(SECURE).document(user.uid).set(fields).addOnSuccessListener { }
+                .addOnFailureListener { e ->
+                    e.printStackTrace()
+                }
+        }
     }
 
-    fun getInitialisationVector(): ByteArray {
-        TODO("")
-        val ivString = ""
-        return Base64.getDecoder().decode(ivString)
+    suspend fun getSecurePhraseHash(): String? = withContext(Dispatchers.IO) {
+        val userUID = getUserUID()
+        val docRef =
+            getDB().collection(SECURE).document(userUID).get().await()
+
+        return@withContext docRef.get("hash") as String?
+    }
+
+    suspend fun getInitialisationVector(): String? = withContext(Dispatchers.IO) {
+        val userUID = getUserUID()
+        val docRef =
+            getDB().collection(SECURE).document(userUID).get().await()
+
+        return@withContext docRef.get("iv") as String?
     }
 
 }

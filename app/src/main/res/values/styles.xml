@@ -4,13 +4,18 @@
         <item name="android:fontFamily">@font/popings_medium_500</item>
         <item name="android:textSize">30sp</item>
     </style>
+
+    <style name="secondary_main_titles" >
+        <item name="android:fontFamily">@font/popings_medium_500</item>
+        <item name="android:textSize">22sp</item>
+    </style>
     <style name="secondary_titles" >
         <item name="android:fontFamily">@font/popings_regular_400</item>
         <item name="android:textSize">20sp</item>
     </style>
     <style name="body_large" >
         <item name="android:fontFamily">@font/popings_regular_400</item>
-        <item name="android:textSize">15sp</item>
+        <item name="android:textSize">16sp</item>
     </style>
     <style name="rounded_corners">
         <item name="cornerFamily">rounded</item>
@@ -40,6 +45,7 @@
         <item name="boxStrokeErrorColor">@color/red_error_500</item>
         <item name="errorIconDrawable">@null</item>
         <item name="startIconTint">@color/gray_dove_500</item>
+        <item name="endIconTint">@color/gray_dove_500</item>
     </style>
 
     <style name="bottom_sheet_grip">
