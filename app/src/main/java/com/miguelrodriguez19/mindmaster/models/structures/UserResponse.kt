@@ -8,7 +8,7 @@ data class UserResponse(
     val birthdate: String?,
     val photoUrl:String,
     val hasLoggedInBefore:Boolean
-){
+):java.io.Serializable{
     constructor() : this("", "", null, "", null, "", false)
 
     constructor(user: UserResponse, firstName: String, lastName: String, birthdate: String) : this(user.uid, firstName, lastName, user.email, birthdate, user.photoUrl, user.hasLoggedInBefore)

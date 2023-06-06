@@ -23,9 +23,7 @@ import com.miguelrodriguez19.mindmaster.models.structures.UserResponse
 import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager
 import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.getAuth
 import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.logInEmailPwd
-import com.miguelrodriguez19.mindmaster.models.utils.Preferences
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.checkFields
-
 
 class LogInFragment : Fragment() {
     private var _binding: FragmentLogInBinding? = null
@@ -70,9 +68,9 @@ class LogInFragment : Fragment() {
                     progressBar.visibility = View.VISIBLE
                     logInEmailPwd(
                         requireActivity(), etEmail.text.toString(), etPassword.text.toString()
-                    ) { ok ->
+                    ) { ok, user, token ->
                         if (ok) {
-                            //updateUI()
+                            updateUI(user!!, token!!)
                         } else {
                             progressBar.visibility = View.GONE
                             tvError.visibility = View.VISIBLE
@@ -115,9 +113,14 @@ class LogInFragment : Fragment() {
         }
     }
 
-    private fun updateUI() {
+    private fun updateUI(user:UserResponse, token:String) {
         clearFields()
-        progressBar.visibility = View.GONE
+        val action = if (!user.hasLoggedInBefore){
+            LogInFragmentDirections.actionLogInFragmentToWelcomeFragment(user, token)
+        }else{
+            LogInFragmentDirections.actionLogInFragmentToSecurityPhraseLoaderFragment(user, token)
+        }
+        findNavController().navigate(action)
     }
 
     private fun getUserLanguage(): Int {
@@ -146,9 +149,13 @@ class LogInFragment : Fragment() {
                                     uid, account?.givenName!!, account.familyName, account.email!!,
                                     null, account.photoUrl!!.toString(), false
                                 )
+                                TODO()
                                 FirebaseManager.saveUser(actualUser)
-                                (requireActivity() as MainActivity).userSetUp(actualUser)
-                                updateUI()
+                                (requireActivity() as MainActivity).setUpUser(
+                                    actualUser,
+                                    "token"
+                                )
+                                //updateUI()
                             } else {
                                 Toast.makeText(
                                     context,
@@ -187,6 +194,7 @@ class LogInFragment : Fragment() {
         etPassword.text = null
         etPassword.error = null
         tvError.text = ""
+        progressBar.visibility = View.GONE
     }
 
     override fun onDestroyView() {

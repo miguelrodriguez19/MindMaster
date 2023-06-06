@@ -5,7 +5,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.provider.SyncStateContract.Helpers.update
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
@@ -31,6 +31,8 @@ import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.showToast
 class WelcomeFragment : Fragment() {
     private var _binding: FragmentWelcomeBinding? = null
     private val binding get() = _binding!!
+    val args: WelcomeFragmentArgs by navArgs()
+
     private lateinit var tvWelcomeTitle: TextView
     private lateinit var tilPassphrase: TextInputLayout
     private lateinit var etPassphrase: EditText
@@ -70,22 +72,27 @@ class WelcomeFragment : Fragment() {
                 checkAgreement.isErrorShown = false
                 val fileName = "${getString(R.string.filePassphraseName)}.txt"
                 createDocumentResult.launch(fileName)
+                setUpUser()
                 saveInFirestoreHash()
-                updateHasLoggedInBefore(Preferences.getUser()!!)
+                updateHasLoggedInBefore(args.user)
+                val action = WelcomeFragmentDirections.actionWelcomeFragmentToCalendarFragment()
+                findNavController().navigate(action)
             } else {
-
                 checkAgreement.isErrorShown = true
             }
         }
 
     }
 
+    private fun setUpUser() {
+        (requireActivity() as MainActivity).setUpUser(args.user, args.token)
+    }
+
     private fun saveInFirestoreHash() {
         if (passphrase != null) {
             val phraseHash = AESEncripter.generateHash(passphrase!!)
             val iv = AESEncripter.generateInitializationVector()
-            Preferences.setInitializationVector(iv)
-            Preferences.setSecurePhrase(phraseHash)
+            (requireActivity() as MainActivity).updateSecurityPreferences(phraseHash,iv)
             FirebaseManager.saveCredentials(phraseHash, iv)
         }
     }

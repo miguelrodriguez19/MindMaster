@@ -14,6 +14,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -23,7 +24,6 @@ import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentSecurityPhraseLoaderBinding
 import com.miguelrodriguez19.mindmaster.models.utils.AESEncripter
 import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager
-import com.miguelrodriguez19.mindmaster.models.utils.Preferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -35,6 +35,8 @@ import java.io.InputStreamReader
 class SecurityPhraseLoaderFragment : Fragment() {
     private var _binding: FragmentSecurityPhraseLoaderBinding? = null
     private val binding get() = _binding!!
+    val args: SecurityPhraseLoaderFragmentArgs by navArgs()
+
     private lateinit var tvWelcomeTitle: TextView
     private lateinit var tvFileName: TextView
     private lateinit var tvError: TextView
@@ -63,14 +65,14 @@ class SecurityPhraseLoaderFragment : Fragment() {
         initBinding()
         tvWelcomeTitle.text = requireContext().getString(
             R.string.inner_welcome_back_2_user,
-            Preferences.getUser()?.firstName
+            args.user.firstName
         )
 
         btnContinue.setOnClickListener {
-            if (etPassphrase.text.toString().isNotEmpty() || !fileContent.isNullOrEmpty()) {
+            if (etPassphrase.text.toString().isNotBlank() || !fileContent.isNullOrEmpty()) {
                 progressBar.visibility = View.VISIBLE
                 CoroutineScope(Dispatchers.IO).launch {
-                    expectedHash = FirebaseManager.getSecurePhraseHash()
+                    expectedHash = FirebaseManager.getSecurePhraseHash(args.user.uid)
                 }.invokeOnCompletion {
                     val phrase = fileContent ?: etPassphrase.text.toString()
                     val inputHash =
@@ -78,23 +80,28 @@ class SecurityPhraseLoaderFragment : Fragment() {
                     if (inputHash == expectedHash) {
                         CoroutineScope(Dispatchers.IO).launch {
                             val iVector =
-                                withContext(Dispatchers.Default) {
-                                    FirebaseManager.getInitialisationVector()
+                                withContext(Dispatchers.IO) {
+                                    FirebaseManager.getInitialisationVector(args.user.uid)
                                 }
                             if (iVector != null) {
                                 val main = (requireActivity() as MainActivity)
-                                main.updateSecurityPreferences(phrase, iVector)
-                                withContext(Dispatchers.Main){
+                                withContext(Dispatchers.Main) {
+                                    main.setUpUser(args.user, args.token)
+                                    main.updateSecurityPreferences(phrase, iVector)
                                     updateUI()
                                 }
                             } else {
-                                progressBar.visibility = View.GONE
-                                showError(R.string.try_later)
+                                withContext(Dispatchers.Main) {
+                                    progressBar.visibility = View.GONE
+                                    showError(R.string.try_later)
+                                }
                             }
                         }
                     } else {
-                        progressBar.visibility = View.GONE
-                        showError(R.string.incorrect_secure_phrase_err)
+                        CoroutineScope(Dispatchers.Main).launch {
+                            progressBar.visibility = View.GONE
+                            showError(R.string.incorrect_secure_phrase_err)
+                        }
                     }
                 }
             } else {
@@ -156,7 +163,6 @@ class SecurityPhraseLoaderFragment : Fragment() {
     private val getContent =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             hideError()
-            clearFile()
             if (uri != null) {
                 if (requireContext().contentResolver.getType(uri) == "text/plain") {
                     try {

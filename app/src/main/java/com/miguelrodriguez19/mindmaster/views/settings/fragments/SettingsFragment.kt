@@ -200,9 +200,6 @@ class SettingsFragment : Fragment() {
     private fun logout() {
         getAuth().signOut()
         (requireActivity() as MainActivity).logOut()
-        val intent = Intent(requireActivity(), MainActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
     }
 
     override fun onDestroyView() {

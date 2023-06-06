@@ -1,11 +1,11 @@
 package com.miguelrodriguez19.mindmaster
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -17,7 +17,6 @@ import com.miguelrodriguez19.mindmaster.databinding.ActivityMainBinding
 import com.miguelrodriguez19.mindmaster.databinding.DrawerHeaderBinding
 import com.miguelrodriguez19.mindmaster.models.structures.UserResponse
 import com.miguelrodriguez19.mindmaster.models.utils.AESEncripter
-import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager
 import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.getAuth
 import com.miguelrodriguez19.mindmaster.models.utils.Preferences
 import com.miguelrodriguez19.mindmaster.models.utils.Preferences.getToken
@@ -56,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         val initialFragment: Int = if (user != null && curToken == supToken && Preferences.getSecurePhrase() != null) {
-            userSetUp(user)
+            loadUserData(user)
             R.id.calendarFragment
         } else {
             R.id.logInFragment
@@ -82,22 +81,20 @@ class MainActivity : AppCompatActivity() {
         binding.navView.setupWithNavController(navController)
     }
 
-    fun userSetUp(user: UserResponse) {
-        Preferences.setUser(user)
+    private fun loadUserData(user: UserResponse) {
         val navHeaderBinding = DrawerHeaderBinding.bind(binding.navView.getHeaderView(0))
         navHeaderBinding.tvName.text = user.firstName
+
         Glide.with(this)
             .load(user.photoUrl)
             .into(navHeaderBinding.civDrawerUserPhoto)
+    }
 
-        val nextFragment: Int =
-            if (user.hasLoggedInBefore) {
-                R.id.securityPhraseLoaderFragment
-            } else {
-                R.id.welcomeFragment
-            }
+    fun setUpUser(user: UserResponse, token: String) {
+        Preferences.setUser(user)
+        Preferences.setToken(token)
 
-        navController.navigate(nextFragment)
+        loadUserData(user)
     }
 
     fun updateSecurityPreferences(newSecurePhrase: String, newInitializationVector: String) {
@@ -119,6 +116,9 @@ class MainActivity : AppCompatActivity() {
 
     fun logOut() {
         Preferences.clearAll()
+        val intent = Intent(this, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
     }
 
 }

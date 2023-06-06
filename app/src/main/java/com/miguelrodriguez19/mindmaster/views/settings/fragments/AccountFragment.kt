@@ -15,7 +15,6 @@ import com.bumptech.glide.Glide
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
-import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentAccountBinding
 import com.miguelrodriguez19.mindmaster.models.structures.UserResponse
@@ -55,7 +54,7 @@ class AccountFragment : Fragment() {
 
         btnSave.setOnClickListener {
             if (areFieldsModified()) {
-                updateFirestoreData()
+                updateFirestoreUser()
                 findNavController().popBackStack()
             } else {
                 showToast(requireContext(), R.string.error_unmodified_fields)
@@ -84,7 +83,7 @@ class AccountFragment : Fragment() {
         })
     }
 
-    private fun updateFirestoreData() {
+    private fun updateFirestoreUser() {
         progressBar.visibility = View.VISIBLE
         FirebaseManager.updateUser(
             UserResponse(
@@ -124,22 +123,9 @@ class AccountFragment : Fragment() {
         progressBar = binding.progressBar
     }
 
-    override fun onPause() {
-        super.onPause()
-        val activity = (requireActivity() as MainActivity)
-        activity.userSetUp(Preferences.getUser()!!)
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        val activity = (requireActivity() as MainActivity)
-        activity.userSetUp(Preferences.getUser()!!)
     }
 
-    override fun onResume() {
-        super.onResume()
-        user = Preferences.getUser()!!
-        setUpWithUser()
-    }
 }

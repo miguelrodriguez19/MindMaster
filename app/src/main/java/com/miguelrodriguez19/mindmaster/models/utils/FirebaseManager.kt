@@ -14,7 +14,6 @@ import com.google.firebase.firestore.ktx.firestoreSettings
 import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
-import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.models.comparators.AccountsGroupsComparator
 import com.miguelrodriguez19.mindmaster.models.comparators.EventComparator
@@ -143,7 +142,7 @@ object FirebaseManager {
 
     // LOG_IN & SIGN_UP
     fun logInEmailPwd(
-        activity: FragmentActivity, email: String, password: String, callback: (Boolean) -> Unit
+        activity: FragmentActivity, email: String, password: String, callback: (Boolean, UserResponse?, String?) -> Unit
     ) {
         getAuth().signInWithEmailAndPassword(email, password).addOnCompleteListener {
             if (it.isSuccessful) {
@@ -151,18 +150,17 @@ object FirebaseManager {
                 if (user != null && user.isEmailVerified) {
                     getUserByUID(user.uid) { u ->
                         if (u != null) {
-                            Preferences.setToken(user.getIdToken(false).result.token)
-                            (activity as MainActivity).userSetUp(u)
-                            callback(true)
+                            val token = user.getIdToken(false).result.token
+                            callback(true, u, token)
                         } else {
-                            callback(false)
+                            callback(false, null, null)
                         }
                     }
                 } else {
-                    callback(false)
+                    callback(false, null, null)
                 }
             } else {
-                callback(false)
+                callback(false, null, null)
             }
         }
     }
@@ -253,31 +251,33 @@ object FirebaseManager {
     fun saveInSchedule(
         context: Context, absEvent: AbstractEvent, onAdded: (AbstractEvent) -> Unit
     ) {
-        val usersUID = getUserUID()
-        getRefAndDate(absEvent) { ref, date ->
-            val schedule =
-                getDB().collection(USERS).document(usersUID).collection(SCHEDULE)
-                    .document(date)
-            schedule.set(mapOf(Pair(DATE, date)))
+        val userUID = getUserUID()
+        if (userUID != null){
+            getRefAndDate(absEvent) { ref, date ->
+                val schedule =
+                    getDB().collection(USERS).document(userUID).collection(SCHEDULE)
+                        .document(date)
+                schedule.set(mapOf(Pair(DATE, date)))
 
-            val collection = schedule.collection(ref)
-            collection.add(absEvent).addOnCompleteListener { obj ->
-                if (obj.isSuccessful) {
-                    val id = obj.result.id
-                    when (absEvent.type) {
-                        EventType.EVENT -> {
-                            onAdded(Event(id, (absEvent as Event)))
+                val collection = schedule.collection(ref)
+                collection.add(absEvent).addOnCompleteListener { obj ->
+                    if (obj.isSuccessful) {
+                        val id = obj.result.id
+                        when (absEvent.type) {
+                            EventType.EVENT -> {
+                                onAdded(Event(id, (absEvent as Event)))
+                            }
+                            EventType.REMINDER -> {
+                                onAdded(Reminder(id, (absEvent as Reminder)))
+                            }
+                            EventType.TASK -> {
+                                onAdded(Task(id, (absEvent as Task)))
+                            }
                         }
-                        EventType.REMINDER -> {
-                            onAdded(Reminder(id, (absEvent as Reminder)))
-                        }
-                        EventType.TASK -> {
-                            onAdded(Task(id, (absEvent as Task)))
-                        }
+                    } else {
+                        obj.exception?.printStackTrace()
+                        showToast(context, R.string.try_later)
                     }
-                } else {
-                    obj.exception?.printStackTrace()
-                    showToast(context, R.string.try_later)
                 }
             }
         }
@@ -286,11 +286,12 @@ object FirebaseManager {
     fun updateInSchedule(
         context: Context, absEvent: AbstractEvent, onUpdated: (AbstractEvent?) -> Unit
     ) {
-        val usersUID = getUserUID()
+        val userUID = getUserUID()
+        if (userUID != null){
         getRefAndDate(absEvent) { ref, date ->
 
             val collectionRef =
-                getDB().collection(USERS).document(usersUID).collection(SCHEDULE)
+                getDB().collection(USERS).document(userUID).collection(SCHEDULE)
                     .document(date)
             collectionRef.update(mapOf(Pair(DATE, date)))
 
@@ -303,16 +304,17 @@ object FirebaseManager {
                     showToast(context, R.string.try_later)
                 }
             }
-        }
+        }}
     }
 
     fun deleteInSchedule(
         context: Context, absEvent: AbstractEvent, onDeleted: (AbstractEvent) -> Unit
     ) {
-        val usersUID = getUserUID()
+        val userUID = getUserUID()
+        if (userUID != null){
         getRefAndDate(absEvent) { ref, date ->
             val collectionRef =
-                getDB().collection(USERS).document(usersUID).collection(SCHEDULE)
+                getDB().collection(USERS).document(userUID).collection(SCHEDULE)
                     .document(date).collection(ref)
 
             collectionRef.document(absEvent.uid)
@@ -324,18 +326,20 @@ object FirebaseManager {
                     exception.printStackTrace()
                     showToast(context, R.string.try_later)
                 }
-        }
+        }}
     }
 
 
     suspend fun loadScheduleByDate(
         context: Context, date: String
     ): List<AbstractEvent> = withContext(Dispatchers.IO) {
+        val userUID = getUserUID()
         val dayList = ArrayList<AbstractEvent>()
+        if (userUID != null){
         val documentSnapshot: DocumentSnapshot
         try {
             documentSnapshot = getDB().collection(USERS)
-                .document(getUserUID())
+                .document(userUID)
                 .collection(SCHEDULE)
                 .document(date)
                 .get()
@@ -374,37 +378,40 @@ object FirebaseManager {
             if (task != null) {
                 dayList.add(Task(taskDoc.id, task))
             }
-        }
+        }}
 
         return@withContext dayList.sortedWith(EventComparator())
     }
 
     fun loadAllSchedule(context: Context, callback: (List<EventsResponse>) -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
-            val scheduleRef = getDB().collection(USERS)
-                .document(getUserUID())
-                .collection(SCHEDULE)
-                .get()
-                .await()
+            val userUID = getUserUID()
+            if (userUID != null) {
+                val scheduleRef = getDB().collection(USERS)
+                    .document(userUID)
+                    .collection(SCHEDULE)
+                    .get()
+                    .await()
 
-            val deferredList = mutableListOf<Deferred<EventsResponse?>>()
+                val deferredList = mutableListOf<Deferred<EventsResponse?>>()
 
-            for (doc in scheduleRef) {
-                val deferred = async {
-                    val dayList = loadScheduleByDate(context, doc.id)
-                    if (dayList.isNotEmpty()) {
-                        EventsResponse(doc.id, dayList)
-                    } else {
-                        null
+                for (doc in scheduleRef) {
+                    val deferred = async {
+                        val dayList = loadScheduleByDate(context, doc.id)
+                        if (dayList.isNotEmpty()) {
+                            EventsResponse(doc.id, dayList)
+                        } else {
+                            null
+                        }
                     }
+                    deferredList.add(deferred)
                 }
-                deferredList.add(deferred)
-            }
 
-            val allEvents = deferredList.awaitAll().filterNotNull()
+                val allEvents = deferredList.awaitAll().filterNotNull()
 
-            withContext(Dispatchers.Main) {
-                callback(allEvents.sortedWith(EventGroupComparator()))
+                withContext(Dispatchers.Main) {
+                    callback(allEvents.sortedWith(EventGroupComparator()))
+                }
             }
         }
     }
@@ -412,8 +419,9 @@ object FirebaseManager {
 
     // MOVEMENTS
     fun saveMovement(context: Context, move: Movement, callback: (Movement) -> Unit) {
-        val usersUID = getUserUID()
-        val collectionRef = getDB().collection(USERS).document(usersUID).collection(MOVEMENTS)
+        val userUID = getUserUID()
+        if (userUID != null){
+        val collectionRef = getDB().collection(USERS).document(userUID).collection(MOVEMENTS)
             .document(getMonthYearOf(move.date))
 
         collectionRef.set(mapOf(Pair(DATE, getMonthYearOf(move.date))))
@@ -431,15 +439,16 @@ object FirebaseManager {
                 task.exception?.printStackTrace()
                 showToast(context, R.string.try_later)
             }
-        }
+        }}
     }
 
     fun updateMovement(
         context: Context, movement: Movement, onUpdated: (Movement?) -> Unit
     ) {
-        val usersUID = getUserUID()
+        val userUID = getUserUID()
+        if (userUID != null){
         val date = movement.date
-        val collectionRef = getDB().collection(USERS).document(usersUID).collection(MOVEMENTS)
+        val collectionRef = getDB().collection(USERS).document(userUID).collection(MOVEMENTS)
             .document(getMonthYearOf(date))
 
         collectionRef.update(mapOf(Pair(DATE, getMonthYearOf(date))))
@@ -457,7 +466,7 @@ object FirebaseManager {
                 showToast(context, R.string.try_later)
             }
         }
-    }
+    }}
 
     suspend fun loadActualMonthMovements(
         context: Context,
@@ -465,9 +474,10 @@ object FirebaseManager {
     ): MonthMovementsResponse = withContext(Dispatchers.IO) {
         val incomesList = ArrayList<Movement>()
         val expensesList = ArrayList<Movement>()
-
+        val userUID = getUserUID()
+        if (userUID != null){
         val documentSnapshot = getDB().collection(USERS)
-            .document(getUserUID())
+            .document(userUID)
             .collection(MOVEMENTS).document(currentMonth).get().await()
 
         val incomesDeferred = async { documentSnapshot.reference.collection(INCOMES).get().await() }
@@ -488,15 +498,17 @@ object FirebaseManager {
             if (m != null) {
                 expensesList.add(Movement(expense.id, m))
             }
-        }
+        }}
 
         return@withContext MonthMovementsResponse(currentMonth, incomesList, expensesList)
     }
 
     fun loadAllMovements(context: Context, callback: (List<MonthMovementsResponse>) -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
+            val userUID = getUserUID()
+            if (userUID != null){
             val movementsRef = getDB().collection(USERS)
-                .document(getUserUID())
+                .document(userUID)
                 .collection(MOVEMENTS)
                 .get()
                 .await()
@@ -521,12 +533,13 @@ object FirebaseManager {
             withContext(Dispatchers.Main) {
                 callback(allMovementsResponses.sortedWith(MovementsGroupComparator()))
             }
-        }
+        }}
     }
 
     fun deleteMovement(context: Context, movement: Movement, onDeleted: (Movement) -> Unit) {
-        val usersUID = getUserUID()
-        val collectionRef = getDB().collection(USERS).document(usersUID).collection(MOVEMENTS)
+        val userUID = getUserUID()
+        if (userUID != null){
+        val collectionRef = getDB().collection(USERS).document(userUID).collection(MOVEMENTS)
             .document(getMonthYearOf(movement.date))
 
         val collectionType = when (movement.type) {
@@ -540,7 +553,7 @@ object FirebaseManager {
                 exception.printStackTrace()
                 showToast(context, R.string.try_later)
             }
-    }
+    }}
 
     // PASSWORDS
     fun saveGroup(
@@ -549,27 +562,28 @@ object FirebaseManager {
     ) {
         val accountList = ArrayList<Account>()
         val userUID = getUserUID()
-        val groupRef = getDB().collection(USERS).document(userUID).collection(GROUPS).document()
+        if (userUID != null) {
+            val groupRef = getDB().collection(USERS).document(userUID).collection(GROUPS).document()
 
-        groupRef.set(mapOf(Pair("name", group.name)))
-        for (account in group.accountsList) {
-            val accJson = Gson().toJson(account.copy(uid = groupRef.id))
-            val encryptedAccount = AESEncripter.encrypt(accJson)
-            val accountUid = groupRef.collection(ACCOUNTS).document().id
-            CoroutineScope(Dispatchers.IO).launch {
-                groupRef.collection(ACCOUNTS).document(accountUid)
-                    .set(mapOf(Pair("account", encryptedAccount))).addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            accountList.add(account.copy(uid = accountUid))
-                        }
-                    }.await()
-            }.onJoin
+            groupRef.set(mapOf(Pair("name", group.name)))
+            for (account in group.accountsList) {
+                val accJson = Gson().toJson(account.copy(uid = groupRef.id))
+                val encryptedAccount = AESEncripter.encrypt(accJson)
+                val accountUid = groupRef.collection(ACCOUNTS).document().id
+                CoroutineScope(Dispatchers.IO).launch {
+                    groupRef.collection(ACCOUNTS).document(accountUid)
+                        .set(mapOf(Pair("account", encryptedAccount))).addOnCompleteListener {
+                            if (it.isSuccessful) {
+                                accountList.add(account.copy(uid = accountUid))
+                            }
+                        }.await()
+                }.onJoin
+            }
+
+            if (accountList.size == group.accountsList.size) {
+                onSuccess(group.copy(accountsList = accountList))
+            }
         }
-
-        if (accountList.size == group.accountsList.size) {
-            onSuccess(group.copy(accountsList = accountList))
-        }
-
     }
 
     fun updateGroup(
@@ -586,24 +600,25 @@ object FirebaseManager {
         lateinit var groupName: String
         val accountList = ArrayList<Account>()
         val userUID = getUserUID()
-        val groupRef =
-            getDB().collection(USERS).document(userUID).collection(GROUPS).document(groupUID)
+        if (userUID != null) {
+            val groupRef =
+                getDB().collection(USERS).document(userUID).collection(GROUPS).document(groupUID)
 
 
-        groupName = groupRef.get().await().data?.getOrDefault("name", null) as String
+            groupName = groupRef.get().await().data?.getOrDefault("name", null) as String
 
-        val docsSnap = groupRef.collection(ACCOUNTS).get().await().documents
-        for (accountDoc in docsSnap) {
-            try {
-                val encryptedAcc = accountDoc.get("account") as String
-                val accJson = AESEncripter.decrypt(encryptedAcc)
-                val account = Gson().fromJson(accJson, Account::class.java)
-                accountList.add(account)
-            } catch (e: JsonSyntaxException) {
-                e.printStackTrace()
+            val docsSnap = groupRef.collection(ACCOUNTS).get().await().documents
+            for (accountDoc in docsSnap) {
+                try {
+                    val encryptedAcc = accountDoc.get("account") as String
+                    val accJson = AESEncripter.decrypt(encryptedAcc)
+                    val account = Gson().fromJson(accJson, Account::class.java)
+                    accountList.add(account)
+                } catch (e: JsonSyntaxException) {
+                    e.printStackTrace()
+                }
             }
         }
-
         return@withContext GroupPasswordsResponse(groupUID, groupName, accountList)
     }
 
@@ -611,8 +626,10 @@ object FirebaseManager {
         context: Context, onSuccess: (List<GroupPasswordsResponse>) -> Unit
     ) {
         CoroutineScope(Dispatchers.IO).launch {
+            val userUID = getUserUID()
+            if (userUID != null){
             val movementsRef = getDB().collection(USERS)
-                .document(getUserUID())
+                .document(userUID)
                 .collection(GROUPS)
                 .get()
                 .await()
@@ -636,7 +653,7 @@ object FirebaseManager {
 
             withContext(Dispatchers.Main) {
                 onSuccess(allGroupsResponse.sortedWith(AccountsGroupsComparator()))
-            }
+            }}
         }
     }
 
@@ -645,7 +662,17 @@ object FirebaseManager {
         group: GroupPasswordsResponse,
         onDeleted: (GroupPasswordsResponse) -> Unit
     ) {
-
+            val userUID = getUserUID()
+            if (userUID != null){
+                val collectionRef = getDB().collection(USERS).document(userUID).collection(GROUPS)
+                    .document(group.uid).delete()
+                    .addOnSuccessListener {
+                        onDeleted(group)
+                    }.addOnFailureListener { exception ->
+                        exception.printStackTrace()
+                        showToast(context, R.string.try_later)
+                    }
+            }
     }
 
     suspend fun getWords(): List<String> = withContext(Dispatchers.IO) {
@@ -664,16 +691,14 @@ object FirebaseManager {
         }
     }
 
-    suspend fun getSecurePhraseHash(): String? = withContext(Dispatchers.IO) {
-        val userUID = getUserUID()
+    suspend fun getSecurePhraseHash(userUID: String): String? = withContext(Dispatchers.IO) {
         val docRef =
             getDB().collection(SECURE).document(userUID).get().await()
 
         return@withContext docRef.get("hash") as String?
     }
 
-    suspend fun getInitialisationVector(): String? = withContext(Dispatchers.IO) {
-        val userUID = getUserUID()
+    suspend fun getInitialisationVector(userUID:String): String? = withContext(Dispatchers.IO) {
         val docRef =
             getDB().collection(SECURE).document(userUID).get().await()
 

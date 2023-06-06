@@ -39,7 +39,7 @@ object Preferences {
         return userSettings?.toUserResponse()
     }
 
-    fun getUserUID(): String = getUser()!!.uid
+    fun getUserUID(): String? = getUser()?.uid
 
     fun setUser(user: UserResponse) {
         val json = user.toJson()

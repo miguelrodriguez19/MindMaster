@@ -20,6 +20,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentSignUpBinding
+import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs.Companion.showAlertDialog
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs.Companion.showDatePicker
 import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.createUser
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit
@@ -97,7 +98,7 @@ class SignUpFragment : Fragment() {
                 arrayOf(tilEmail, tilName, tilBirthdate, tilPassword, tilRepeatPassword)
             ) { ok ->
                 if (ok) {
-                    if (checkTerms.isChecked){
+                    if (checkTerms.isChecked) {
                         progressBar.visibility = View.VISIBLE
                         createUser(
                             requireContext(), etName.text.toString(),
@@ -106,11 +107,15 @@ class SignUpFragment : Fragment() {
                         ) { wasAdded ->
                             if (wasAdded) {
                                 clearFields()
+                                showAlertDialog(
+                                    requireContext(), getString(R.string.verify_email),
+                                    getString(R.string.verify_email_message)
+                                )
                                 progressBar.visibility = View.GONE
                                 findNavController().popBackStack()
                             }
                         }
-                    }else{
+                    } else {
                         checkTerms.isErrorShown = true
                         checkTerms.error = requireContext().getString(R.string.field_obligatory)
                         showToast(requireContext(), R.string.check_terms_and_conditions)
@@ -208,8 +213,10 @@ class SignUpFragment : Fragment() {
     }
 
     private fun clearFields() {
-        val editTexts = listOf(etName, etSurname, etEmail, etBirthdate, etPassword, etRepeatPassword)
-        val textInputLayouts = listOf(tilName, tilEmail, tilBirthdate, tilPassword, tilRepeatPassword)
+        val editTexts =
+            listOf(etName, etSurname, etEmail, etBirthdate, etPassword, etRepeatPassword)
+        val textInputLayouts =
+            listOf(tilName, tilEmail, tilBirthdate, tilPassword, tilRepeatPassword)
 
         for (editText in editTexts) {
             editText.text = null
