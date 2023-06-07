@@ -1,6 +1,5 @@
 package com.miguelrodriguez19.mindmaster.views.settings.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +11,6 @@ import com.bumptech.glide.Glide
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.switchmaterial.SwitchMaterial
-import com.google.firebase.auth.FirebaseAuth
 import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentSettingsBinding
@@ -84,8 +82,8 @@ class SettingsFragment : Fragment() {
                 if (confirmed) {
                     showConfirmationDialog(
                         requireContext(),getString(R.string.confirmation_twice),null
-                    ) { confirmed ->
-                        if (confirmed) {
+                    ) { ok ->
+                        if (ok) {
                             deleteAccountFromFirestore()
                         }
                     }
@@ -141,15 +139,15 @@ class SettingsFragment : Fragment() {
 
     private fun setUpData() {
         Glide.with(requireActivity())
-            .load(user?.photoUrl)
+            .load(user.photoUrl)
             .into(ivUserPhoto)
-        tvName.text = user?.firstName ?: ""
+        tvName.text = user.firstName
 
         // TODO()
     }
 
     private fun deleteAccountFromFirestore() {
-        FirebaseManager.deleteUser(user!!)
+        FirebaseManager.deleteUser(user)
         logout()
     }
 
@@ -207,14 +205,4 @@ class SettingsFragment : Fragment() {
         _binding = null
     }
 
-    override fun onStart() {
-        super.onStart()
-        user = Preferences.getUser()!!
-        setUpData()
-    }
-    override fun onResume() {
-        super.onResume()
-        user = Preferences.getUser()!!
-        setUpData()
-    }
 }

@@ -2,7 +2,7 @@ package com.miguelrodriguez19.mindmaster.models.utils
 
 import android.content.Context
 import android.graphics.Bitmap
-import androidx.fragment.app.FragmentActivity
+import android.os.CountDownTimer
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
@@ -140,6 +140,10 @@ object FirebaseManager {
         })
     }
 
+    fun getCurrentUserToken(): String? = runBlocking {
+            getAuth().currentUser?.getIdToken(false)?.await()?.token
+        }
+
     // LOG_IN & SIGN_UP
     fun logInEmailPwd(
         email: String,
@@ -187,13 +191,8 @@ object FirebaseManager {
                         task.result.user?.sendEmailVerification()
                         saveTemporalUser(
                             UserResponse(
-                                task.result.user?.uid!!,
-                                name,
-                                lastname,
-                                email,
-                                birthdate,
-                                photoUrl,
-                                false
+                                task.result.user?.uid!!, name, lastname,
+                                email, birthdate, photoUrl, false
                             )
                         )
                         result(true)
@@ -210,7 +209,7 @@ object FirebaseManager {
             }
     }
 
-    fun saveUser(user: UserResponse) {
+    private fun saveUser(user: UserResponse) {
         getDB().collection(USERS).document(user.uid).set(user).addOnSuccessListener { }
             .addOnFailureListener { e ->
                 e.printStackTrace()
@@ -228,13 +227,15 @@ object FirebaseManager {
         val docRef = getDB().collection(USERS).document(user.uid)
         val userData = user.toMap()
         docRef.update(userData).addOnSuccessListener {
-                onUpdated(user)
-            }.addOnFailureListener { e ->
-                e.printStackTrace()
-            }
+            onUpdated(user)
+        }.addOnFailureListener { e ->
+            e.printStackTrace()
+        }
     }
 
     fun deleteUser(user: UserResponse) {
+        getAuth().currentUser?.delete()
+        deleteCredentials()
         getDB().collection(USERS).document(user.uid).delete().addOnFailureListener {
             it.printStackTrace()
         }
@@ -327,11 +328,11 @@ object FirebaseManager {
                         .collection(ref)
 
                 collectionRef.document(absEvent.uid).delete().addOnSuccessListener {
-                        onDeleted(absEvent)
-                    }.addOnFailureListener { exception ->
-                        exception.printStackTrace()
-                        showToast(context, R.string.try_later)
-                    }
+                    onDeleted(absEvent)
+                }.addOnFailureListener { exception ->
+                    exception.printStackTrace()
+                    showToast(context, R.string.try_later)
+                }
             }
         }
     }
@@ -549,11 +550,11 @@ object FirebaseManager {
                 Type.EXPENSE -> collectionRef.collection(EXPENSES)
             }
             collectionType.document(movement.uid).delete().addOnSuccessListener {
-                    onDeleted(movement)
-                }.addOnFailureListener { exception ->
-                    exception.printStackTrace()
-                    showToast(context, R.string.try_later)
-                }
+                onDeleted(movement)
+            }.addOnFailureListener { exception ->
+                exception.printStackTrace()
+                showToast(context, R.string.try_later)
+            }
         }
     }
 
@@ -612,10 +613,10 @@ object FirebaseManager {
                     val accountJson = Gson().toJson(account)
                     val encryptedAccount = AESEncripter.encrypt(accountJson)
                     accountRef.set(mapOf(Pair("account", encryptedAccount))).addOnCompleteListener {
-                            if (it.isSuccessful) {
-                                updatedAccountsList.add(account.copy(uid = accountRef.id))
-                            }
-                        }.await()
+                        if (it.isSuccessful) {
+                            updatedAccountsList.add(account.copy(uid = accountRef.id))
+                        }
+                    }.await()
                 }
             }
 
@@ -735,6 +736,16 @@ object FirebaseManager {
         if (user != null) {
             val fields = mapOf(Pair("hash", passPhraseHash), Pair("iv", iv))
             getDB().collection(SECURE).document(user.uid).set(fields).addOnSuccessListener { }
+                .addOnFailureListener { e ->
+                    e.printStackTrace()
+                }
+        }
+    }
+
+    private fun deleteCredentials() {
+        val user = Preferences.getUser()
+        if (user != null) {
+            getDB().collection(SECURE).document(user.uid).delete().addOnSuccessListener { }
                 .addOnFailureListener { e ->
                     e.printStackTrace()
                 }

@@ -2,6 +2,8 @@ package com.miguelrodriguez19.mindmaster
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.drawerlayout.widget.DrawerLayout
@@ -17,21 +19,18 @@ import com.miguelrodriguez19.mindmaster.databinding.ActivityMainBinding
 import com.miguelrodriguez19.mindmaster.databinding.DrawerHeaderBinding
 import com.miguelrodriguez19.mindmaster.models.structures.UserResponse
 import com.miguelrodriguez19.mindmaster.models.utils.AESEncripter
-import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.getAuth
+import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.getCurrentUserToken
 import com.miguelrodriguez19.mindmaster.models.utils.Preferences
 import com.miguelrodriguez19.mindmaster.models.utils.Preferences.getToken
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
+import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.showToast
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
-    lateinit var drawerLayout: DrawerLayout
-
+    private lateinit var drawerLayout: DrawerLayout
+    private var lastBackPressedTime: Long = 0L
+    private val EXIT_TIME_GAP: Long = 2000
     override fun onCreate(savedInstanceState: Bundle?) {
         val screenSplash = installSplashScreen()
         super.onCreate(savedInstanceState)
@@ -43,34 +42,48 @@ class MainActivity : AppCompatActivity() {
         }
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+
         navController = navHostFragment.findNavController()
         drawerLayout = binding.drawerLayout
 
         val user = Preferences.getUser()
-        val curToken = getToken() ?: "current"
-        val supToken = runBlocking {
-            withContext(CoroutineScope(Dispatchers.IO).coroutineContext) {
-                getAuth().currentUser?.getIdToken(false)?.await()?.token ?: "supposed"
-            }
-        }
+        val curToken = getToken()
+        val supToken = getCurrentUserToken()
 
-        val initialFragment: Int = if (user != null && curToken == supToken && Preferences.getSecurePhrase() != null) {
-            loadUserData(user)
-            R.id.calendarFragment
-        } else {
-            R.id.logInFragment
-        }
+        val initialFragment: Int =
+            if (user != null && (curToken != null && curToken == supToken) && Preferences.getSecurePhrase() != null) {
+                loadUserData(user)
+                R.id.calendarFragment
+            } else {
+                R.id.logInFragment
+            }
 
         navController.navigate(initialFragment)
+        val callback = object : OnBackPressedCallback(true /* enabled by default */) {
+            override fun handleOnBackPressed() {
+                val exitFragments = arrayOf(
+                    R.id.logInFragment, R.id.securityPhraseLoaderFragment,
+                    R.id.welcomeFragment, R.id.calendarFragment
+                )
 
+                if(exitFragments.contains(navController.currentDestination?.id)) {
+                    if (System.currentTimeMillis() - lastBackPressedTime > EXIT_TIME_GAP) {
+                        showToast(this@MainActivity, R.string.tap_again_to_exit)
+                        lastBackPressedTime = System.currentTimeMillis()
+                    } else {
+                        this.isEnabled = false // Desactiva el callback si quieres cerrar la aplicación
+                        finish()
+                    }
+                } else {
+                    navController.popBackStack()
+                }
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, callback)
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.calendarFragment,
-                R.id.diaryFragment,
-                R.id.expensesFragment,
-                R.id.passwordsFragment,
-                R.id.settingsFragment,
-                R.id.helpFragment
+                R.id.calendarFragment, R.id.diaryFragment, R.id.expensesFragment,
+                R.id.passwordsFragment, R.id.settingsFragment, R.id.helpFragment
             ),
             drawerLayout
         )
@@ -122,3 +135,5 @@ class MainActivity : AppCompatActivity() {
     }
 
 }
+
+

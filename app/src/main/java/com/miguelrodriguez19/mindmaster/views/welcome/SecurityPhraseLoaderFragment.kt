@@ -35,7 +35,7 @@ import java.io.InputStreamReader
 class SecurityPhraseLoaderFragment : Fragment() {
     private var _binding: FragmentSecurityPhraseLoaderBinding? = null
     private val binding get() = _binding!!
-    val args: SecurityPhraseLoaderFragmentArgs by navArgs()
+    private val args: SecurityPhraseLoaderFragmentArgs by navArgs()
 
     private lateinit var tvWelcomeTitle: TextView
     private lateinit var tvFileName: TextView

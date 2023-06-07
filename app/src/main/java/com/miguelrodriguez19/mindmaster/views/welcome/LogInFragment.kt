@@ -67,7 +67,7 @@ class LogInFragment : Fragment() {
                 if (it) {
                     progressBar.visibility = View.VISIBLE
                     logInEmailPwd(
-                        requireActivity(), etEmail.text.toString(), etPassword.text.toString()
+                        etEmail.text.toString().trim(), etPassword.text.toString().trim()
                     ) { ok, user, token ->
                         if (ok) {
                             updateUI(user!!, token!!)
@@ -113,18 +113,19 @@ class LogInFragment : Fragment() {
         }
     }
 
-    private fun updateUI(user:UserResponse, token:String) {
+    private fun updateUI(user: UserResponse, token: String) {
         clearFields()
-        val action = if (!user.hasLoggedInBefore){
+        val action = if (!user.hasLoggedInBefore) {
             LogInFragmentDirections.actionLogInFragmentToWelcomeFragment(user, token)
-        }else{
+        } else {
             LogInFragmentDirections.actionLogInFragmentToSecurityPhraseLoaderFragment(user, token)
         }
         findNavController().navigate(action)
+
     }
 
     private fun getUserLanguage(): Int {
-        return 0;
+        return 0
     }
 
     private fun signInGoogle() {
@@ -143,19 +144,17 @@ class LogInFragment : Fragment() {
                         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
                         getAuth().signInWithCredential(credential).addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-                                val account = GoogleSignIn.getLastSignedInAccount(requireContext())
-                                val uid = getAuth().currentUser?.uid!!
-                                val actualUser = UserResponse(
-                                    uid, account?.givenName!!, account.familyName, account.email!!,
-                                    null, account.photoUrl!!.toString(), false
-                                )
-                                TODO()
-                                FirebaseManager.saveUser(actualUser)
-                                (requireActivity() as MainActivity).setUpUser(
-                                    actualUser,
-                                    "token"
-                                )
-                                //updateUI()
+                                val gAcc = GoogleSignIn.getLastSignedInAccount(requireContext())
+                                val uid = getAuth().currentUser?.uid
+                                val token = FirebaseManager.getCurrentUserToken()
+
+                                if (token != null && uid != null) {
+                                    val actualUser = UserResponse(
+                                        uid, gAcc?.givenName!!, gAcc.familyName, gAcc.email!!,
+                                        null, gAcc.photoUrl!!.toString(), false
+                                    )
+                                    updateUI(actualUser, token)
+                                }
                             } else {
                                 Toast.makeText(
                                     context,
