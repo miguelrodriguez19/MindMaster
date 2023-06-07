@@ -2,12 +2,6 @@ package com.miguelrodriguez19.mindmaster.models.structures
 
 import java.io.Serializable
 
-data class EncryptedGroupPasswordsResponse(
-    val uid: String,
-    val name: String,
-    val accountsList: List<List<Int>>,
-) : Serializable
-
 data class GroupPasswordsResponse(
     val uid: String,
     val name: String,

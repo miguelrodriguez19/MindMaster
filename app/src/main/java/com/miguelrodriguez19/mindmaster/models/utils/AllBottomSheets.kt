@@ -28,6 +28,7 @@ import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs.Companion.showDa
 import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.saveGroup
 import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.saveInSchedule
 import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.saveMovement
+import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.updateGroup
 import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.updateInSchedule
 import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.updateMovement
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.checkFields
@@ -38,18 +39,20 @@ import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.processChipGroup
 import com.miguelrodriguez19.mindmaster.views.passwords.adapters.FormAccountAdapter
 
 class AllBottomSheets {
+
     companion object {
 
         fun showEventsBS(context: Context, e: Event?, callback: (Event) -> Unit) {
             MaterialDialog(context, BottomSheet(LayoutMode.MATCH_PARENT)).show {
-                customView(R.layout.bottom_sheet_events, scrollable = true, horizontalPadding = true)
+                customView(
+                    R.layout.bottom_sheet_events, scrollable = true, horizontalPadding = true
+                )
                 cornerRadius(res = R.dimen.corner_radius_bottom_sheets)
                 setPeekHeight(getPeekHeight(context))
 
                 val bind = BottomSheetEventsBinding.bind(getCustomView())
                 var color = e?.color_tag ?: String.format(
-                    "#%06X",
-                    0xFFFFFF and ContextCompat.getColor(context, R.color.primaryColor)
+                    "#%06X", 0xFFFFFF and ContextCompat.getColor(context, R.color.primaryColor)
                 )
 
                 if (e != null) {
@@ -71,10 +74,11 @@ class AllBottomSheets {
                     }
                 }
 
-                bind.cgParticipants.setOnCheckedChangeListener { group, checkedId ->
+                bind.cgParticipants.setOnCheckedChangeListener { _, checkedId ->
                     val chip = bind.cgParticipants.findViewById<Chip>(checkedId)
                     bind.cgParticipants.removeView(chip)
                 }
+
                 bind.btnAddParticipant.setOnClickListener {
                     if ((bind.etParticipants.text ?: "").isNotBlank()) {
                         val chip = makeChip(context, bind.etParticipants.text.toString())
@@ -108,7 +112,7 @@ class AllBottomSheets {
                         }
                     }
                 }
-                bind.cgCategory.setOnCheckedChangeListener { group, checkedId ->
+                bind.cgCategory.setOnCheckedChangeListener { _, checkedId ->
                     val chip = bind.cgCategory.findViewById<Chip>(checkedId)
                     bind.cgCategory.removeView(chip)
                 }
@@ -120,7 +124,8 @@ class AllBottomSheets {
                         bind.etCategory.text = null
                     } else {
                         if (bind.cgCategory.size >= 3) {
-                            bind.tilCategory.error = context.getString(R.string.reached_max_categories)
+                            bind.tilCategory.error =
+                                context.getString(R.string.reached_max_categories)
                         } else {
                             bind.tilCategory.error = context.getString(R.string.type_anything)
                         }
@@ -179,14 +184,15 @@ class AllBottomSheets {
 
         fun showRemindersBS(context: Context, r: Reminder?, callback: (Reminder) -> Unit) {
             MaterialDialog(context, BottomSheet(LayoutMode.MATCH_PARENT)).show {
-                customView(R.layout.bottom_sheet_reminder, scrollable = true, horizontalPadding = true)
+                customView(
+                    R.layout.bottom_sheet_reminder, scrollable = true, horizontalPadding = true
+                )
                 cornerRadius(res = R.dimen.corner_radius_bottom_sheets)
                 setPeekHeight(getPeekHeight(context))
 
                 val bind = BottomSheetReminderBinding.bind(getCustomView())
                 var color = r?.color_tag ?: String.format(
-                    "#%06X",
-                    0xFFFFFF and ContextCompat.getColor(context, R.color.primaryColor)
+                    "#%06X", 0xFFFFFF and ContextCompat.getColor(context, R.color.primaryColor)
                 )
 
                 if (r != null) {
@@ -207,7 +213,7 @@ class AllBottomSheets {
                         bind.etDate.setText(date)
                     }
                 }
-                bind.cgCategory.setOnCheckedChangeListener { group, checkedId ->
+                bind.cgCategory.setOnCheckedChangeListener { _, checkedId ->
                     val chip = bind.cgCategory.findViewById<Chip>(checkedId)
                     bind.cgCategory.removeView(chip)
                 }
@@ -219,7 +225,8 @@ class AllBottomSheets {
                         bind.etCategory.text = null
                     } else {
                         if (bind.cgCategory.size >= 3) {
-                            bind.tilCategory.error = context.getString(R.string.reached_max_categories)
+                            bind.tilCategory.error =
+                                context.getString(R.string.reached_max_categories)
                         } else {
                             bind.tilCategory.error = context.getString(R.string.type_anything)
                         }
@@ -278,8 +285,7 @@ class AllBottomSheets {
 
                 val bind = BottomSheetTasksBinding.bind(getCustomView())
                 var color = t?.color_tag ?: String.format(
-                    "#%06X",
-                    0xFFFFFF and ContextCompat.getColor(context, R.color.primaryColor)
+                    "#%06X", 0xFFFFFF and ContextCompat.getColor(context, R.color.primaryColor)
                 )
 
                 if (t != null) {
@@ -301,7 +307,7 @@ class AllBottomSheets {
                         bind.etDueDate.setText(date)
                     }
                 }
-                bind.cgCategory.setOnCheckedChangeListener { group, checkedId ->
+                bind.cgCategory.setOnCheckedChangeListener { _, checkedId ->
                     val chip = bind.cgCategory.findViewById<Chip>(checkedId)
                     bind.cgCategory.removeView(chip)
                 }
@@ -313,7 +319,8 @@ class AllBottomSheets {
                         bind.etCategory.text = null
                     } else {
                         if (bind.cgCategory.size >= 3) {
-                            bind.tilCategory.error = context.getString(R.string.reached_max_categories)
+                            bind.tilCategory.error =
+                                context.getString(R.string.reached_max_categories)
                         } else {
                             bind.tilCategory.error = context.getString(R.string.type_anything)
                         }
@@ -344,7 +351,8 @@ class AllBottomSheets {
                                 bind.etTitle.text.toString(),
                                 bind.etDueDate.text.toString(),
                                 bind.etDescription.text.toString(),
-                                Priority.URGENT, Status.PENDING,
+                                Priority.URGENT,
+                                Status.PENDING,
                                 processChipGroup(bind.cgCategory),
                                 color,
                                 EventType.TASK
@@ -369,12 +377,14 @@ class AllBottomSheets {
             context: Context, m: Movement?, typeMov: Type?, onSuccess: (Movement) -> Unit
         ) {
             MaterialDialog(context, BottomSheet(LayoutMode.MATCH_PARENT)).show {
-                customView(R.layout.bottom_sheet_movements, scrollable = true, horizontalPadding = true)
+                customView(
+                    R.layout.bottom_sheet_movements, scrollable = true, horizontalPadding = true
+                )
                 cornerRadius(res = R.dimen.corner_radius_bottom_sheets)
                 //setPeekHeight(getDefaultPeekHeight(context))
 
                 val bind = BottomSheetMovementsBinding.bind(getCustomView())
-                var selectedType = Type.INCOME
+                var selectedType: Type
 
                 if (m != null) {
                     selectedType = when (m.type) {
@@ -404,7 +414,7 @@ class AllBottomSheets {
                         Type.EXPENSE
                     }
                 }
-                bind.toggleTypeMovement.addOnButtonCheckedListener { group, checkedId, isChecked ->
+                bind.toggleTypeMovement.addOnButtonCheckedListener { _, checkedId, _ ->
                     when (checkedId) {
                         R.id.btn_typeIncome -> selectedType = Type.INCOME
                         R.id.btn_typeExpense -> selectedType = Type.EXPENSE
@@ -427,7 +437,9 @@ class AllBottomSheets {
                     }
                 }
                 bind.efabSave.setOnClickListener {
-                    checkFields(context, arrayOf(bind.tilConcept, bind.tilDate, bind.tilAmount)) { ok ->
+                    checkFields(
+                        context, arrayOf(bind.tilConcept, bind.tilDate, bind.tilAmount)
+                    ) { ok ->
                         if (ok) {
                             val move = Movement(
                                 bind.etDate.text.toString(),
@@ -453,18 +465,20 @@ class AllBottomSheets {
         }
 
         fun showPasswordsBS(
-            context: Context, group: GroupPasswordsResponse?, onSuccess: (GroupPasswordsResponse) -> Unit
+            context: Context, group: GroupPasswordsResponse?,
+            onSuccess: (GroupPasswordsResponse) -> Unit
         ) {
             MaterialDialog(context, BottomSheet(LayoutMode.MATCH_PARENT)).show {
-                customView(R.layout.bottom_sheet_password, scrollable = true, horizontalPadding = true)
+                customView(
+                    R.layout.bottom_sheet_password, scrollable = true, horizontalPadding = true
+                )
                 cornerRadius(res = R.dimen.corner_radius_bottom_sheets)
-                setPeekHeight(getPeekHeight(context,0.95f))
+                setPeekHeight(getPeekHeight(context, 0.95f))
 
                 val bind = BottomSheetPasswordBinding.bind(getCustomView())
 
                 bind.etTitleGroup.setText(group?.name)
-                val adapter = FormAccountAdapter(
-                    context,
+                val adapter = FormAccountAdapter(context,
                     group?.accountsList?.let { ArrayList(it) } ?: arrayListOf(null))
                 bind.rvAccountsBS.adapter = adapter
                 bind.rvAccountsBS.layoutManager = StaggeredGridLayoutManager(1, 1)
@@ -488,14 +502,24 @@ class AllBottomSheets {
                 bind.efabSave.setOnClickListener {
                     checkPwdBSFields(context, bind.rvAccountsBS) { ok ->
                         if (ok) {
-                            saveGroup(
-                                context,
-                                GroupPasswordsResponse(
-                                    bind.etTitleGroup.text.toString(),
-                                    getAccounts(bind.rvAccountsBS)
-                                )
-                            ) {
-                                onSuccess(it)
+                            if (group == null) {
+                                saveGroup(
+                                    context, GroupPasswordsResponse(
+                                        bind.etTitleGroup.text.toString(),
+                                        getAccounts(bind.rvAccountsBS)
+                                    )
+                                ) {
+                                    onSuccess(it)
+                                }
+                            } else {
+                                updateGroup(
+                                    context, group.copy(
+                                        name = bind.etTitleGroup.text.toString(),
+                                        accountsList = getAccounts(bind.rvAccountsBS)
+                                    )
+                                ) {
+                                    onSuccess(it)
+                                }
                             }
                             dismiss()
                         }

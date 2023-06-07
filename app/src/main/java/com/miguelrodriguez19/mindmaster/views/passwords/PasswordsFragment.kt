@@ -1,5 +1,6 @@
 package com.miguelrodriguez19.mindmaster.views.passwords
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -69,17 +70,22 @@ class PasswordsFragment : Fragment() {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun search(text: String) {
         val filteredData = ArrayList<GroupPasswordsResponse>()
-        for (item in data) {
+        for (group in data) {
             val filteredAccount = ArrayList<GroupPasswordsResponse.Account>()
-            for (account in item.accountsList) {
-                if (account.name.contains(text, true) || item.name.contains(text, true)) {
-                    filteredAccount.add(account)
+            if (group.name.contains(text, true)) {
+                filteredAccount.addAll(group.accountsList)
+            } else {
+                for (account in group.accountsList) {
+                    if (account.name.contains(text, true)) {
+                        filteredAccount.add(account)
+                    }
                 }
             }
             if (filteredAccount.isNotEmpty()) {
-                filteredData.add(item.copy(accountsList = filteredAccount))
+                filteredData.add(group.copy(accountsList = filteredAccount))
             }
         }
         adapter.data = filteredData

@@ -1,5 +1,6 @@
 package com.miguelrodriguez19.mindmaster.views.passwords.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -12,13 +13,12 @@ import com.miguelrodriguez19.mindmaster.databinding.CellAllPasswordsGroupsBindin
 import com.miguelrodriguez19.mindmaster.models.comparators.AccountsGroupsComparator
 import com.miguelrodriguez19.mindmaster.models.structures.GroupPasswordsResponse
 import com.miguelrodriguez19.mindmaster.models.structures.GroupPasswordsResponse.*
-import com.miguelrodriguez19.mindmaster.models.structures.MonthMovementsResponse
 import com.miguelrodriguez19.mindmaster.models.utils.AllBottomSheets
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs
 import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit
 
-
+@SuppressLint("NotifyDataSetChanged")
 class GroupAdapter(private val context: Context, var data: ArrayList<GroupPasswordsResponse>) :
     RecyclerView.Adapter<GroupAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -58,6 +58,7 @@ class GroupAdapter(private val context: Context, var data: ArrayList<GroupPasswo
     fun addItem(group: GroupPasswordsResponse) {
         this.data.add(group)
         sortData()
+        notifyDataSetChanged()
     }
 
     fun updateItem(group: GroupPasswordsResponse) {
@@ -73,8 +74,9 @@ class GroupAdapter(private val context: Context, var data: ArrayList<GroupPasswo
     }
 
     private fun sortData(){
-        data = data.sortedWith(AccountsGroupsComparator()) as ArrayList
+        data = ArrayList(data.sortedWith(AccountsGroupsComparator()))
     }
+
     inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         private val bind = CellAllPasswordsGroupsBinding.bind(v)
         private val btnGroupTitle = bind.btnGroupTitle
@@ -93,7 +95,6 @@ class GroupAdapter(private val context: Context, var data: ArrayList<GroupPasswo
                 }
             }
             btnMoreOptions.setOnClickListener { view ->
-                val position = adapterPosition
                 menu = PopupMenu(context, view)
                 menu.menuInflater.inflate(R.menu.passwords_group_context_menu, menu.menu)
                 menu.setOnMenuItemClickListener { menuItem ->
