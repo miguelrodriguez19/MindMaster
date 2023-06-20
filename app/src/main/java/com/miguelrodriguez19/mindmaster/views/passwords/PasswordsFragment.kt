@@ -14,19 +14,14 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.miguelrodriguez19.mindmaster.databinding.FragmentPasswordsBinding
 import com.miguelrodriguez19.mindmaster.models.structures.GroupPasswordsResponse
 import com.miguelrodriguez19.mindmaster.models.utils.AllBottomSheets.Companion.showPasswordsBS
-import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
 import com.miguelrodriguez19.mindmaster.views.passwords.adapters.GroupAdapter
 
 class PasswordsFragment : Fragment() {
     private var _binding: FragmentPasswordsBinding? = null
     private val binding get() = _binding!!
-    private lateinit var searchView: SearchView
-    private lateinit var btnAddGroup: ExtendedFloatingActionButton
-    private lateinit var rvAccountsGroups: RecyclerView
+    private val data: ArrayList<GroupPasswordsResponse> = ArrayList()
     private lateinit var adapter: GroupAdapter
-    private lateinit var progressBarAllAccounts: ProgressBar
-    private var data: ArrayList<GroupPasswordsResponse> = ArrayList()
-    private var dataFiltered: ArrayList<GroupPasswordsResponse> = ArrayList()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,12 +37,12 @@ class PasswordsFragment : Fragment() {
         initWidget()
         setUpData()
 
-        btnAddGroup.setOnClickListener {
+        binding.btnAddGroup.setOnClickListener {
             showPasswordsBS(requireContext(), null) {
                 adapter.addItem(it)
             }
         }
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
@@ -61,10 +56,9 @@ class PasswordsFragment : Fragment() {
 
     private fun setUpData() {
         binding.progressBarAllAccounts.visibility = View.VISIBLE
-        this@PasswordsFragment.data.clear()
-        FirebaseManager.loadAllGroups(requireContext()) { accountsGroupsList ->
-            this@PasswordsFragment.data.addAll(accountsGroupsList)
-            dataFiltered = data
+        data.clear()
+        FirebaseManager.loadAllGroups() { accountsGroupsList ->
+            data.addAll(accountsGroupsList)
             adapter.setData(accountsGroupsList)
             binding.progressBarAllAccounts.visibility = View.GONE
         }
@@ -93,14 +87,9 @@ class PasswordsFragment : Fragment() {
     }
 
     private fun initWidget() {
-        searchView = binding.searchView
-        btnAddGroup = binding.btnAddGroup
-        rvAccountsGroups = binding.rvAccountsGroups
-        progressBarAllAccounts = binding.progressBarAllAccounts
-
-        rvAccountsGroups.layoutManager = StaggeredGridLayoutManager(1, 1)
+        binding.rvAccountsGroups.layoutManager = StaggeredGridLayoutManager(1, 1)
         adapter = GroupAdapter(requireContext(), data)
-        rvAccountsGroups.adapter = adapter
+        binding.rvAccountsGroups.adapter = adapter
     }
 
     override fun onDestroyView() {

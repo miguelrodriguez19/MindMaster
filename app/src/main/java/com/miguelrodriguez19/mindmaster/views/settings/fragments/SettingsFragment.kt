@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -14,22 +16,24 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentSettingsBinding
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.getAuth
 import com.miguelrodriguez19.mindmaster.models.structures.UserResponse
-import com.miguelrodriguez19.mindmaster.models.utils.Preferences
+import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs.Companion.showConfirmationDialog
-import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager
-import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.getAuth
+import com.miguelrodriguez19.mindmaster.models.utils.Preferences
+import com.miguelrodriguez19.mindmaster.models.utils.Preferences.getUser
+import com.miguelrodriguez19.mindmaster.models.utils.Preferences.setCurrency
+import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.showToast
 import de.hdodenhof.circleimageview.CircleImageView
 
 class SettingsFragment : Fragment() {
-
     private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
     private lateinit var ivUserPhoto: CircleImageView
     private lateinit var tvName: TextView
     private lateinit var btnEditProfile: ExtendedFloatingActionButton
     private lateinit var swNotifications: SwitchMaterial
-    private lateinit var spLanguage: Spinner
     private lateinit var spTheme: Spinner
     private lateinit var spCurrency: Spinner
     private lateinit var btnSecurity: MaterialButton
@@ -38,7 +42,6 @@ class SettingsFragment : Fragment() {
     private lateinit var btnLogOut: MaterialButton
     private lateinit var btnAdvancedOptions: MaterialButton
     private lateinit var llExpandableAdvancedOptions: LinearLayout
-    private lateinit var user: UserResponse
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -49,28 +52,48 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        user = Preferences.getUser()!!
         initWidgets()
-        setUpData()
+        setUpData(getUser())
+        initSpinners()
+
         btnEditProfile.setOnClickListener {
             val action = SettingsFragmentDirections.actionSettingsFragmentToAccountFragment()
             findNavController().navigate(action)
         }
+
         btnSecurity.setOnClickListener {
-
+            showToast(requireContext(), R.string.under_development)
+            TODO("Show a bottom sheet to choose security options for the app")
         }
+
         btnChangePassword.setOnClickListener {
-
+            val user = getUser()
+            user?.let {
+                FirebaseManager.sendResetPassword(requireContext(), user.email) { isSuccessful ->
+                    if (isSuccessful) {
+                        AllDialogs.showAlertDialog(
+                            requireContext(), requireContext().getString(R.string.reset_password),
+                            requireContext().getString(R.string.reset_password_msg)
+                        )
+                    } else {
+                        AllDialogs.showAlertDialog(
+                            requireContext(),
+                            requireContext().getString(R.string.something_went_wrong),
+                            requireContext().getString(R.string.try_later)
+                        )
+                    }
+                }
+            }
         }
+
         btnLogOut.setOnClickListener {
             showConfirmationDialog(
-                requireContext(), getString(R.string.logout_confirmation_title),null
+                requireContext(), getString(R.string.logout_confirmation_title), null
             ) { confirmed ->
                 if (confirmed) {
                     logout()
                 }
             }
-
         }
 
         btnDeleteAccount.setOnClickListener {
@@ -81,7 +104,7 @@ class SettingsFragment : Fragment() {
             ) { confirmed ->
                 if (confirmed) {
                     showConfirmationDialog(
-                        requireContext(),getString(R.string.confirmation_twice),null
+                        requireContext(), getString(R.string.confirmation_twice), null
                     ) { ok ->
                         if (ok) {
                             deleteAccountFromFirestore()
@@ -94,41 +117,36 @@ class SettingsFragment : Fragment() {
         btnAdvancedOptions.setOnClickListener {
             setVisibilityAdvSet()
         }
-        llExpandableAdvancedOptions.setOnClickListener {
-            setVisibilityAdvSet()
-        }
-        btnAdvancedOptions.setOnClickListener {
-            setVisibilityAdvSet()
-        }
-        spLanguage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>, view: View?, position: Int, id: Long
-            ) {
-                // Acciones a realizar cuando se seleccione un elemento del Spinner
-            }
 
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                // Acciones a realizar cuando no se seleccione ningún elemento del Spinner
-            }
-        }
 
         spTheme.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>, view: View?, position: Int, id: Long
             ) {
-                // Acciones a realizar cuando se seleccione un elemento del Spinner
+                when (position) {
+                    0 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    2 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                }
+                Preferences.saveTheme(position)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
-                // Acciones a realizar cuando no se seleccione ningún elemento del Spinner
+                // No es necesario implementar esto si no necesitas realizar ninguna acción cuando no se selecciona ningún elemento
             }
         }
+
 
         spCurrency.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>, view: View?, position: Int, id: Long
             ) {
-                // Acciones a realizar cuando se seleccione un elemento del Spinner
+                when (position) {
+                    0 -> setCurrency("€")
+                    1 -> setCurrency("$")
+                    2 -> setCurrency("£")
+                }
+
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
@@ -137,17 +155,21 @@ class SettingsFragment : Fragment() {
         }
     }
 
-    private fun setUpData() {
-        Glide.with(requireActivity())
-            .load(user.photoUrl)
-            .into(ivUserPhoto)
-        tvName.text = user.firstName
+    private fun setUpData(user: UserResponse?) {
+        if (user != null) {
+            Glide.with(requireActivity())
+                .load(user.photoUrl)
+                .into(ivUserPhoto)
 
-        // TODO()
+            tvName.text = user.firstName
+        }
     }
 
     private fun deleteAccountFromFirestore() {
-        FirebaseManager.deleteUser(user)
+        val user = getUser()
+        user?.let {
+            FirebaseManager.deleteUser(user)
+        }
         logout()
     }
 
@@ -156,49 +178,76 @@ class SettingsFragment : Fragment() {
         tvName = binding.tvName
         btnEditProfile = binding.efabEditProfile
         swNotifications = binding.swNotifications
-        spLanguage = binding.spLanguage
-        ArrayAdapter.createFromResource(
-            requireContext(), R.array.available_languages, android.R.layout.simple_spinner_item
-        ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spLanguage.adapter = adapter
-        }
         spTheme = binding.spTheme
-        ArrayAdapter.createFromResource(
-            requireContext(), R.array.available_themes, android.R.layout.simple_spinner_item
-        ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spTheme.adapter = adapter
-        }
         spCurrency = binding.spCurrency
-        ArrayAdapter.createFromResource(
-            requireContext(), R.array.available_currencies, android.R.layout.simple_spinner_item
-        ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spCurrency.adapter = adapter
-        }
         btnSecurity = binding.btnSecurity
         btnChangePassword = binding.btnChangePassword
         btnDeleteAccount = binding.btnDeleteAccount
         llExpandableAdvancedOptions = binding.llExpandableAdvancedOptions
         btnAdvancedOptions = binding.btnAdvancedOptions
         btnLogOut = binding.btnLogOut
+
+        val user = getAuth().currentUser
+        user?.let {
+            val providerData = it.providerData
+            for (userInfo in providerData) {
+                if (userInfo.providerId == "password") {
+                    // User is signed in with Email/Password
+                    // So it has sense to let him reset password
+                    btnChangePassword.visibility = View.VISIBLE
+                    break
+                } else {
+                    // User is signed in with other provider
+                    btnChangePassword.visibility = View.GONE
+                }
+            }
+        }
+    }
+
+    private fun initSpinners() {
+        ArrayAdapter.createFromResource(
+            requireContext(), R.array.available_themes, android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spTheme.adapter = adapter
+        }
+        spTheme.setSelection(Preferences.getTheme().toInt())
+
+        val availableCurrencies = resources.getStringArray(R.array.available_currencies)
+        val currentCurrency = Preferences.getCurrency()
+        val currencyIndex = availableCurrencies.indexOf(currentCurrency)
+
+        ArrayAdapter.createFromResource(
+            requireContext(), R.array.available_currencies, android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spCurrency.adapter = adapter
+        }
+        spCurrency.setSelection(currencyIndex)
     }
 
     private fun setVisibilityAdvSet() {
         if (llExpandableAdvancedOptions.visibility == View.GONE) {
             llExpandableAdvancedOptions.visibility = View.VISIBLE
-            btnAdvancedOptions.icon = requireContext().getDrawable(R.drawable.ic_keyboard_arrow_up_24)
+            btnAdvancedOptions.icon =
+                AppCompatResources.getDrawable(requireContext(), R.drawable.ic_keyboard_arrow_up_24)
         } else {
             llExpandableAdvancedOptions.visibility = View.GONE
-            btnAdvancedOptions.icon = requireContext().getDrawable(R.drawable.ic_keyboard_arrow_down_24)
+            btnAdvancedOptions.icon = AppCompatResources.getDrawable(
+                requireContext(), R.drawable.ic_keyboard_arrow_down_24
+            )
         }
     }
 
     private fun logout() {
-        getAuth().signOut()
         (requireActivity() as MainActivity).logOut()
     }
+
+    override fun onResume() {
+        super.onResume()
+        setUpData(getUser())
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

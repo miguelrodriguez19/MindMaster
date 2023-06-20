@@ -1,7 +1,9 @@
 package com.miguelrodriguez19.mindmaster.views.welcome
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +25,7 @@ import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentSecurityPhraseLoaderBinding
 import com.miguelrodriguez19.mindmaster.models.utils.AESEncripter
-import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -86,7 +88,7 @@ class SecurityPhraseLoaderFragment : Fragment() {
                             if (iVector != null) {
                                 val main = (requireActivity() as MainActivity)
                                 withContext(Dispatchers.Main) {
-                                    main.setUpUser(args.user, args.token)
+                                    main.setUpUser(args.user)
                                     main.updateSecurityPreferences(phrase, iVector)
                                     updateUI()
                                 }
@@ -132,7 +134,11 @@ class SecurityPhraseLoaderFragment : Fragment() {
                         true
                     }
                     R.id.help -> {
-                        //TODO("Enviar a la pagina web con las FAQs")
+                        val webpage: Uri = Uri.parse(getString(R.string.help_url))
+                        val intent = Intent(Intent.ACTION_VIEW, webpage)
+                        if (intent.resolveActivity(requireActivity().packageManager) != null) {
+                            startActivity(intent)
+                        }
                         true
                     }
                     else -> {

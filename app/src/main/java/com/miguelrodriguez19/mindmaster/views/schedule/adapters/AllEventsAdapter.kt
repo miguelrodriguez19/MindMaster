@@ -12,13 +12,13 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.CellDayAllEventsBinding
+import com.miguelrodriguez19.mindmaster.models.comparators.EventComparator
+import com.miguelrodriguez19.mindmaster.models.comparators.EventGroupComparator
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
 import com.miguelrodriguez19.mindmaster.models.structures.AbstractEvent
 import com.miguelrodriguez19.mindmaster.models.structures.AbstractEvent.Companion.getDateOf
 import com.miguelrodriguez19.mindmaster.models.structures.EventsResponse
-import com.miguelrodriguez19.mindmaster.models.comparators.EventComparator
-import com.miguelrodriguez19.mindmaster.models.comparators.EventGroupComparator
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs
-import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit
 
 
@@ -137,12 +137,11 @@ class AllEventsAdapter(
                             val position = viewHolder.adapterPosition
                             if (it) {
                                 FirebaseManager.deleteInSchedule(
-                                    context, adapter.getItemAt(position)
+                                    adapter.getItemAt(position)
                                 ) { absEvent ->
                                     Toolkit.showUndoSnackBar(context, view) { ok ->
                                         if (ok) {
                                             FirebaseManager.saveInSchedule(
-                                                context,
                                                 absEvent
                                             ) { item ->
                                                 addItem(item)
@@ -195,13 +194,8 @@ class AllEventsAdapter(
                         background.draw(c)
                         icon.draw(c)
                         super.onChildDraw(
-                            c,
-                            recyclerView,
-                            viewHolder,
-                            dX,
-                            dY,
-                            actionState,
-                            isCurrentlyActive
+                            c, recyclerView, viewHolder,
+                            dX, dY, actionState, isCurrentlyActive
                         )
                     }
                 })

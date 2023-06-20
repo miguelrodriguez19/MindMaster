@@ -1,8 +1,14 @@
 package com.miguelrodriguez19.mindmaster.views.welcome
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
+import android.text.SpannableStringBuilder
+import android.text.Spanned
 import android.text.TextWatcher
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,15 +26,16 @@ import com.google.android.material.textfield.TextInputLayout
 import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentSignUpBinding
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.createUser
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs.Companion.showAlertDialog
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs.Companion.showDatePicker
-import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.createUser
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.PASSWORD_PATTERN
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.showToast
 import java.time.LocalDate
 import java.time.Period
 import java.time.format.DateTimeFormatter
+
 
 class SignUpFragment : Fragment() {
     private var _binding: FragmentSignUpBinding? = null
@@ -45,6 +52,7 @@ class SignUpFragment : Fragment() {
     private lateinit var etRepeatPassword: EditText
     private lateinit var tilRepeatPassword: TextInputLayout
     private lateinit var tvError: TextView
+    private lateinit var tvTerms: TextView
     private lateinit var btnSignUp: ExtendedFloatingActionButton
     private lateinit var btnLogIn: Button
     private lateinit var checkTerms: MaterialCheckBox
@@ -101,7 +109,7 @@ class SignUpFragment : Fragment() {
                     if (checkTerms.isChecked) {
                         progressBar.visibility = View.VISIBLE
                         createUser(
-                            requireContext(), etName.text.toString(),
+                            etName.text.toString(),
                             etSurname.text.toString(), etBirthdate.text.toString(),
                             etEmail.text.toString(), etPassword.text.toString()
                         ) { wasAdded ->
@@ -117,7 +125,6 @@ class SignUpFragment : Fragment() {
                         }
                     } else {
                         checkTerms.isErrorShown = true
-                        checkTerms.error = requireContext().getString(R.string.field_obligatory)
                         showToast(requireContext(), R.string.check_terms_and_conditions)
                     }
                 }
@@ -202,7 +209,7 @@ class SignUpFragment : Fragment() {
         etRepeatPassword = binding.txtRepeatPassword
         tvError = binding.tvError
         btnSignUp = binding.efabSignup
-        checkTerms = binding.checkbox
+        checkTerms = binding.cbTerms
         btnLogIn = binding.btnLogin
         tilName = binding.tilName
         tilEmail = binding.tilEmail
@@ -210,7 +217,56 @@ class SignUpFragment : Fragment() {
         tilPassword = binding.tilPassword
         tilRepeatPassword = binding.tilRepeatPassword
         progressBar = binding.progressBarSignUp
+        tvTerms = binding.tvTerms
+        setLink()
+
     }
+
+    private fun setLink() {
+        val terms = getString(R.string.terms)
+        val policy = getString(R.string.privacy_policy)
+        val checkText = String.format(getString(R.string.check_terms_and_conditions), terms, policy)
+
+        val spannableStringBuilder = SpannableStringBuilder(checkText)
+
+        val termsStart = checkText.indexOf(terms)
+        val termsEnd = termsStart + terms.length
+        val termsClickableSpan: ClickableSpan = object : ClickableSpan() {
+            override fun onClick(view: View) {
+                val url = getString(R.string.terms_url)
+                val i = Intent(Intent.ACTION_VIEW)
+                i.data = Uri.parse(url)
+                startActivity(i)
+            }
+        }
+        spannableStringBuilder.setSpan(
+            termsClickableSpan,
+            termsStart,
+            termsEnd,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        val privacyStart = checkText.indexOf(policy)
+        val privacyEnd = privacyStart + policy.length
+        val privacyClickableSpan: ClickableSpan = object : ClickableSpan() {
+            override fun onClick(view: View) {
+                val url = getString(R.string.privacy_policy_url)
+                val i = Intent(Intent.ACTION_VIEW)
+                i.data = Uri.parse(url)
+                startActivity(i)
+            }
+        }
+        spannableStringBuilder.setSpan(
+            privacyClickableSpan,
+            privacyStart,
+            privacyEnd,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        tvTerms.text = spannableStringBuilder
+        tvTerms.movementMethod = LinkMovementMethod.getInstance()
+    }
+
 
     private fun clearFields() {
         val editTexts =
@@ -235,7 +291,6 @@ class SignUpFragment : Fragment() {
 
         checkTerms.isChecked = false
         checkTerms.isErrorShown = false
-        checkTerms.error = null
     }
 
     override fun onDestroyView() {

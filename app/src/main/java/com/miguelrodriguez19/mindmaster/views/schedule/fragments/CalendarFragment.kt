@@ -21,12 +21,12 @@ import com.github.clans.fab.FloatingActionMenu
 import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentCalendarBinding
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.deleteInSchedule
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.loadScheduleByDate
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.saveInSchedule
 import com.miguelrodriguez19.mindmaster.models.structures.AbstractEvent
 import com.miguelrodriguez19.mindmaster.models.utils.AllBottomSheets
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs
-import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.deleteInSchedule
-import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.loadScheduleByDate
-import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.saveInSchedule
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.getCurrentDate
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.showUndoSnackBar
 import com.miguelrodriguez19.mindmaster.views.schedule.adapters.CalendarEventsAdapter
@@ -122,12 +122,10 @@ class CalendarFragment : Fragment() {
                     ) {
                         val position = viewHolder.adapterPosition
                         if (it) {
-                            deleteInSchedule(
-                                requireContext(), adapter.getItemAt(position)
-                            ) { absEvent ->
+                            deleteInSchedule(adapter.getItemAt(position)) { absEvent ->
                                 showUndoSnackBar(requireContext(), requireView()) { ok ->
                                     if (ok) {
-                                        saveInSchedule(requireContext(), absEvent) { item ->
+                                        saveInSchedule(absEvent) { item ->
                                             adapter.addItem(item)
                                             llNoEvents.visibility = View.GONE
                                             tvCountOfEvents.text = adapter.itemCount.toString()
@@ -204,7 +202,7 @@ class CalendarFragment : Fragment() {
         pbLoading.visibility = View.VISIBLE
         tvSelectedDateEvents.text = date
         this@CalendarFragment.data.clear()
-        val dayList = loadScheduleByDate(requireContext(), date)
+        val dayList = loadScheduleByDate(date)
         this@CalendarFragment.data.addAll(dayList)
         adapter.setData(dayList)
         tvCountOfEvents.text = this.data.size.toString()
@@ -218,8 +216,13 @@ class CalendarFragment : Fragment() {
 
     private fun setNoDataVisible() {
         llNoEvents.visibility = View.VISIBLE
-        val gifDrawable = GifDrawable.createFromResource(resources, listGifs.shuffled()[0])
-        gifView.setImageDrawable(gifDrawable)
+        if (isAdded) {
+            val gifDrawable = GifDrawable.createFromResource(
+                requireContext().applicationContext.resources,
+                listGifs.shuffled()[0]
+            )
+            gifView.setImageDrawable(gifDrawable)
+        }
     }
 
     private fun initWidgets() {

@@ -12,6 +12,7 @@ import com.miguelrodriguez19.mindmaster.models.structures.MonthMovementsResponse
 import com.miguelrodriguez19.mindmaster.models.structures.MonthMovementsResponse.*
 import com.miguelrodriguez19.mindmaster.models.comparators.MovementComparator
 import com.miguelrodriguez19.mindmaster.models.utils.AllBottomSheets
+import com.miguelrodriguez19.mindmaster.models.utils.Preferences.getCurrency
 
 class MovementAdapter(
     private val context: Context,
@@ -71,7 +72,7 @@ class MovementAdapter(
         private val tvTitle = bind.tvMovementTitle
         private val tvAmount = bind.tvMovementsAmount
 
-        fun bind(item: MonthMovementsResponse.Movement) {
+        fun bind(item: Movement) {
             val mapColors = mapOf(
                 "green" to ContextCompat.getColor(itemView.context, R.color.green_jade_500),
                 "red" to ContextCompat.getColor(itemView.context, R.color.red_bittersweet_200),
@@ -89,13 +90,10 @@ class MovementAdapter(
                         it
                     )
                 }
-                else -> {
-                    mapColors["black"]?.let { tvAmount.setTextColor(it) }
-                }
             }
             tvTitle.text = item.concept
             tvDate.text = item.date
-            tvAmount.text = "${item.amount}€"
+            tvAmount.text = "${item.amount} ${getCurrency()}"
             rlMovementArea.setOnClickListener {
                 onClick(item)
                 AllBottomSheets.showMovementBS(context, item, item.type){

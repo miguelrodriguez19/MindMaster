@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.CellAllPasswordsGroupsBinding
 import com.miguelrodriguez19.mindmaster.models.comparators.AccountsGroupsComparator
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
 import com.miguelrodriguez19.mindmaster.models.structures.GroupPasswordsResponse
 import com.miguelrodriguez19.mindmaster.models.structures.GroupPasswordsResponse.*
 import com.miguelrodriguez19.mindmaster.models.utils.AllBottomSheets
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs
-import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit
 
 @SuppressLint("NotifyDataSetChanged")
@@ -44,7 +44,7 @@ class GroupAdapter(private val context: Context, var data: ArrayList<GroupPasswo
         notifyItemRemoved(index)
     }
 
-    private fun getGroupOf(group:GroupPasswordsResponse): Int {
+    private fun getGroupOf(group: GroupPasswordsResponse): Int {
         var index = -1
         data.stream()
             .filter { it.uid == group.uid }
@@ -63,17 +63,17 @@ class GroupAdapter(private val context: Context, var data: ArrayList<GroupPasswo
 
     fun updateItem(group: GroupPasswordsResponse) {
         val index = getGroupOf(group)
-        if (index != -1){
+        if (index != -1) {
             this.data[index] = group
             notifyItemChanged(index)
-        }else{
+        } else {
             this.data.add(group)
             sortData()
             notifyDataSetChanged()
         }
     }
 
-    private fun sortData(){
+    private fun sortData() {
         data = ArrayList(data.sortedWith(AccountsGroupsComparator()))
     }
 
@@ -112,11 +112,11 @@ class GroupAdapter(private val context: Context, var data: ArrayList<GroupPasswo
                                 context.getString(R.string.delete_password_group_message)
                             ) {
                                 if (it) {
-                                    FirebaseManager.deleteGroup(context, item) { group ->
+                                    FirebaseManager.deleteGroup(item) { group ->
                                         Toolkit.showUndoSnackBar(context, view) { ok ->
                                             if (ok) {
                                                 FirebaseManager.saveGroup(
-                                                    context, group
+                                                    group
                                                 ) { newGroup ->
                                                     addItem(newGroup)
                                                 }

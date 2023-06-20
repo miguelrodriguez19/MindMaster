@@ -25,12 +25,12 @@ import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs.Companion.colorP
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs.Companion.showConfirmationDialog
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs.Companion.showDatePicker
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs.Companion.showDateTimePicker
-import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.saveGroup
-import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.saveInSchedule
-import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.saveMovement
-import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.updateGroup
-import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.updateInSchedule
-import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.updateMovement
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.saveGroup
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.saveInSchedule
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.saveMovement
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.updateGroup
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.updateInSchedule
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.updateMovement
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.checkFields
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.compareDates
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.getPeekHeight
@@ -167,11 +167,11 @@ class AllBottomSheets {
                                 EventType.EVENT
                             )
                             if (e == null) {
-                                saveInSchedule(context, event) { added ->
+                                saveInSchedule(event) { added ->
                                     callback(added as Event)
                                 }
                             } else {
-                                updateInSchedule(context, Event(e.uid, event)) {
+                                updateInSchedule(Event(e.uid, event)) {
                                     callback(it as Event)
                                 }
                             }
@@ -262,11 +262,11 @@ class AllBottomSheets {
                                 EventType.REMINDER
                             )
                             if (r == null) {
-                                saveInSchedule(context, reminder) { added ->
+                                saveInSchedule(reminder) { added ->
                                     callback(added as Reminder)
                                 }
                             } else {
-                                updateInSchedule(context, Reminder(r.uid, reminder)) {
+                                updateInSchedule(Reminder(r.uid, reminder)) {
                                     callback(it as Reminder)
                                 }
                             }
@@ -358,11 +358,11 @@ class AllBottomSheets {
                                 EventType.TASK
                             )
                             if (t == null) {
-                                saveInSchedule(context, task) { added ->
+                                saveInSchedule(task) { added ->
                                     callback(added as Task)
                                 }
                             } else {
-                                updateInSchedule(context, Task(t.uid, task)) {
+                                updateInSchedule(Task(t.uid, task)) {
                                     callback(it as Task)
                                 }
                             }
@@ -381,9 +381,9 @@ class AllBottomSheets {
                     R.layout.bottom_sheet_movements, scrollable = true, horizontalPadding = true
                 )
                 cornerRadius(res = R.dimen.corner_radius_bottom_sheets)
-                //setPeekHeight(getDefaultPeekHeight(context))
 
                 val bind = BottomSheetMovementsBinding.bind(getCustomView())
+
                 var selectedType: Type
 
                 if (m != null) {
@@ -449,11 +449,11 @@ class AllBottomSheets {
                                 selectedType
                             )
                             if (m == null) {
-                                saveMovement(context, move) { added ->
+                                saveMovement(move) { added ->
                                     onSuccess(added)
                                 }
                             } else {
-                                updateMovement(context, Movement(m.uid, move)) { updated ->
+                                updateMovement(Movement(m.uid, move)) { updated ->
                                     onSuccess(updated!!)
                                 }
                             }
@@ -504,7 +504,7 @@ class AllBottomSheets {
                         if (ok) {
                             if (group == null) {
                                 saveGroup(
-                                    context, GroupPasswordsResponse(
+                                    GroupPasswordsResponse(
                                         bind.etTitleGroup.text.toString(),
                                         getAccounts(bind.rvAccountsBS)
                                     )
@@ -513,7 +513,7 @@ class AllBottomSheets {
                                 }
                             } else {
                                 updateGroup(
-                                    context, group.copy(
+                                    group.copy(
                                         name = bind.etTitleGroup.text.toString(),
                                         accountsList = getAccounts(bind.rvAccountsBS)
                                     )

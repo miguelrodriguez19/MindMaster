@@ -62,7 +62,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
         android:orientation="vertical"
         android:padding="24dp">
 
@@ -74,35 +73,8 @@
             android:layout_marginBottom="8dp"
             android:checked="true"
             android:text="@string/notifications"
-            android:textColor="@color/gray_dark_700"
+            android:textColor="@color/gray_scorpion_200"
             app:useMaterialThemeColors="true" />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp">
-
-            <TextView
-                android:id="@+id/tv_languageTitle"
-                style="@style/secondary_titles"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/language"
-                android:textColor="@color/gray_dark_700"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Spinner
-                android:id="@+id/sp_language"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_languageTitle"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tv_languageTitle" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -115,7 +87,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/theme"
-                android:textColor="@color/gray_dark_700"
+                android:textColor="@color/gray_scorpion_200"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -142,7 +114,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/currency"
-                android:textColor="@color/gray_dark_700"
+                android:textColor="@color/gray_scorpion_200"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -170,7 +142,7 @@
             android:text="@string/security"
             android:textAllCaps="false"
             android:paddingEnd="10dp"
-            android:textColor="@color/gray_dark_700"
+            android:textColor="@color/gray_scorpion_200"
             android:textSize="19sp"
             app:icon="@drawable/ic_arrow_forward_24"
             app:iconGravity="end"
@@ -222,9 +194,9 @@
                     android:fontFamily="@font/popings_regular_400"
                     android:gravity="start|center"
                     android:padding="0dp"
-                    android:text="@string/change_password"
+                    android:text="@string/reset_password"
                     android:textAllCaps="false"
-                    android:textColor="@color/gray_dark_700"
+                    android:textColor="@color/gray_scorpion_200"
                     android:textSize="19sp"
                     app:icon="@drawable/ic_arrow_forward_24"
                     app:iconGravity="end"

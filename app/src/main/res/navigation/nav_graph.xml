@@ -111,9 +111,6 @@
         <argument
             android:name="user"
             app:argType="com.miguelrodriguez19.mindmaster.models.structures.UserResponse" />
-        <argument
-            android:name="token"
-            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/securityPhraseLoaderFragment"
@@ -126,8 +123,5 @@
         <argument
             android:name="user"
             app:argType="com.miguelrodriguez19.mindmaster.models.structures.UserResponse" />
-        <argument
-            android:name="token"
-            app:argType="string" />
     </fragment>
 </navigation>

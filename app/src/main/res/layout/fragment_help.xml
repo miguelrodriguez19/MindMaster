@@ -73,33 +73,12 @@
             android:text="@string/faqs"
             android:textSize="25sp" />
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/mcv_cardSearchView"
-            android:layout_width="match_parent"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_SeeFAQs"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="12dp"
-            app:cardUseCompatPadding="false">
+            android:text="@string/see_faqs"/>
 
-            <androidx.appcompat.widget.SearchView
-                android:id="@+id/searchView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:iconifiedByDefault="false"
-                app:queryBackground="@android:color/transparent"
-                app:queryHint="@string/find_question"
-                android:layout_marginBottom="4dp"/>
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_faqs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:isScrollContainer="false"
-            android:layout_marginTop="16dp"
-            tools:itemCount="5"
-            tools:listitem="@layout/cell_faq" />
     </LinearLayout>
 
 </ScrollView>

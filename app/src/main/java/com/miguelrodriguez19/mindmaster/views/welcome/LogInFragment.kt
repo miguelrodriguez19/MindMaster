@@ -2,28 +2,38 @@ package com.miguelrodriguez19.mindmaster.views.welcome
 
 import android.app.Activity
 import android.os.Bundle
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.EditText
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.input.input
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.firebase.auth.GoogleAuthProvider
 import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentLogInBinding
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.getAuth
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.logInEmailPwd
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.sendResetPassword
 import com.miguelrodriguez19.mindmaster.models.structures.UserResponse
-import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager
-import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.getAuth
-import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.logInEmailPwd
+import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.checkFields
+import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.showToast
 
 class LogInFragment : Fragment() {
     private var _binding: FragmentLogInBinding? = null
@@ -34,9 +44,8 @@ class LogInFragment : Fragment() {
     private lateinit var btnLogIn: ExtendedFloatingActionButton
     private lateinit var btnGoogle: ExtendedFloatingActionButton
     private lateinit var btnFacebook: ExtendedFloatingActionButton
-    private lateinit var btnForgottenPwd: Button
-    private lateinit var btnSignUp: Button
-    private lateinit var spLanguage: Spinner
+    private lateinit var btnForgottenPwd: MaterialButton
+    private lateinit var btnSignUp: MaterialButton
     private lateinit var progressBar: ProgressBar
 
     private lateinit var googleSignInClient: GoogleSignInClient
@@ -68,13 +77,47 @@ class LogInFragment : Fragment() {
                     progressBar.visibility = View.VISIBLE
                     logInEmailPwd(
                         etEmail.text.toString().trim(), etPassword.text.toString().trim()
-                    ) { ok, user, token ->
+                    ) { ok, user ->
                         if (ok) {
-                            updateUI(user!!, token!!)
+                            if (user != null) {
+                                updateUI(user)
+                            } else {
+                                showToast(requireContext(), R.string.try_later)
+                            }
                         } else {
                             progressBar.visibility = View.GONE
                             tvError.visibility = View.VISIBLE
                             tvError.text = getString(R.string.wrong_email_password)
+                        }
+                    }
+                }
+            }
+        }
+
+        btnForgottenPwd.setOnClickListener {
+            var emailToReset: String? = null
+            val type = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+
+            MaterialDialog(requireContext()).show {
+                input(inputType = type, hintRes = R.string.hint_email) { dialog, text ->
+                    emailToReset = text.toString()
+                }
+                positiveButton(R.string.confirmation) {
+                    emailToReset?.let {
+                        if (it.isNotEmpty()) {
+                            sendResetPassword(requireContext(), it) { isSuccessful ->
+                                if (isSuccessful) {
+                                    AllDialogs.showAlertDialog(
+                                        context, context.getString(R.string.reset_password),
+                                        context.getString(R.string.reset_password_msg)
+                                    )
+                                } else {
+                                    AllDialogs.showAlertDialog(
+                                        context, context.getString(R.string.something_went_wrong),
+                                        context.getString(R.string.try_later)
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -89,39 +132,16 @@ class LogInFragment : Fragment() {
         btnGoogle.setOnClickListener {
             signInGoogle()
         }
-
-        ArrayAdapter.createFromResource(
-            requireContext(), R.array.available_languages, android.R.layout.simple_spinner_item
-        ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spLanguage.adapter = adapter
-        }
-        spLanguage.setSelection(getUserLanguage())
-        spLanguage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                // Acciones a realizar cuando se seleccione un elemento del Spinner
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                // Acciones a realizar cuando no se seleccione ningún elemento del Spinner
-            }
-        }
     }
 
-    private fun updateUI(user: UserResponse, token: String) {
+    private fun updateUI(user: UserResponse) {
         clearFields()
         val action = if (!user.hasLoggedInBefore) {
-            LogInFragmentDirections.actionLogInFragmentToWelcomeFragment(user, token)
+            LogInFragmentDirections.actionLogInFragmentToWelcomeFragment(user)
         } else {
-            LogInFragmentDirections.actionLogInFragmentToSecurityPhraseLoaderFragment(user, token)
+            LogInFragmentDirections.actionLogInFragmentToSecurityPhraseLoaderFragment(user)
         }
         findNavController().navigate(action)
-
     }
 
     private fun getUserLanguage(): Int {
@@ -142,28 +162,32 @@ class LogInFragment : Fragment() {
                     val account: GoogleSignInAccount? = task.result
                     if (account != null) {
                         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-                        getAuth().signInWithCredential(credential).addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                val gAcc = GoogleSignIn.getLastSignedInAccount(requireContext())
-                                val uid = getAuth().currentUser?.uid
-                                val token = FirebaseManager.getCurrentUserToken()
+                        getAuth().signInWithCredential(credential)
+                            .addOnCompleteListener { resultTask ->
+                                if (resultTask.isSuccessful) {
+                                    val gAcc = GoogleSignIn.getLastSignedInAccount(requireContext())
+                                    val uid = getAuth().currentUser?.uid
 
-                                if (token != null && uid != null) {
-                                    val actualUser = UserResponse(
-                                        uid, gAcc?.givenName!!, gAcc.familyName, gAcc.email!!,
-                                        null, gAcc.photoUrl!!.toString(), false
-                                    )
-                                    updateUI(actualUser, token)
+                                    if (uid != null) {
+                                        FirebaseManager.getUserByUID(uid) {
+                                            val actualUser = it
+                                                ?: UserResponse(
+                                                    uid, gAcc?.givenName!!, gAcc.familyName,
+                                                    gAcc.email!!, null, gAcc.photoUrl!!.toString(),
+                                                    false
+                                                )
+                                            updateUI(actualUser)
+                                        }
+                                    }
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        resultTask.exception.toString(),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    progressBar.visibility = View.GONE
                                 }
-                            } else {
-                                Toast.makeText(
-                                    context,
-                                    task.exception.toString(),
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                progressBar.visibility = View.GONE
                             }
-                        }
                     }
                 } else {
                     progressBar.visibility = View.GONE
@@ -181,7 +205,6 @@ class LogInFragment : Fragment() {
         btnFacebook = binding.efabFacebook
         btnForgottenPwd = binding.btnForgottenPassword
         btnSignUp = binding.btnSignUp
-        spLanguage = binding.spLanguage
         progressBar = binding.progressBarLogIn
     }
 

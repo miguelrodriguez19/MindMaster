@@ -12,22 +12,20 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.CellDayAllMovementsBinding
+import com.miguelrodriguez19.mindmaster.models.comparators.MovementComparator
+import com.miguelrodriguez19.mindmaster.models.comparators.MovementsGroupComparator
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
 import com.miguelrodriguez19.mindmaster.models.structures.MonthMovementsResponse
 import com.miguelrodriguez19.mindmaster.models.structures.MonthMovementsResponse.Movement
 import com.miguelrodriguez19.mindmaster.models.structures.MonthMovementsResponse.Type
-import com.miguelrodriguez19.mindmaster.models.comparators.MovementComparator
-import com.miguelrodriguez19.mindmaster.models.comparators.MovementsGroupComparator
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs
-import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.getMonthYearOf
 import kotlin.streams.toList
 
 class AllMovementsAdapter(
-    private val context: Context,
-    var data: ArrayList<MonthMovementsResponse>
-) :
-    RecyclerView.Adapter<AllMovementsAdapter.ViewHolder>() {
+    private val context: Context, var data: ArrayList<MonthMovementsResponse>
+) : RecyclerView.Adapter<AllMovementsAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.cell_day_all_movements, parent, false)
@@ -46,8 +44,7 @@ class AllMovementsAdapter(
     }
 
     private fun isDateGroupEmptyOf(
-        movement: Movement,
-        callback: (Int, Boolean) -> Unit
+        movement: Movement, callback: (Int, Boolean) -> Unit
     ) {
         val index = getGroupOf(movement)
         val group = data[index]
@@ -62,7 +59,8 @@ class AllMovementsAdapter(
 
     private fun removeItemAt(groupPosition: Int, eventPosition: Int) {
         val group = data[groupPosition]
-        val newList = ArrayList((group.expensesList + group.incomeList).sortedWith(MovementComparator()))
+        val newList =
+            ArrayList((group.expensesList + group.incomeList).sortedWith(MovementComparator()))
         newList.removeAt(eventPosition)
 
         val incomes = newList.stream().filter { it.type == Type.INCOME }.toList()
@@ -75,12 +73,9 @@ class AllMovementsAdapter(
     private fun getGroupOf(movement: Movement): Int {
         val date = getMonthYearOf(movement.date)
         var index = -1
-        data.stream()
-            .filter { it.date == date }
-            .findFirst()
-            .ifPresent {
-                index = data.indexOf(it)
-            }
+        data.stream().filter { it.date == date }.findFirst().ifPresent {
+            index = data.indexOf(it)
+        }
         return index
     }
 
@@ -155,20 +150,15 @@ class AllMovementsAdapter(
 
                     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                         AllDialogs.showConfirmationDialog(
-                            context,
-                            context.getString(R.string.delete_confirmation),
+                            context, context.getString(R.string.delete_confirmation),
                             context.getString(R.string.delete_event_message)
                         ) {
                             val position = viewHolder.adapterPosition
                             if (it) {
-                                FirebaseManager.deleteMovement(
-                                    context, adapter.getItemAt(position)
-                                ) { movement ->
+                                FirebaseManager.deleteMovement(adapter.getItemAt(position)) { movement ->
                                     Toolkit.showUndoSnackBar(context, view) { ok ->
                                         if (ok) {
-                                            FirebaseManager.saveMovement(
-                                                context, movement
-                                            ) { item ->
+                                            FirebaseManager.saveMovement(movement) { item ->
                                                 addItem(item)
                                             }
                                         }
@@ -219,13 +209,7 @@ class AllMovementsAdapter(
                         background.draw(c)
                         icon.draw(c)
                         super.onChildDraw(
-                            c,
-                            recyclerView,
-                            viewHolder,
-                            dX,
-                            dY,
-                            actionState,
-                            isCurrentlyActive
+                            c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive
                         )
                     }
                 })

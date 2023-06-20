@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Mind Master</string>
-    <string name="mind_master_logo">Mind \nMaster</string>
     <string name="hello_blank_fragment">Bonjour fragment vide</string>
     <string name="welcome">Bienvenue!</string>
     <string name="log_in">Se connecter</string>
@@ -32,7 +30,7 @@
     <string name="hint_password_red">Mot de passe<font fgcolor='#C80000'>*</font></string>
     <string name="hint_search">Rechercher ici …</string>
     <string name="hint_repeatPassword">Répéter le mot de passe<font fgcolor='#C80000'>*</font></string>
-    <string name="check_terms_and_conditions">J\'accepte les <a href="#">Conditions d\'utilisation</a> et la <a href="#">Politique de confidentialité</a>.</string>
+    <string name="check_terms_and_conditions">J\'accepte les %1$s et la %2$s.</string>
     <string name="forgotten_password">Mot de passe oublié?</string>
     <string name="have_an_account">Vous avez déjà un compte?</string>
     <string name="dont_have_an_account">Vous n´avez pas de compte?</string>
@@ -77,7 +75,7 @@
     <string name="theme">Thème</string>
     <string name="security">Sécurité</string>
     <string name="currency">Devise</string>
-    <string name="change_password">Changer le mot de passe</string>
+    <string name="reset_password">Changer le mot de passe</string>
     <string name="log_out">Déconnexion</string>
     <string name="cancel">Annuler</string>
     <string name="logout_confirmation_title">Voulez-vous vous déconnecter ?</string>
@@ -95,22 +93,91 @@
     <string name="edit_profile">Modifier le profil</string>
     <string name="advanced_options">Options avancées</string>
     <string name="delete_account">Supprimer le compte</string>
+    <string name="error">Erreur</string>
+    <string name="something_went_wrong">Quelque chose a mal tourné, veuillez réessayer plus tard.</string>
+    <string name="wrong_email_password">Adresse e-mail ou mot de passe incorrect</string>
+    <string name="fill_all_fields">Veuillez remplir tous les champs</string>
+    <string name="pwdsDontMatch">Les mots de passe ne correspondent pas</string>
+    <string name="weakPassword">Doit contenir au moins 8 caractères, des chiffres, des majuscules et des caractères spéciaux.</string>
+    <string name="invalidEmail">Adresse e-mail invalide.</string>
+    <string name="field_obligatory">Ce champ est obligatoire.</string>
+    <string name="collision_auth">L\'adresse e-mail est déjà utilisée.</string>
+    <string name="participants">Participants</string>
+    <string name="category">Catégorie</string>
+    <string name="add">Ajouter</string>
+    <string name="repetition">Répétition</string>
+    <string name="title">Titre</string>
+    <string name="description">Description</string>
+    <string name="start_time">Débute à:</string>
+    <string name="end_time">Se termine à:</string>
+    <string name="location">Emplacement</string>
+    <string name="select_a_color">Sélectionnez une couleur</string>
+    <string name="date">Date</string>
+    <string name="due_date">Date d\'échéance</string>
+    <string name="priority">Priorité</string>
+    <string name="status">Statut</string>
+    <string name="select">Sélectionner</string>
+    <string name="reached_max_categories">Le maximum est de 3</string>
+    <string name="type_anything">Tapez quelque chose d\'abord.</string>
+    <string name="changes_will_lost">Les modifications seront perdues</string>
+    <string name="confirm_lost_changes_message">Si vous continuez, les modifications non enregistrées seront perdues.</string>
+    <string name="err_end_date_incorrect">La date de fin doit être la même ou postérieure à la date de début</string>
+    <string name="concept">Concept</string>
+    <string name="amount">Montant</string>
+    <string name="account_title_hint">Titre du compte</string>
+    <string name="copy_users_text_to_clipboard">Copier le texte des utilisateurs dans le presse-papiers</string>
+    <string name="copy_email_text_to_clipboard">Copier le texte de l\'e-mail dans le presse-papiers.</string>
+    <string name="copy_password_text_to_clipboard">Copier le texte du mot de passe dans le presse-papiers</string>
+    <string name="other">Autre</string>
+    <string name="group_title_hint">Titre du groupe</string>
+    <string name="edit">Modifier</string>
+    <string name="edit_group">Modifier le groupe</string>
+    <string name="delete_group">Supprimer le groupe</string>
+    <string name="delete_confirmation">Êtes-vous sûr de vouloir le supprimer ?</string>
+    <string name="delete_password_group_message">Cette action est irréversible, le groupe et tous les comptes qui s\'y trouvent seront supprimés.</string>
+    <string name="delete_event_message">Cette action est irréversible, ce plan sera supprimé.</string>
+    <string name="try_later">Quelque chose a mal tourné, réessayez plus tard.</string>
+    <string name="faqs">FAQ</string>
+    <string name="nothing_planned_yet">Rien n\'est prévu pour le moment</string>
+    <string name="event_deleted">L\'élément sélectionné a été supprimé</string>
+    <string name="undo">Annuler</string>
+    <string name="error_unmodified_fields">Veuillez mettre à jour au moins un champ avant d\'enregistrer les modifications.</string>
+    <string name="delete">Supprimer</string>
+    <string name="at_least_one_account">Il doit y avoir au moins un compte</string>
+    <string name="password_weak">Le mot de passe est faible</string>
+    <string name="password_medium">Le mot de passe est moyen</string>
+    <string name="password_strong">Le mot de passe est fort</string>
+    <string name="minAgeError">Vous devez avoir au moins %d ans pour vous inscrire.</string>
 
-    <string-array name="available_languages">
-        <item>Anglais</item>
-        <item>Espagnol</item>
-        <item>Français</item>
-    </string-array>
-
-    <string-array name="available_themes">
-        <item>Clair</item>
-        <item>Sombre</item>
-        <item>Système</item>
-    </string-array>
-
-    <string-array name="available_currencies">
-        <item>Euro - €</item>
-        <item>Dollar - $</item>
-        <item>Livre - £</item>
-    </string-array>
+    <string name="information_about_security_phrase">Ceci est votre phrase de sécurité, elle est unique et essentielle pour accéder à votre coffre de compte. Traitez-la comme une clé physique : vous seul devriez la connaître et la garder dans un endroit sûr, si vous perdez cette phrase, vous perdrez l\'accès à vos comptes enregistrés et nous ne pourrons pas la récupérer, <b>alors gardez-la en sécurité !</b></string>
+    <string name="inner_welcome_2_user">Bienvenue à Mind Master,\n%s!</string>
+    <string name="inner_welcome_back_2_user">Content de vous revoir,\n%s!</string>
+    <string name="security_phrase_hint">Phrase de sécurité</string>
+    <string name="responsibility_agreement_security_phrase">Je reconnais que si je perds cette phrase secrète, je perdrai l\'accès complet à mon coffre de compte.</string>
+    <string name="continue_">Continuer</string>
+    <string name="continue_timer">Continuer(%d)</string>
+    <string name="copied_2_clipboard">Copié dans le presse-papier</string>
+    <string name="security_phrase">Phrase de sécurité</string>
+    <string name="attach_security_phrase">Entrez votre phrase sécurisée ici ou, alternativement, attachez le fichier complet.</string>
+    <string name="attach">Joindre</string>
+    <string name="attach_zone_content_description">Zone de jointure</string>
+    <string name="incorrect_secure_phrase_err">Phrase sécurisée incorrecte</string>
+    <string name="reading_file_err">Erreur de lecture du fichier</string>
+    <string name="invalid_file_type_err">Type de fichier invalide. Seuls les fichiers .txt sont autorisés.</string>
+    <string name="fill_secure_phrase_or_attach_file">Vous devez remplir le champ ou joindre un fichier</string>
+    <string name="clear">Effacer</string>
+    <string name="unknown_file_name">Nom inconnu</string>
+    <string name="change_account">Changer de compte</string>
+    <string name="verify_email">Vérifiez votre e-mail</string>
+    <string name="verify_email_message">Nous vous avons envoyé un e-mail à votre adresse e-mail, n\'oubliez pas de vérifier votre <b>dossier spam.</b></string>
+    <string name="tap_again_to_exit">Touchez à nouveau pour quitter.</string>
+    <string name="balance">Solde</string>
+    <string name="under_development">Désolé. Cette section est actuellement en cours de développement.</string>
+    <string name="reset_password_msg">Nous vous avons envoyé un e-mail pour réinitialiser votre mot de passe. N\'oubliez pas de vérifier votre dossier spam.</string>
+    <string name="terms">Conditions d\'utilisation</string>
+    <string name="privacy_policy">Politique de confidentialité</string>
+    <string name="help">Aide</string>
+    <string name="no_email_app_installed">Aucune application de messagerie n\'est installée.</string>
+    <string name="accept_this_permission_to_continue">Vous devez accepter cette autorisation si vous souhaitez poursuivre l\'action envisagée.</string>
+    <string name="accept_permissions">Veuillez accepter les autorisations</string>
 </resources>

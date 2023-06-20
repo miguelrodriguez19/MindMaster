@@ -1,6 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="ExtraTranslation">
-    <string name="app_name">Mind Master</string>
-    <string name="mind_master_logo">Mind \nMaster</string>
+<resources>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="welcome">Welcome!</string>
     <string name="log_in">Log In</string>
@@ -31,7 +29,9 @@
     <string name="hint_password_red">Password<font fgcolor='#C80000'>*</font></string>
     <string name="hint_search">Search here …</string>
     <string name="hint_repeatPassword">Repeat password<font fgcolor='#C80000'>*</font></string>
-    <string name="check_terms_and_conditions">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</string>
+    <string name="terms">Terms of Service</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="check_terms_and_conditions">I agree to the %1$s and %2$s.</string>
     <string name="forgotten_password">Forgotten password?</string>
     <string name="have_an_account">Have an account?</string>
     <string name="dont_have_an_account">Don\'t have an account?</string>
@@ -62,7 +62,6 @@
     <string name="latest_movements">Latest movements:</string>
     <string name="see_all_movements">See all movements</string>
 
-
     <!-- Passwords -->
     <string name="group">Group</string>
     <string name="username_label">Username:</string>
@@ -74,13 +73,12 @@
     <string name="email_copied">Email copied</string>
     <string name="password_copied">Password copied</string>
 
-
     <string name="notifications">Notifications</string>
     <string name="language">Language</string>
     <string name="theme">Theme</string>
     <string name="security">Security</string>
     <string name="currency">Currency</string>
-    <string name="change_password">Change password</string>
+    <string name="reset_password">Reset password</string>
     <string name="log_out">Log out</string>
     <string name="cancel">Cancel</string>
     <string name="logout_confirmation_title">Do you want to log out?</string>
@@ -154,8 +152,7 @@
     <string name="password_medium">Password is medium</string>
     <string name="password_strong">Password is strong</string>
     <string name="minAgeError">You must be at least %d years old to register.</string>
-    <string name="wordCount4PasswordPhrase">20</string>
-    <string name="hash_algorithm">SHA-256</string>
+
     <string name="information_about_security_phrase">This is your security phrase, it is unique to you and essential to access your account vault. Treat it like a physical key: only you should know it and you should keep it in a safe place, if you lose this phrase, you will lose access to your saved accounts and we will not be able to recover it, <b>so keep it safe!</b></string>
     <string name="inner_welcome_2_user">Welcome to Mind Master,\n%s!</string>
     <string name="inner_welcome_back_2_user">Welcome back,\n%s!</string>
@@ -175,25 +172,15 @@
     <string name="clear">Clear</string>
     <string name="unknown_file_name">Unknown name</string>
     <string name="change_account">Change account</string>
-    <string name="verify_email" >Verify your email</string>
-    <string name="verify_email_message" >We have sent you an email to your email address, don\'t forget to check your <b>spam folder.</b></string>
+    <string name="verify_email">Verify your email</string>
+    <string name="verify_email_message">We have sent you an email to your email address, don\'t forget to check your <b>spam folder.</b></string>
     <string name="tap_again_to_exit">Tap again to exit.</string>
+    <string name="balance">Balance</string>
+    <string name="under_development">Sorry. This section is currently under development.</string>
+    <string name="reset_password_msg">We have sent you an email to reset your password. Don\'t forget to check your spam folder.</string>
+    <string name="no_email_app_installed">There is no mail application installed.</string>
+    <string name="accept_this_permission_to_continue">You must accept this permission if you wish to proceed with the intended action.</string>
+    <string name="accept_permissions">Please accept permissions</string>
+    <string name="see_faqs">See FAQs</string>
 
-    <string-array name="available_languages">
-        <item>English</item>
-        <item>Spanish</item>
-        <item>French</item>
-    </string-array>
-
-    <string-array name="available_themes">
-        <item>Light</item>
-        <item>Dark</item>
-        <item>System</item>
-    </string-array>
-
-    <string-array name="available_currencies">
-        <item>Euro - €</item>
-        <item>Dollar - $</item>
-        <item>Pound - £</item>
-    </string-array>
 </resources>

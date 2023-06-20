@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Mind Master</string>
-    <string name="mind_master_logo">Mind \nMaster</string>
     <string name="hello_blank_fragment">Hola fragmento vacío</string>
     <string name="welcome">¡Bienvenido!</string>
     <string name="log_in">Iniciar sesión</string>
@@ -32,7 +30,7 @@
     <string name="hint_password_red">Contraseña<font fgcolor='#C80000'>*</font></string>
     <string name="hint_search">Buscar aquí …</string>
     <string name="hint_repeatPassword">Repetir contraseña<font fgcolor='#C80000'>*</font></string>
-    <string name="check_terms_and_conditions">Acepto los <a href="#">Términos de Servicio</a> y la <a href="#">Política de Privacidad</a>.</string>
+    <string name="check_terms_and_conditions">Acepto los %1$s y la %2$s.</string>
     <string name="forgotten_password">¿Olvidaste la contraseña?</string>
     <string name="have_an_account">¿Ya tienes una cuenta?</string>
     <string name="dont_have_an_account">¿No tienes una cuenta?</string>
@@ -77,7 +75,7 @@
     <string name="theme">Tema</string>
     <string name="security">Seguridad</string>
     <string name="currency">Moneda</string>
-    <string name="change_password">Cambiar contraseña</string>
+    <string name="reset_password">Cambiar contraseña</string>
     <string name="log_out">Cerrar sesión</string>
     <string name="cancel">Cancelar</string>
     <string name="logout_confirmation_title">¿Desea cerrar sesión?</string>
@@ -96,21 +94,92 @@
     <string name="advanced_options">Opciones avanzadas</string>
     <string name="delete_account">Eliminar cuenta</string>
 
-    <string-array name="available_languages">
-        <item>Ingles</item>
-        <item>Español</item>
-        <item>Frances</item>
-    </string-array>
+    <string name="error">Error</string>
+    <string name="something_went_wrong">Algo salió mal, por favor inténtalo de nuevo más tarde.</string>
+    <string name="wrong_email_password">Correo electrónico o contraseña incorrecta</string>
+    <string name="fill_all_fields">Rellena todos los campos</string>
+    <string name="pwdsDontMatch">Las contraseñas no coinciden</string>
+    <string name="weakPassword">Debe contener al menos 8 caracteres, números, mayúsculas y caracteres especiales.</string>
+    <string name="invalidEmail">Correo electrónico no válido.</string>
+    <string name="field_obligatory">Este campo es obligatorio.</string>
+    <string name="collision_auth">La dirección de correo electrónico ya está en uso.</string>
+    <string name="participants">Participantes</string>
+    <string name="category">Categoría</string>
+    <string name="add">Añadir</string>
+    <string name="repetition">Repetición</string>
+    <string name="title">Título</string>
+    <string name="description">Descripción</string>
+    <string name="start_time">Empieza a las:</string>
+    <string name="end_time">Termina a las:</string>
+    <string name="location">Ubicación</string>
+    <string name="select_a_color">Selecciona un color</string>
+    <string name="date">Fecha</string>
+    <string name="due_date">Fecha de vencimiento</string>
+    <string name="priority">Prioridad</string>
+    <string name="status">Estado</string>
+    <string name="select">Seleccionar</string>
+    <string name="reached_max_categories">El máximo son 3</string>
+    <string name="type_anything">Escribe algo primero.</string>
+    <string name="changes_will_lost">Los cambios se perderán</string>
+    <string name="confirm_lost_changes_message">Si continúas, se perderán los cambios no guardados.</string>
+    <string name="err_end_date_incorrect">La fecha de finalización debe ser igual o posterior a la fecha de inicio</string>
+    <string name="concept">Concepto</string>
+    <string name="amount">Cantidad</string>
+    <string name="account_title_hint">Título de la cuenta</string>
+    <string name="copy_users_text_to_clipboard">Copiar texto de los usuarios al portapapeles</string>
+    <string name="copy_email_text_to_clipboard">Copiar texto del correo electrónico al portapapeles.</string>
+    <string name="copy_password_text_to_clipboard">Copiar texto de la contraseña al portapapeles</string>
+    <string name="other">Otro</string>
+    <string name="group_title_hint">Título del grupo</string>
+    <string name="edit">Editar</string>
+    <string name="edit_group">Editar grupo</string>
+    <string name="delete_group">Eliminar grupo</string>
+    <string name="delete_confirmation">¿Estás seguro de que quieres eliminarlo?</string>
+    <string name="delete_password_group_message">Esta acción es irreversible, el grupo y todas las cuentas dentro de él serán eliminados.</string>
+    <string name="delete_event_message">Esta acción es irreversible, este plan será eliminado.</string>
+    <string name="try_later">Algo salió mal, intenta de nuevo más tarde.</string>
+    <string name="faqs">Preguntas frecuentes</string>
+    <string name="nothing_planned_yet">Nada planeado aún</string>
+    <string name="event_deleted">El elemento seleccionado ha sido eliminado</string>
+    <string name="undo">Deshacer</string>
+    <string name="error_unmodified_fields">Por favor, actualiza cualquier campo antes de guardar los cambios.</string>
+    <string name="delete">Eliminar</string>
+    <string name="at_least_one_account">Debe haber al menos una cuenta</string>
+    <string name="password_weak">La contraseña es débil</string>
+    <string name="password_medium">La contraseña es media</string>
+    <string name="password_strong">La contraseña es fuerte</string>
+    <string name="minAgeError">Debes tener al menos %d años para registrarte.</string>
 
-    <string-array name="available_themes">
-        <item>Claro</item>
-        <item>Oscuro</item>
-        <item>Sistema</item>
-    </string-array>
+    <string name="information_about_security_phrase">Esta es tu frase de seguridad, es única para ti y esencial para acceder a tu bóveda de cuenta. Trátala como una llave física: solo tú deberías saberla y deberías mantenerla en un lugar seguro, si pierdes esta frase, perderás el acceso a tus cuentas guardadas y no podremos recuperarla, <b>¡así que mantenla segura!</b></string>
+    <string name="inner_welcome_2_user">Bienvenido a Mind Master,\n%s!</string>
+    <string name="inner_welcome_back_2_user">¡Bienvenido de nuevo,\n%s!</string>
+    <string name="security_phrase_hint">Frase de seguridad</string>
+    <string name="responsibility_agreement_security_phrase">Acepto que si pierdo esta frase de paso, perderé el acceso completo a mi Bóveda de Cuenta.</string>
+    <string name="continue_">Continuar</string>
+    <string name="continue_timer">Continuar(%d)</string>
+    <string name="copied_2_clipboard">Copiado al portapapeles</string>
+    <string name="security_phrase">Frase de seguridad</string>
+    <string name="attach_security_phrase">Ingresa tu frase segura aquí o, alternativamente, adjunta el archivo completo.</string>
+    <string name="attach">Adjuntar</string>
+    <string name="attach_zone_content_description">Zona de adjuntos</string>
+    <string name="incorrect_secure_phrase_err">Frase segura incorrecta</string>
+    <string name="reading_file_err">Error al leer el archivo</string>
+    <string name="invalid_file_type_err">Tipo de archivo no válido. Solo se permiten archivos .txt.</string>
+    <string name="fill_secure_phrase_or_attach_file">Debes llenar el campo o adjuntar un archivo</string>
+    <string name="clear">Borrar</string>
+    <string name="unknown_file_name">Nombre desconocido</string>
+    <string name="change_account">Cambiar cuenta</string>
+    <string name="verify_email">Verifica tu correo electrónico</string>
+    <string name="verify_email_message">Te hemos enviado un correo electrónico a tu dirección de correo electrónico, no olvides revisar tu <b>carpeta de spam.</b></string>
+    <string name="tap_again_to_exit">Toca de nuevo para salir.</string>
+    <string name="balance">Saldo</string>
+    <string name="under_development">Lo siento. Esta sección está actualmente en desarrollo.</string>
+    <string name="reset_password_msg">Te hemos enviado un correo electrónico para restablecer tu contraseña. No olvides revisar tu carpeta de spam.</string>
+    <string name="terms">Condiciones de uso</string>
+    <string name="privacy_policy">Política de privacidad</string>
+    <string name="help">Ayuda</string>
+    <string name="no_email_app_installed">No hay una aplicación de correo instalada.</string>
+    <string name="accept_this_permission_to_continue">Debe aceptar este permiso si desea continuar con la acción prevista.</string>
+    <string name="accept_permissions">Por favor acepta los permisos</string>
 
-    <string-array name="available_currencies">
-        <item>Euro - €</item>
-        <item>Dolar - $</item>
-        <item>Libra - £</item>
-    </string-array>
 </resources>

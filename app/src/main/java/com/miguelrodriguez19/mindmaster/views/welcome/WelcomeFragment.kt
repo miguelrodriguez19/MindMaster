@@ -3,6 +3,7 @@ package com.miguelrodriguez19.mindmaster.views.welcome
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.LayoutInflater
@@ -23,15 +24,14 @@ import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentWelcomeBinding
 import com.miguelrodriguez19.mindmaster.models.utils.AESEncripter
-import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager
-import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.updateHasLoggedInBefore
-import com.miguelrodriguez19.mindmaster.models.utils.Preferences
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.updateHasLoggedInBefore
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.showToast
 
 class WelcomeFragment : Fragment() {
     private var _binding: FragmentWelcomeBinding? = null
     private val binding get() = _binding!!
-    val args: WelcomeFragmentArgs by navArgs()
+    private val args: WelcomeFragmentArgs by navArgs()
 
     private lateinit var tvWelcomeTitle: TextView
     private lateinit var tilPassphrase: TextInputLayout
@@ -40,6 +40,21 @@ class WelcomeFragment : Fragment() {
     private lateinit var checkAgreement: MaterialCheckBox
     private lateinit var progressBar: ProgressBar
     private var passphrase: String? = null
+
+    private val createDocumentResult = registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri: Uri? ->
+        uri?.let {
+            writeTextToFile(it, passphrase ?: "Empty")
+        }
+    }
+
+    private fun writeTextToFile(uri: Uri, text: String) {
+        requireActivity().contentResolver.openOutputStream(uri)?.use {
+            it.write(text.toByteArray())
+            updateUI()
+        }
+    }
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -54,14 +69,14 @@ class WelcomeFragment : Fragment() {
         initBinding()
         tvWelcomeTitle.text = requireContext().getString(
             R.string.inner_welcome_2_user,
-            Preferences.getUser()?.firstName
+            args.user.firstName
         )
         setPassphrase()
 
         tilPassphrase.setEndIconOnClickListener {
             val clipboard =
                 requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val clip = ClipData.newPlainText(getString(R.string.security_phrase), etPassphrase.text)
+            val clip = ClipData.newPlainText(getString(R.string.security_phrase), etPassphrase.text.toString())
             clipboard.setPrimaryClip(clip)
 
             showToast(requireContext(), R.string.copied_2_clipboard)
@@ -75,17 +90,14 @@ class WelcomeFragment : Fragment() {
                 setUpUser()
                 saveInFirestoreHash()
                 updateHasLoggedInBefore(args.user)
-                val action = WelcomeFragmentDirections.actionWelcomeFragmentToCalendarFragment()
-                findNavController().navigate(action)
             } else {
                 checkAgreement.isErrorShown = true
             }
         }
-
     }
 
     private fun setUpUser() {
-        (requireActivity() as MainActivity).setUpUser(args.user, args.token)
+        (requireActivity() as MainActivity).setUpUser(args.user)
     }
 
     private fun saveInFirestoreHash() {
@@ -98,7 +110,7 @@ class WelcomeFragment : Fragment() {
     }
 
     private fun setPassphrase() {
-        AESEncripter.generateSecurePhrase() {
+        AESEncripter.generateSecurePhrase {
             passphrase = it
             etPassphrase.setText(it)
         }
@@ -132,18 +144,6 @@ class WelcomeFragment : Fragment() {
 
         countDownTimer.start()
     }
-
-    private val createDocumentResult =
-        registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
-            if (uri != null) {
-                val content = etPassphrase.text.toString()
-                context?.contentResolver?.openOutputStream(uri)?.bufferedWriter()?.use {
-                    it.write(content)
-                    it.close()
-                }
-                updateUI()
-            }
-        }
 
     private fun updateUI() {
         etPassphrase.text = null

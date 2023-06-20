@@ -1,10 +1,11 @@
 package com.miguelrodriguez19.mindmaster
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
@@ -17,12 +18,14 @@ import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
 import com.miguelrodriguez19.mindmaster.databinding.ActivityMainBinding
 import com.miguelrodriguez19.mindmaster.databinding.DrawerHeaderBinding
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.getAuth
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.getCurrentUser
 import com.miguelrodriguez19.mindmaster.models.structures.UserResponse
 import com.miguelrodriguez19.mindmaster.models.utils.AESEncripter
-import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager.getCurrentUserToken
 import com.miguelrodriguez19.mindmaster.models.utils.Preferences
-import com.miguelrodriguez19.mindmaster.models.utils.Preferences.getToken
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.showToast
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -31,15 +34,18 @@ class MainActivity : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private var lastBackPressedTime: Long = 0L
     private val EXIT_TIME_GAP: Long = 2000
+
     override fun onCreate(savedInstanceState: Bundle?) {
         val screenSplash = installSplashScreen()
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         screenSplash.setKeepOnScreenCondition {
-            AESEncripter.init(applicationContext)
             false
         }
+        initContexts()
+        setAppTheme(Preferences.getTheme().toInt())
+
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
 
@@ -47,11 +53,11 @@ class MainActivity : AppCompatActivity() {
         drawerLayout = binding.drawerLayout
 
         val user = Preferences.getUser()
-        val curToken = getToken()
-        val supToken = getCurrentUserToken()
+
+        val firebaseUser = getCurrentUser()
 
         val initialFragment: Int =
-            if (user != null && (curToken != null && curToken == supToken) && Preferences.getSecurePhrase() != null) {
+            if (user != null && firebaseUser != null  && Preferences.getSecurePhrase() != null) {
                 loadUserData(user)
                 R.id.calendarFragment
             } else {
@@ -94,6 +100,21 @@ class MainActivity : AppCompatActivity() {
         binding.navView.setupWithNavController(navController)
     }
 
+    private fun initContexts() {
+        Preferences.init(applicationContext)
+        AESEncripter.init(applicationContext)
+        FirebaseManager.init(applicationContext)
+    }
+
+    private fun setAppTheme(theme: Int) {
+        when (theme) {
+            0 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO) // Tema claro
+            1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES) // Tema oscuro
+            2 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) // Tema del sistema
+            else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) // Por defecto, sigue el tema del sistema
+        }
+    }
+
     private fun loadUserData(user: UserResponse) {
         val navHeaderBinding = DrawerHeaderBinding.bind(binding.navView.getHeaderView(0))
         navHeaderBinding.tvName.text = user.firstName
@@ -103,10 +124,8 @@ class MainActivity : AppCompatActivity() {
             .into(navHeaderBinding.civDrawerUserPhoto)
     }
 
-    fun setUpUser(user: UserResponse, token: String) {
+    fun setUpUser(user: UserResponse) {
         Preferences.setUser(user)
-        Preferences.setToken(token)
-
         loadUserData(user)
     }
 
@@ -128,6 +147,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun logOut() {
+        getAuth().signOut()
         Preferences.clearAll()
         val intent = Intent(this, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

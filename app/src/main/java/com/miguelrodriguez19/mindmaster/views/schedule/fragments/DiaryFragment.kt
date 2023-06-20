@@ -14,7 +14,7 @@ import com.miguelrodriguez19.mindmaster.databinding.FragmentDiaryBinding
 import com.miguelrodriguez19.mindmaster.models.structures.AbstractEvent
 import com.miguelrodriguez19.mindmaster.models.structures.EventsResponse
 import com.miguelrodriguez19.mindmaster.models.utils.AllBottomSheets
-import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
 import com.miguelrodriguez19.mindmaster.views.schedule.adapters.AllEventsAdapter
 
 
@@ -83,7 +83,7 @@ class DiaryFragment : Fragment() {
     private fun setUpData() {
         binding.progressBarSchedule.visibility = View.VISIBLE
         this@DiaryFragment.data.clear()
-        FirebaseManager.loadAllSchedule(requireContext()) { allEvents ->
+        FirebaseManager.loadAllSchedule() { allEvents ->
             this@DiaryFragment.data.addAll(allEvents)
             dataFiltered = data
             adapter.setData(allEvents)

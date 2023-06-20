@@ -12,7 +12,7 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.miguelrodriguez19.mindmaster.databinding.FragmentAllMovementsBinding
 import com.miguelrodriguez19.mindmaster.models.structures.MonthMovementsResponse
 import com.miguelrodriguez19.mindmaster.models.utils.AllBottomSheets.Companion.showMovementBS
-import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
 import com.miguelrodriguez19.mindmaster.views.expenses.adapters.AllMovementsAdapter
 
 class AllMovementsFragment : Fragment() {
@@ -85,7 +85,7 @@ class AllMovementsFragment : Fragment() {
     private fun setUpData() {
         binding.progressBarAllMovements.visibility = View.VISIBLE
         this@AllMovementsFragment.data.clear()
-        FirebaseManager.loadAllMovements(requireContext()) { monthResponsesList ->
+        FirebaseManager.loadAllMovements() { monthResponsesList ->
             this@AllMovementsFragment.data.addAll(monthResponsesList)
             dataFiltered = data
             adapter.setData(monthResponsesList)

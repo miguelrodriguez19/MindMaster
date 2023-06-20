@@ -2,6 +2,7 @@ package com.miguelrodriguez19.mindmaster.models.utils
 
 import android.content.Context
 import com.miguelrodriguez19.mindmaster.R
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
 import kotlinx.coroutines.*
 import java.security.MessageDigest
 import java.security.SecureRandom

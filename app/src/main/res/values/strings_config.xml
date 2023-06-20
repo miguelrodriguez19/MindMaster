@@ -1,30 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources translatable="false">
+    <string name="app_name">Mind Master</string>
+    <string name="mind_master_logo">Mind \nMaster</string>
+    <string name="company_info_email">info@mindmaster.com</string>
+    <string name="mailto">mailto:%1$s</string>
+    <string name="filePassphraseName">Mind_Master_Key</string>
     <!-- Values -->
     <string name="peek_height_percent_botSheet">95</string>
     <string name="secure_pwd_lenght">14</string>
     <string name="secure_pwd_characters">ABCDEFGHIJKLMNÑOPQRSTUVWXYZabcdefghijklmnñopqrstuvwxyz0123456789!@#$€%.~*^&amp;()_+:ç/</string>
-
-    <!-- Rutes -->
-    <string name="users_rute">users</string>
-    <string name="schedule_rute">schedule</string>
-    <string name="events_rute">events</string>
-    <string name="reminders_rute">reminders</string>
-    <string name="tasks_rute">tasks</string>
-    <string name="date_rute">date</string>
-    <string name="movements_rute">movements</string>
-    <string name="incomes_rute">incomes</string>
-    <string name="expenses_rute">expenses</string>
-
-    <string name="max_movements_to_show" translatable="false">3</string>
+    <string name="wordCount4PasswordPhrase">20</string>
+    <string name="hash_algorithm">SHA-256</string>
+    <string name="max_movements_to_show">3</string>
     <string name="minAgeToRegister">14</string>
-    <string name="photo_themes">motorbikes,bikes,cars,automotive,landscape,random,animals,winter,summer,spring,autmn,cute,sports,flowers,plants,wild,freedom,free,coffee</string>
-    <string name="photo_url_request">https://source.unsplash.com/200x200/?%s</string>
     <string name="AES_KEY_SIZE">256</string>
     <string name="GCM_IV_LENGTH">12</string>
     <string name="GCM_TAG_LENGTH">16</string>
     <string name="millisecond_2_continue_passphrase">10000</string>
-    <string name="filePassphraseName">key</string>
+
+    <!-- Web Url -->
+    <string name="home_url">https://miguelrodriguez19.github.io/MindMasterWeb/</string>
+    <string name="help_url">https://miguelrodriguez19.github.io/MindMasterWeb/help.html</string>
+    <string name="terms_url">https://miguelrodriguez19.github.io/MindMasterWeb/terms.html</string>
+    <string name="privacy_policy_url">https://miguelrodriguez19.github.io/MindMasterWeb/privacyPolicy.html</string>
+
+    <!-- Preferences keys -->
+    <string name="theme_preferences_key">theme</string>
+    <string name="user_settings_preferences_key">userSettings</string>
+    <string name="currency_preferences_key">currency</string>
+    <string name="init_vector_preferences_key">initializationVector</string>
+    <string name="secure_phrase_preferences_key">securePhrase</string>
+
+    <!-- Firebase Routes -->
+    <string name="users_route">users</string>
+    <string name="schedule_route">schedule</string>
+    <string name="events_route">events</string>
+    <string name="reminders_route">reminders</string>
+    <string name="tasks_route">tasks</string>
+    <string name="date_route">date</string>
+    <string name="movements_route">movements</string>
+    <string name="incomes_route">incomes</string>
+    <string name="expenses_route">expenses</string>
+
+    <string name="photo_themes">motorbikes,bikes,cars,automotive,landscape,random,animals,winter,summer,spring,autmn,cute,sports,flowers,plants,wild,freedom,free,coffee</string>
+    <string name="photo_url_request">https://source.unsplash.com/200x200/?%s</string>
 
 
+    <string-array name="available_languages">
+        <item>en</item>
+        <item>es</item>
+        <item>fr</item>
+    </string-array>
+
+    <string-array name="available_themes">
+        <item>Light</item>
+        <item>Dark</item>
+        <item>System</item>
+    </string-array>
+
+    <string-array name="available_currencies">
+        <item>Euro - €</item>
+        <item>Dollar - $</item>
+        <item>Pound - £</item>
+    </string-array>
 </resources>

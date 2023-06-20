@@ -1,5 +1,9 @@
 package com.miguelrodriguez19.mindmaster.views.settings.fragments
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -9,17 +13,22 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
+import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentAccountBinding
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.saveImageInStorage
 import com.miguelrodriguez19.mindmaster.models.structures.UserResponse
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs
-import com.miguelrodriguez19.mindmaster.models.utils.FirebaseManager
 import com.miguelrodriguez19.mindmaster.models.utils.Preferences
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.showToast
 import de.hdodenhof.circleimageview.CircleImageView
@@ -28,6 +37,8 @@ class AccountFragment : Fragment() {
 
     private var _binding: FragmentAccountBinding? = null
     private val binding get() = _binding!!
+    private var activityRef: MainActivity? = null
+
     private lateinit var tvName: TextView
     private lateinit var btnEditPhoto: MaterialButton
     private lateinit var civUserPhoto: CircleImageView
@@ -38,7 +49,7 @@ class AccountFragment : Fragment() {
     private lateinit var etBirthdate: EditText
     private lateinit var btnSave: ExtendedFloatingActionButton
     private lateinit var progressBar: ProgressBar
-    private lateinit var user: UserResponse
+    private var uriPhoto: String? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -48,20 +59,40 @@ class AccountFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        user = Preferences.getUser()!!
         initWidgets()
         setUpWithUser()
-
+        activityRef = requireActivity() as MainActivity
         btnSave.setOnClickListener {
             if (areFieldsModified()) {
-                updateFirestoreUser()
-                findNavController().popBackStack()
+                updateFirestoreUser(){
+                    findNavController().popBackStack()
+                }
             } else {
                 showToast(requireContext(), R.string.error_unmodified_fields)
             }
         }
-        btnEditPhoto.setOnClickListener {
 
+        btnEditPhoto.setOnClickListener {
+            when {
+                ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ) == PackageManager.PERMISSION_GRANTED -> {
+                    getContent.launch("image/*")
+                }
+                shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE) -> {
+                    AllDialogs.showAlertDialog(
+                        requireContext(), getString(R.string.accept_permissions), getString(
+                            R.string.accept_this_permission_to_continue
+                        )
+                    )
+                }
+                else -> {
+                    requestPermissionLauncher.launch(
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                    )
+                }
+            }
         }
 
         etBirthdate.setOnClickListener {
@@ -78,21 +109,56 @@ class AccountFragment : Fragment() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                tvName.text = "${s.toString()}"
+                tvName.text = s.toString()
             }
         })
     }
 
-    private fun updateFirestoreUser() {
+    private val getContent =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            if (uri != null) {
+                uploadImage(uri)
+            }
+        }
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
+                getContent.launch("image/*")
+            } else {
+                AllDialogs.showAlertDialog(
+                    requireContext(), getString(R.string.accept_permissions), getString(
+                        R.string.accept_this_permission_to_continue
+                    )
+                )
+            }
+        }
+
+
+    private fun uploadImage(uri: Uri) {
+        saveImageInStorage(uri.toString()) { imageUrl ->
+            Glide.with(requireActivity())
+                .load(uri)
+                .into(civUserPhoto)
+            uriPhoto = imageUrl
+        }
+    }
+
+    private fun updateFirestoreUser(onUpdated:(UserResponse)->Unit) {
         progressBar.visibility = View.VISIBLE
-        FirebaseManager.updateUser(
-            UserResponse(
-                user, etFirstName.text.toString(),
-                etLastName.text.toString(), etBirthdate.text.toString()
-            )
-        ) {
-            Preferences.setUser(it)
-            progressBar.visibility = View.GONE
+        val user = Preferences.getUser()
+        user?.let {
+            val uri = uriPhoto ?: user.photoUrl
+            FirebaseManager.updateUser(
+                user.copy(
+                    firstName = etFirstName.text.toString(), lastName = etLastName.text.toString(),
+                    birthdate = etBirthdate.text.toString(), photoUrl = uri
+                )
+            ) { updatedUser ->
+                activityRef!!.setUpUser(updatedUser)
+                onUpdated(updatedUser)
+                progressBar.visibility = View.GONE
+            }
         }
     }
 
@@ -102,14 +168,17 @@ class AccountFragment : Fragment() {
     }
 
     private fun setUpWithUser() {
-        etFirstName.setText(user.firstName)
-        etLastName.setText(user.lastName)
-        etBirthdate.setText(user.birthdate)
-        tvName.text = etFirstName.text.toString()
+        val user = Preferences.getUser()
+        user?.let {
+            etFirstName.setText(user.firstName)
+            etLastName.setText(user.lastName)
+            etBirthdate.setText(user.birthdate)
+            tvName.text = etFirstName.text.toString()
 
-        Glide.with(requireActivity())
-            .load(user.photoUrl)
-            .into(civUserPhoto)
+            Glide.with(requireActivity())
+                .load(user.photoUrl)
+                .into(civUserPhoto)
+        }
     }
 
     private fun initWidgets() {
