@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
                         showToast(this@MainActivity, R.string.tap_again_to_exit)
                         lastBackPressedTime = System.currentTimeMillis()
                     } else {
-                        this.isEnabled = false // Desactiva el callback si quieres cerrar la aplicación
+                        this.isEnabled = false
                         finish()
                     }
                 } else {
