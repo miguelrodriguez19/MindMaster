@@ -1,7 +1,6 @@
 package com.miguelrodriguez19.mindmaster
 
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -25,7 +24,6 @@ import com.miguelrodriguez19.mindmaster.models.structures.UserResponse
 import com.miguelrodriguez19.mindmaster.models.utils.AESEncripter
 import com.miguelrodriguez19.mindmaster.models.utils.Preferences
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.showToast
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -45,7 +43,6 @@ class MainActivity : AppCompatActivity() {
         }
         initContexts()
         setAppTheme(Preferences.getTheme().toInt())
-
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
 
@@ -57,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         val firebaseUser = getCurrentUser()
 
         val initialFragment: Int =
-            if (user != null && firebaseUser != null  && Preferences.getSecurePhrase() != null) {
+            if (user != null && firebaseUser != null && Preferences.getSecurePhrase() != null) {
                 loadUserData(user)
                 R.id.calendarFragment
             } else {
@@ -72,7 +69,7 @@ class MainActivity : AppCompatActivity() {
                     R.id.welcomeFragment, R.id.calendarFragment
                 )
 
-                if(exitFragments.contains(navController.currentDestination?.id)) {
+                if (exitFragments.contains(navController.currentDestination?.id)) {
                     if (System.currentTimeMillis() - lastBackPressedTime > EXIT_TIME_GAP) {
                         showToast(this@MainActivity, R.string.tap_again_to_exit)
                         lastBackPressedTime = System.currentTimeMillis()
@@ -155,5 +152,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 }
+
 
 
