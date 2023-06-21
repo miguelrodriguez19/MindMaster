@@ -9,16 +9,14 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentBarsChartBinding
-import com.miguelrodriguez19.mindmaster.models.formatters.ChartsValueFormatter
-import com.miguelrodriguez19.mindmaster.models.viewModels.expenses.ExpensesViewModel
 import com.miguelrodriguez19.mindmaster.models.structures.MonthMovementsResponse
 import com.miguelrodriguez19.mindmaster.models.utils.Preferences
+import com.miguelrodriguez19.mindmaster.models.viewModels.expenses.ExpensesViewModel
 
 class BarsChartFragment : Fragment() {
     private var _binding: FragmentBarsChartBinding? = null
@@ -36,7 +34,10 @@ class BarsChartFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        expensesViewModel.allMonths.observe(viewLifecycleOwner, this@BarsChartFragment::setBarsChart)
+        expensesViewModel.allMonths.observe(
+            viewLifecycleOwner,
+            this@BarsChartFragment::setBarsChart
+        )
 
         binding.pbLoadingBarsChart.visibility = View.VISIBLE
         binding.barChart.visibility = View.INVISIBLE
@@ -45,55 +46,54 @@ class BarsChartFragment : Fragment() {
     private fun setBarsChart(movements: List<MonthMovementsResponse>) {
         binding.barChart.visibility = View.INVISIBLE
         fillIncomeExpenseList(movements)
-        val contrastColor = if (Preferences.getTheme().toInt() == 1){
+        val contrastColor = if (Preferences.getTheme().toInt() == 1) {
             Color.WHITE
-        }else{
+        } else {
             Color.BLACK
         }
-
 
         val barDataSetIncomes = BarDataSet(listIncomes, getString(R.string.incomes)).apply {
             setColors(ResourcesCompat.getColor(resources, R.color.green_jade_500, null))
             valueTextColor = contrastColor
             valueTextSize = 10f
+            setDrawValues(false)
         }
 
         val barDataSetExpenses = BarDataSet(listExpenses, getString(R.string.expenses)).apply {
             setColors(ResourcesCompat.getColor(resources, R.color.red_bittersweet_200, null))
             valueTextColor = contrastColor
             valueTextSize = 10f
+            setDrawValues(false)
         }
 
+        val barWidth = 0.4f
+        val groupSpace = 0.2f
+        val barSpace = 0f
+
         val barData = BarData(barDataSetIncomes, barDataSetExpenses).apply {
-            setValueFormatter(ChartsValueFormatter())
-            barWidth = 0.3f // Width of the bars
+            this.barWidth = barWidth
         }
 
         with(binding.barChart) {
             data = barData
             invalidate() // Update graph
-legend.textColor = contrastColor
-            val groupSpace = 0.1f // Espacio entre los grupos de barras
-            val barSpace = 0f // Espacio entre las barras dentro de un grupo
-            val groupCount = 12 // Número de grupos (valores en el eje X)
 
-            barData.groupBars(0f, groupSpace, barSpace)
+            xAxis.axisMinimum = 0.7f
+            xAxis.axisMaximum = 13.2f
 
+            barData.groupBars(0.9f, groupSpace, barSpace)
+
+            legend.textColor = contrastColor
             description.text = getString(R.string.annual)
-            animateY(200)
             xAxis.position = XAxis.XAxisPosition.BOTTOM
-            xAxis.axisMinimum = 0f // Límite inferior del eje X
-            xAxis.axisMaximum = barData.getGroupWidth(groupSpace, barSpace) * groupCount // Límite superior del eje X
             xAxis.textColor = contrastColor
             axisLeft.textColor = contrastColor
+            axisLeft.axisMinimum = 0f // set the start in 0 and disable -y values
+
             axisRight.textColor = contrastColor
-            val leftAxis: YAxis = axisLeft
-            leftAxis.axisMinimum = 0f
+            axisRight.isEnabled = false // disable -x values
 
-            val rightAxis: YAxis = axisRight
-            rightAxis.isEnabled = false
-
-            setFitBars(true) // Ajusta el tamaño de las barras al tamaño del gráfico
+            setFitBars(true)
 
             visibility = View.VISIBLE
         }
@@ -127,10 +127,20 @@ legend.textColor = contrastColor
 
         for (month in 1..12) {
             val incomeForMonth = incomeByMonth[month] ?: 0f
-            listIncomes.add(BarEntry(month.toFloat(), incomeForMonth))
+            listIncomes.add(
+                BarEntry(
+                    month.toFloat() - 0.4f,
+                    incomeForMonth
+                )
+            ) // Desplaza las barras de ingresos a la izquierda
 
             val expensesForMonth = expensesByMonth[month] ?: 0f
-            listExpenses.add(BarEntry(month.toFloat(), expensesForMonth))
+            listExpenses.add(
+                BarEntry(
+                    month.toFloat() - 0.2f,
+                    expensesForMonth
+                )
+            ) // Desplaza las barras de gastos a la derecha
         }
     }
 

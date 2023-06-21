@@ -80,7 +80,6 @@ class PieChartFragment : Fragment() {
             setDrawEntryLabels(false)
             setBackgroundColor(ResourcesCompat.getColor(resources, R.color.transparent, null))
             setHoleColor(ResourcesCompat.getColor(resources, R.color.transparent, null))
-            animateY(200)
 
             visibility = View.VISIBLE
             binding.pbLoadingPieChart.visibility = View.GONE

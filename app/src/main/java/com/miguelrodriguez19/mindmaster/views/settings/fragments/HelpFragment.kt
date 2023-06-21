@@ -6,15 +6,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.button.MaterialButton
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentHelpBinding
-import com.miguelrodriguez19.mindmaster.models.structures.FAQ
-import com.miguelrodriguez19.mindmaster.views.settings.FAQsAdapter
 
 class HelpFragment : Fragment() {
     private var _binding: FragmentHelpBinding? = null
@@ -49,6 +44,10 @@ class HelpFragment : Fragment() {
 
         btnTerms.setOnClickListener {
             openWebsite(getString(R.string.terms_url))
+        }
+
+        btnSeeFAQs.setOnClickListener {
+            openWebsite(getString(R.string.help_url))
         }
     }
 
