@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
@@ -27,6 +28,7 @@ class DiaryFragment : Fragment() {
     private lateinit var btnAddReminder: FloatingActionButton
     private lateinit var btnAddTask: FloatingActionButton
     private lateinit var btnMenuEvents: FloatingActionMenu
+    private lateinit var progressBarSchedule: ProgressBar
     private lateinit var rvEventsPerMonth: RecyclerView
     private lateinit var adapter: AllEventsAdapter
     private val data: ArrayList<EventsResponse> = ArrayList()
@@ -81,13 +83,13 @@ class DiaryFragment : Fragment() {
     }
 
     private fun setUpData() {
-        binding.progressBarSchedule.visibility = View.VISIBLE
+        progressBarSchedule.visibility = View.VISIBLE
         this@DiaryFragment.data.clear()
         FirebaseManager.loadAllSchedule() { allEvents ->
             this@DiaryFragment.data.addAll(allEvents)
             dataFiltered = data
             adapter.setData(allEvents)
-            binding.progressBarSchedule.visibility = View.GONE
+            progressBarSchedule.visibility = View.GONE
         }
     }
 
@@ -109,14 +111,13 @@ class DiaryFragment : Fragment() {
     }
 
     private fun initWidget() {
-        binding.progressBarSchedule.visibility = View.VISIBLE
         searchView = binding.searchView
         btnAddEvent = binding.fabAddEvent
         btnAddTask = binding.fabAddTask
         btnAddReminder = binding.fabAddReminder
         btnMenuEvents = binding.fambAddMenu
         rvEventsPerMonth = binding.rvAllEvents
-
+        progressBarSchedule = binding.progressBarSchedule
         rvEventsPerMonth.layoutManager = StaggeredGridLayoutManager(1, 1)
         adapter = AllEventsAdapter(requireContext(), data)
         rvEventsPerMonth.adapter = adapter

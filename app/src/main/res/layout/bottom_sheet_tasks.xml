@@ -195,12 +195,13 @@
             android:hint="@string/status">
 
             <AutoCompleteTextView
+                android:id="@+id/atv_status"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:clickable="false"
                 android:focusable="false"
-                android:text="Completed" />
+                android:text="@string/status_pending" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -214,12 +215,13 @@
             android:hint="@string/priority">
 
             <AutoCompleteTextView
+                android:id="@+id/atv_priority"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:clickable="false"
                 android:focusable="false"
-                android:text="Once" />
+                android:text="@string/priority_low" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Description -->

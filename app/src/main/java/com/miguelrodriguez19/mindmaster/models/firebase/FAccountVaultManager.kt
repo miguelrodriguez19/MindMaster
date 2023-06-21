@@ -64,7 +64,7 @@ object FAccountVaultManager {
 
             val accountsRef = groupRef.collection(ACCOUNTS)
 
-            val updatedAccountsList = ArrayList<GroupPasswordsResponse.Account>()
+            val updatedAccountsList = ArrayList<Account>()
             deleteOldAccounts(group)
 
             val deferreds = group.accountsList.map { account ->

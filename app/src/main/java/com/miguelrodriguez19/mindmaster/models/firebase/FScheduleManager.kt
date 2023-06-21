@@ -1,7 +1,6 @@
 package com.miguelrodriguez19.mindmaster.models.firebase
 
 import android.content.Context
-import com.google.android.gms.stats.CodePackage.REMINDERS
 import com.google.firebase.firestore.DocumentSnapshot
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.models.comparators.EventComparator

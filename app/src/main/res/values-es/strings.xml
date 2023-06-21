@@ -46,9 +46,26 @@
     <string name="reminder">Recordatorio</string>
     <string name="task">Tarea</string>
 
+    <!-- Tiempo -->
+    <string name="time_once">UNA VEZ</string>
+    <string name="time_daily">DIARIO</string>
+    <string name="time_weekly">SEMANAL</string>
+    <string name="time_monthly">MENSUAL</string>
+    <string name="time_annual">ANUAL</string>
+
+    <!-- Prioridades -->
+    <string name="priority_low">BAJA</string>
+    <string name="priority_medium">MEDIA</string>
+    <string name="priority_high">ALTA</string>
+    <string name="priority_urgent">URGENTE</string>
+
+    <!-- Estado -->
+    <string name="status_completed">COMPLETADO</string>
+    <string name="status_pending">PENDIENTE</string>
+    <string name="status_in_progress">EN PROGRESO</string>
+    <string name="status_cancelled">CANCELADO</string>
+
     <!-- Gastos -->
-    <string name="monthly">Mensual</string>
-    <string name="annual">Anual</string>
     <string name="income">Ingreso</string>
     <string name="expense">Gasto</string>
     <string name="incomes">Ingresos</string>
@@ -181,5 +198,6 @@
     <string name="no_email_app_installed">No hay una aplicación de correo instalada.</string>
     <string name="accept_this_permission_to_continue">Debe aceptar este permiso si desea continuar con la acción prevista.</string>
     <string name="accept_permissions">Por favor acepta los permisos</string>
+    <string name="see_faqs">ver preguntas frecuentes</string>
 
 </resources>

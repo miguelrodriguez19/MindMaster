@@ -1,9 +1,17 @@
 package com.miguelrodriguez19.mindmaster.views.schedule.adapters
 
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.PorterDuff
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.StrikethroughSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.CellCalendarEventsBinding
@@ -33,7 +41,7 @@ class CalendarEventsAdapter(
 
     override fun getItemCount(): Int = data.size
 
-    fun removeAt(position: Int){
+    fun removeAt(position: Int) {
         data.removeAt(position)
         notifyItemRangeRemoved(position, 1)
     }
@@ -75,7 +83,24 @@ class CalendarEventsAdapter(
         private val civColorTag = bind.civColorTag
 
         fun bind(item: AbstractEvent) {
-            tvEventTitle.text = item.title
+            var title: CharSequence = item.title
+            if (item.type == EventType.TASK) {
+                val task = item as Task
+                if (task.status == Status.COMPLETED) {
+                    val spannableString = SpannableString(item.title)
+                    spannableString.setSpan(
+                        StrikethroughSpan(),
+                        0,
+                        item.title.length,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    title = spannableString
+                }
+                if (task.priority == Priority.URGENT || task.priority == Priority.HIGH) {
+                    setInfoLayout(task.priority)
+                }
+            }
+            tvEventTitle.text = title
             val header = StringBuilder(AbstractEvent.getItemType(context, item.type))
             if (!item.category.isNullOrEmpty()) {
                 header.append(" - ").append(item.category!!.joinToString(", "))
@@ -84,18 +109,45 @@ class CalendarEventsAdapter(
             civColorTag.setCardBackgroundColor(AbstractEvent.getColor(context, item.color_tag))
             cvEventArea.setOnClickListener {
                 onClick(item)
-                when (item.type){
+                when (item.type) {
                     EventType.EVENT -> showEventsBS(context, item as Event) {
                         foundAndUpdateIt(it)
                     }
-                    EventType.REMINDER -> showRemindersBS(context, item as Reminder){
+                    EventType.REMINDER -> showRemindersBS(context, item as Reminder) {
                         foundAndUpdateIt(it)
                     }
-                    EventType.TASK -> showTasksBS(context, item as Task){
+                    EventType.TASK -> showTasksBS(context, item as Task) {
                         foundAndUpdateIt(it)
                     }
                 }
             }
+        }
+
+        private fun setInfoLayout(priority: Priority) {
+            val text: String
+            val icon = AppCompatResources.getDrawable(context, R.drawable.ic_report_problem_24)!!.mutate()
+
+            val color = when (priority) {
+                Priority.HIGH -> {
+                    text = context.getString(R.string.priority_high)
+                    ContextCompat.getColor(context, R.color.orange)
+                }
+                Priority.URGENT -> {
+                    text = context.getString(R.string.priority_urgent)
+                    ContextCompat.getColor(context, R.color.red_error_500)
+                }
+                else -> {
+                    text = ""
+                    ContextCompat.getColor(context, R.color.black)
+                }
+            }
+
+            val colorStateList = ColorStateList.valueOf(color)
+            DrawableCompat.setTintList(icon, colorStateList)
+            bind.ivInfoIcon.setImageDrawable(icon)
+            bind.tvInfoLabel.setTextColor(color)
+            bind.tvInfoLabel.text = text
+            bind.llInfoIcons.visibility = View.VISIBLE
         }
     }
 }

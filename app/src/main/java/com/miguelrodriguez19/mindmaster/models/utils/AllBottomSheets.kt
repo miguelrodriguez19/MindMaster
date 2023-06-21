@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.View
+import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
 import androidx.core.view.size
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +18,12 @@ import com.afollestad.materialdialogs.customview.getCustomView
 import com.google.android.material.chip.Chip
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.*
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.saveGroup
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.saveInSchedule
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.saveMovement
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.updateGroup
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.updateInSchedule
+import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.updateMovement
 import com.miguelrodriguez19.mindmaster.models.structures.*
 import com.miguelrodriguez19.mindmaster.models.structures.GroupPasswordsResponse.Account
 import com.miguelrodriguez19.mindmaster.models.structures.MonthMovementsResponse.Movement
@@ -25,12 +32,6 @@ import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs.Companion.colorP
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs.Companion.showConfirmationDialog
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs.Companion.showDatePicker
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs.Companion.showDateTimePicker
-import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.saveGroup
-import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.saveInSchedule
-import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.saveMovement
-import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.updateGroup
-import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.updateInSchedule
-import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.updateMovement
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.checkFields
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.compareDates
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.getPeekHeight
@@ -45,7 +46,9 @@ class AllBottomSheets {
         fun showEventsBS(context: Context, e: Event?, callback: (Event) -> Unit) {
             MaterialDialog(context, BottomSheet(LayoutMode.MATCH_PARENT)).show {
                 customView(
-                    R.layout.bottom_sheet_events, scrollable = true, horizontalPadding = true
+                    R.layout.bottom_sheet_events,
+                    scrollable = true,
+                    horizontalPadding = true
                 )
                 cornerRadius(res = R.dimen.corner_radius_bottom_sheets)
                 setPeekHeight(getPeekHeight(context))
@@ -54,6 +57,9 @@ class AllBottomSheets {
                 var color = e?.color_tag ?: String.format(
                     "#%06X", 0xFFFFFF and ContextCompat.getColor(context, R.color.primaryColor)
                 )
+                val repetitionArr = context.resources.getStringArray(R.array.repetition_enum)
+                val arrAdapter = ArrayAdapter(context, R.layout.dropdown_item, repetitionArr)
+                bind.atvRepetition.setAdapter(arrAdapter)
 
                 if (e != null) {
                     bind.etTitle.setText(e.title)
@@ -61,7 +67,13 @@ class AllBottomSheets {
                     bind.etStartTime.isEnabled = false
                     bind.etEndTime.setText(e.end_time)
                     bind.etLocation.setText(e.location)
-                    // bind.tilRepetition
+                    bind.atvRepetition.apply {
+                        setText(
+                            repetitionArr[e.repetition.ordinal],
+                            false
+                        ) // Directly use the enum index
+                        setAdapter(arrAdapter)
+                    }
                     bind.etDescription.setText(e.description)
                     bind.tilColorTag.setStartIconTintList(ColorStateList.valueOf(Color.parseColor(e.color_tag)))
                     for (cat in e.category) {
@@ -116,6 +128,7 @@ class AllBottomSheets {
                     val chip = bind.cgCategory.findViewById<Chip>(checkedId)
                     bind.cgCategory.removeView(chip)
                 }
+
                 bind.btnAddCategory.setOnClickListener {
                     if ((bind.etCategory.text ?: "").isNotBlank() && bind.cgCategory.size < 3) {
                         val chip = makeChip(context, bind.etCategory.text.toString())
@@ -162,7 +175,7 @@ class AllBottomSheets {
                                 bind.etDescription.text.toString(),
                                 processChipGroup(bind.cgParticipants),
                                 processChipGroup(bind.cgCategory),
-                                Repetition.NONE,
+                                Repetition.values()[arrAdapter.getPosition(bind.atvRepetition.text.toString())],
                                 color,
                                 EventType.EVENT
                             )
@@ -179,6 +192,7 @@ class AllBottomSheets {
                         }
                     }
                 }
+
             }
         }
 
@@ -194,12 +208,21 @@ class AllBottomSheets {
                 var color = r?.color_tag ?: String.format(
                     "#%06X", 0xFFFFFF and ContextCompat.getColor(context, R.color.primaryColor)
                 )
+                val repetitionArr = context.resources.getStringArray(R.array.repetition_enum)
+                val arrAdapter = ArrayAdapter(context, R.layout.dropdown_item, repetitionArr)
+                bind.atvRepetition.setAdapter(arrAdapter)
 
                 if (r != null) {
                     bind.etTitle.setText(r.title)
                     bind.etDate.setText(r.date_time)
                     bind.etDate.isEnabled = false
-                    // bind.tilRepetition
+                    bind.atvRepetition.apply {
+                        setText(
+                            repetitionArr[r.repetition.ordinal],
+                            false
+                        ) // Directly use the enum index
+                        setAdapter(arrAdapter)
+                    }
                     bind.etDescription.setText(r.description)
                     bind.tilColorTag.setStartIconTintList(ColorStateList.valueOf(Color.parseColor(r.color_tag)))
                     for (cat in r.category ?: ArrayList()) {
@@ -259,6 +282,7 @@ class AllBottomSheets {
                                 bind.etDescription.text.toString(),
                                 processChipGroup(bind.cgCategory),
                                 color,
+                                Repetition.values()[arrAdapter.getPosition(bind.atvRepetition.text.toString())],
                                 EventType.REMINDER
                             )
                             if (r == null) {
@@ -287,13 +311,31 @@ class AllBottomSheets {
                 var color = t?.color_tag ?: String.format(
                     "#%06X", 0xFFFFFF and ContextCompat.getColor(context, R.color.primaryColor)
                 )
+                val statusArr = context.resources.getStringArray(R.array.status_enum)
+                val statusAdapter = ArrayAdapter(context, R.layout.dropdown_item, statusArr)
+                bind.atvStatus.setAdapter(statusAdapter)
+                val priorityArr = context.resources.getStringArray(R.array.priority_enum)
+                val priorityAdapter = ArrayAdapter(context, R.layout.dropdown_item, priorityArr)
+                bind.atvPriority.setAdapter(priorityAdapter)
 
                 if (t != null) {
                     bind.etTitle.setText(t.title)
                     bind.etDueDate.setText(t.due_date)
                     bind.etDueDate.isEnabled = false
-                    // bind.tilStatus
-                    // bind.priority
+                    bind.atvStatus.apply {
+                        setText(
+                            statusArr[t.status.ordinal],
+                            false
+                        ) // Directly use the enum index
+                        setAdapter(statusAdapter)
+                    }
+                    bind.atvPriority.apply {
+                        setText(
+                            priorityArr[t.priority.ordinal],
+                            false
+                        ) // Directly use the enum index
+                        setAdapter(priorityAdapter)
+                    }
                     bind.etDescription.setText(t.description)
                     bind.tilColorTag.setStartIconTintList(ColorStateList.valueOf(Color.parseColor(t.color_tag)))
                     for (cat in t.category ?: ArrayList()) {
@@ -351,8 +393,8 @@ class AllBottomSheets {
                                 bind.etTitle.text.toString(),
                                 bind.etDueDate.text.toString(),
                                 bind.etDescription.text.toString(),
-                                Priority.URGENT,
-                                Status.PENDING,
+                                Priority.values()[priorityAdapter.getPosition(bind.atvPriority.text.toString())],
+                                Status.values()[statusAdapter.getPosition(bind.atvStatus.text.toString())],
                                 processChipGroup(bind.cgCategory),
                                 color,
                                 EventType.TASK

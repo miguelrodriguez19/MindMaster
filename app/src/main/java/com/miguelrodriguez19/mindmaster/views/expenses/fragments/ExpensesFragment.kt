@@ -5,13 +5,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentExpensesBinding
 import com.miguelrodriguez19.mindmaster.models.comparators.MovementComparator
@@ -147,8 +144,8 @@ class ExpensesFragment : Fragment() {
 
     private fun initTabs() {
         val pageAdapter = ViewPagerAdapter(childFragmentManager)
-        pageAdapter.addFragment(PieChartFragment(), resources.getString(R.string.monthly))
-        pageAdapter.addFragment(BarsChartFragment(), resources.getString(R.string.annual))
+        pageAdapter.addFragment(PieChartFragment(), resources.getString(R.string.time_monthly))
+        pageAdapter.addFragment(BarsChartFragment(), resources.getString(R.string.time_annual))
         (binding.viewPagerGraphs as NonSwipeableViewPager).adapter = pageAdapter
         binding.tlTabsGraph.setupWithViewPager(binding.viewPagerGraphs)
     }

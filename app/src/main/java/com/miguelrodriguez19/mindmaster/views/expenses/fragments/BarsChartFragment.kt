@@ -84,7 +84,7 @@ class BarsChartFragment : Fragment() {
             barData.groupBars(0.9f, groupSpace, barSpace)
 
             legend.textColor = contrastColor
-            description.text = getString(R.string.annual)
+            description.text = getString(R.string.time_annual)
             xAxis.position = XAxis.XAxisPosition.BOTTOM
             xAxis.textColor = contrastColor
             axisLeft.textColor = contrastColor

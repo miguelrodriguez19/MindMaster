@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cv_eventArea"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/cv_eventArea"
+    android:background="@android:color/transparent"
     android:elevation="0dp"
-    app:cardCornerRadius="5dp"
-    android:background="@android:color/transparent">
+    app:cardCornerRadius="5dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"
-       android:padding="3dp">
+        android:padding="3dp">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/civ_colorTag"
@@ -29,8 +29,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
+            android:ellipsize="end"
             android:fontFamily="@font/popings_regular_400"
             android:textSize="12sp"
+            app:layout_constraintEnd_toStartOf="@+id/ll_infoIcons"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@+id/civ_colorTag"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -39,10 +42,42 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
+            android:ellipsize="end"
             android:fontFamily="@font/popings_medium_500"
             android:textSize="15sp"
+            app:layout_constraintEnd_toStartOf="@+id/ll_infoIcons"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@+id/civ_colorTag"
             app:layout_constraintTop_toBottomOf="@+id/tv_eventType" />
+
+        <RelativeLayout
+            android:id="@+id/ll_infoIcons"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginEnd="10dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/iv_infoIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
+
+            <TextView
+                android:id="@+id/tv_infoLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/iv_infoIcon"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="@font/popings_regular_400"
+                android:textSize="11sp" />
+
+        </RelativeLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

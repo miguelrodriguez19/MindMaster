@@ -46,9 +46,26 @@
     <string name="reminder">Rappel</string>
     <string name="task">Tâche</string>
 
+    <!-- Temps -->
+    <string name="time_once">UNE FOIS</string>
+    <string name="time_daily">QUOTIDIEN</string>
+    <string name="time_weekly">HEBDOMADAIRE</string>
+    <string name="time_monthly">MENSUEL</string>
+    <string name="time_annual">ANNUEL</string>
+
+    <!-- Priorités -->
+    <string name="priority_low">FAIBLE</string>
+    <string name="priority_medium">MOYEN</string>
+    <string name="priority_high">HAUT</string>
+    <string name="priority_urgent">URGENT</string>
+
+    <!-- Statut -->
+    <string name="status_completed">TERMINÉ</string>
+    <string name="status_pending">EN ATTENTE</string>
+    <string name="status_in_progress">EN COURS</string>
+    <string name="status_cancelled">ANNULÉ</string>
+
     <!-- Expenses -->
-    <string name="monthly">Mensuel</string>
-    <string name="annual">Annuel</string>
     <string name="income">Revenu</string>
     <string name="expense">Dépense</string>
     <string name="incomes">Revenus</string>
@@ -180,4 +197,5 @@
     <string name="no_email_app_installed">Aucune application de messagerie n\'est installée.</string>
     <string name="accept_this_permission_to_continue">Vous devez accepter cette autorisation si vous souhaitez poursuivre l\'action envisagée.</string>
     <string name="accept_permissions">Veuillez accepter les autorisations</string>
+    <string name="see_faqs">voir FAQ</string>
 </resources>

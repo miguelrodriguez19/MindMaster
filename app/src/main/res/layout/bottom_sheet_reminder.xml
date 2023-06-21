@@ -192,12 +192,13 @@
             android:hint="@string/repetition">
 
             <AutoCompleteTextView
+                android:id="@+id/atv_repetition"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:clickable="false"
                 android:focusable="false"
-                android:text="Once" />
+                android:text="@string/time_once" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Description -->

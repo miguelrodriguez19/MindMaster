@@ -36,7 +36,7 @@ object FMovementManager {
             collectionType.add(move).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val documentId = task.result.id
-                    callback(MonthMovementsResponse.Movement(documentId, move))
+                    callback(Movement(documentId, move))
                 } else {
                     task.exception?.printStackTrace()
                     showToast(context, R.string.try_later)

@@ -50,8 +50,6 @@
 
 
     <!-- Expenses -->
-    <string name="monthly">Monthly</string>
-    <string name="annual">Annual</string>
     <string name="income">Income</string>
     <string name="expense">Expense</string>
     <string name="incomes">Incomes</string>
@@ -72,6 +70,26 @@
     <string name="username_copied">Username copied</string>
     <string name="email_copied">Email copied</string>
     <string name="password_copied">Password copied</string>
+
+    <!-- Time -->
+    <string name="time_once">ONCE</string>
+    <string name="time_daily">DAILY</string>
+    <string name="time_weekly">WEEKLY</string>
+    <string name="time_monthly">MONTHLY</string>
+    <string name="time_annual">ANNUAL</string>
+
+    <!-- Priorities -->
+    <string name="priority_low">LOW</string>
+    <string name="priority_medium">MEDIUM</string>
+    <string name="priority_high">HIGH</string>
+    <string name="priority_urgent">URGENT</string>
+
+    <!-- Status -->
+    <string name="status_completed">COMPLETED</string>
+    <string name="status_pending">PENDING</string>
+    <string name="status_in_progress">IN PROGRESS</string>
+    <string name="status_cancelled">CANCELLED</string>
+
 
     <string name="notifications">Notifications</string>
     <string name="language">Language</string>
@@ -182,5 +200,27 @@
     <string name="accept_this_permission_to_continue">You must accept this permission if you wish to proceed with the intended action.</string>
     <string name="accept_permissions">Please accept permissions</string>
     <string name="see_faqs">See FAQs</string>
+
+    <string-array name="priority_enum">
+        <item>@string/priority_low</item>
+        <item>@string/priority_medium</item>
+        <item>@string/priority_high</item>
+        <item>@string/priority_urgent</item>
+    </string-array>
+
+    <string-array name="status_enum">
+        <item>@string/status_completed</item>
+        <item>@string/status_pending</item>
+        <item>@string/status_in_progress</item>
+        <item>@string/status_cancelled</item>
+    </string-array>
+
+    <string-array name="repetition_enum">
+        <item>@string/time_once</item>
+        <item>@string/time_daily</item>
+        <item>@string/time_weekly</item>
+        <item>@string/time_monthly</item>
+        <item>@string/time_annual</item>
+    </string-array>
 
 </resources>

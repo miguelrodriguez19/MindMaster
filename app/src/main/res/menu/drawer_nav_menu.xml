@@ -11,7 +11,7 @@
             android:title="@string/schedule" />
         <item
             android:id="@+id/expensesFragment"
-            android:icon="@drawable/ic_money_24"
+            android:icon="@drawable/ic_savings_24"
             android:title="@string/expenses_manager" />
         <item
             android:id="@+id/passwordsFragment"

@@ -41,6 +41,23 @@ abstract class AbstractEvent : java.io.Serializable {
                 EventType.TASK -> (absEvent as Task).due_date
             }
         }
+
+        fun getRepetitionString(r: Repetition): Int = when (r) {
+            Repetition.ONCE -> R.string.time_once
+            Repetition.DAILY -> R.string.time_daily
+            Repetition.WEEKLY -> R.string.time_weekly
+            Repetition.MONTHLY -> R.string.time_monthly
+            Repetition.ANNUAL -> R.string.time_annual
+        }
+
+        fun getRepetitionOf(context: Context, repStr: String): Repetition = when (repStr) {
+            context.getString(R.string.time_once) -> Repetition.ONCE
+            context.getString(R.string.time_daily) -> Repetition.DAILY
+            context.getString(R.string.time_weekly) -> Repetition.WEEKLY
+            context.getString(R.string.time_monthly) -> Repetition.MONTHLY
+            context.getString(R.string.time_annual) -> Repetition.ANNUAL
+            else -> Repetition.ONCE
+        }
     }
 }
 
@@ -66,7 +83,7 @@ data class Event(
         null,
         emptyList(),
         emptyList(),
-        Repetition.NONE,
+        Repetition.ONCE,
         "",
         EventType.EVENT
     )
@@ -95,17 +112,18 @@ data class Reminder(
     override val description: String?,
     override val category: List<String>?,
     override val color_tag: String,
+    val repetition: Repetition,
     override val type: EventType
 ) : AbstractEvent() {
-    constructor() : this("", "", "", null, null, "", EventType.REMINDER)
+    constructor() : this("", "", "", null, null, "", Repetition.ONCE,EventType.REMINDER)
     constructor(
         title: String, date_time: String, description: String?,
-        category: List<String>?, color_tag: String, type: EventType
-    ) : this("", title, date_time, description, category, color_tag, type)
+        category: List<String>?, color_tag: String, repetition: Repetition,type: EventType
+    ) : this("", title, date_time, description, category, color_tag,repetition, type)
 
     constructor(uid: String, r: Reminder) : this(
         uid, r.title, r.date_time, r.description,
-        r.category, r.color_tag, r.type
+        r.category, r.color_tag, r.repetition, r.type
     )
 }
 
@@ -143,7 +161,7 @@ enum class Status {
 }
 
 enum class Repetition {
-    NONE, DAILY, WEEKLY, MONTHLY, ANNUAL
+    ONCE, DAILY, WEEKLY, MONTHLY, ANNUAL
 }
 
 enum class EventType {
