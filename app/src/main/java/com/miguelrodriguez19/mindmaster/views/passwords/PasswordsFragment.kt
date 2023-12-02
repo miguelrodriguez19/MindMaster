@@ -20,8 +20,12 @@ import com.miguelrodriguez19.mindmaster.views.passwords.adapters.GroupAdapter
 class PasswordsFragment : Fragment() {
     private var _binding: FragmentPasswordsBinding? = null
     private val binding get() = _binding!!
-    private val data: ArrayList<GroupPasswordsResponse> = ArrayList()
+    private lateinit var searchView: SearchView
+    private lateinit var btnAddGroup: ExtendedFloatingActionButton
+    private lateinit var rvAccountsGroups: RecyclerView
     private lateinit var adapter: GroupAdapter
+    private lateinit var progressBarAllAccounts: ProgressBar
+    private val data: ArrayList<GroupPasswordsResponse> = ArrayList()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,12 +41,12 @@ class PasswordsFragment : Fragment() {
         initWidget()
         setUpData()
 
-        binding.btnAddGroup.setOnClickListener {
+        btnAddGroup.setOnClickListener {
             showPasswordsBS(requireContext(), null) {
                 adapter.addItem(it)
             }
         }
-        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
@@ -55,12 +59,12 @@ class PasswordsFragment : Fragment() {
     }
 
     private fun setUpData() {
-        binding.progressBarAllAccounts.visibility = View.VISIBLE
+        progressBarAllAccounts.visibility = View.VISIBLE
         data.clear()
         FirebaseManager.loadAllGroups() { accountsGroupsList ->
             data.addAll(accountsGroupsList)
             adapter.setData(accountsGroupsList)
-            binding.progressBarAllAccounts.visibility = View.GONE
+            progressBarAllAccounts.visibility = View.GONE
         }
     }
 
@@ -87,9 +91,14 @@ class PasswordsFragment : Fragment() {
     }
 
     private fun initWidget() {
-        binding.rvAccountsGroups.layoutManager = StaggeredGridLayoutManager(1, 1)
+        searchView = binding.searchView
+        btnAddGroup = binding.btnAddGroup
+        rvAccountsGroups = binding.rvAccountsGroups
+        progressBarAllAccounts = binding.progressBarAllAccounts
+
+        rvAccountsGroups.layoutManager = StaggeredGridLayoutManager(1, 1)
         adapter = GroupAdapter(requireContext(), data)
-        binding.rvAccountsGroups.adapter = adapter
+        rvAccountsGroups.adapter = adapter
     }
 
     override fun onDestroyView() {

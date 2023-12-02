@@ -1,6 +1,7 @@
 package com.miguelrodriguez19.mindmaster.models.firebase
 
 import android.content.Context
+import android.media.MediaCodec.MetricsConstants.SECURE
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseUser
 import com.miguelrodriguez19.mindmaster.R

@@ -63,7 +63,7 @@ class SettingsFragment : Fragment() {
 
         btnSecurity.setOnClickListener {
             showToast(requireContext(), R.string.under_development)
-            TODO("Show a bottom sheet to choose security options for the app")
+            //TODO("Show a bottom sheet to choose security options for the app")
         }
 
         btnChangePassword.setOnClickListener {
