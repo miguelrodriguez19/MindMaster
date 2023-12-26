@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import com.miguelrodriguez19.mindmaster.R
-import com.miguelrodriguez19.mindmaster.models.structures.UserResponse
+import com.miguelrodriguez19.mindmaster.models.structures.dto.UserResponse
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.toJson
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.toUserResponse
 import java.util.*
@@ -40,9 +40,9 @@ object Preferences {
         getEncryptedSharedPrefs().edit().putString(THEME, position.toString()).apply()
     }
 
-    fun getTheme() = getEncryptedSharedPrefs().getString(THEME, "2") ?: "2"
+    fun getTheme() = getEncryptedSharedPrefs().getString(THEME, "-1") ?: "-1"
 
-    fun clearAll() {
+    fun clearUserPreferences() {
         clearUser()
         clearSecurePhrase()
         clearInitializationVector()
@@ -96,6 +96,12 @@ object Preferences {
 
     private fun clearInitializationVector() {
         getEncryptedSharedPrefs().edit().remove(IV).apply()
+    }
+
+    fun getNextNotificationId(): Int {
+        val lastId = getEncryptedSharedPrefs().getInt("lastNotificationId", 0) + 1
+        getEncryptedSharedPrefs().edit().putInt("lastNotificationId", lastId).apply()
+        return lastId
     }
 
 }

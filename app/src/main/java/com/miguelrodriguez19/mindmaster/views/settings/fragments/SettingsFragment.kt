@@ -18,7 +18,7 @@ import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentSettingsBinding
 import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
 import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.getAuth
-import com.miguelrodriguez19.mindmaster.models.structures.UserResponse
+import com.miguelrodriguez19.mindmaster.models.structures.dto.UserResponse
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs.Companion.showConfirmationDialog
 import com.miguelrodriguez19.mindmaster.models.utils.Preferences

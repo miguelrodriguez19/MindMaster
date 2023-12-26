@@ -15,9 +15,9 @@ import com.miguelrodriguez19.mindmaster.databinding.CellDayAllEventsBinding
 import com.miguelrodriguez19.mindmaster.models.comparators.EventComparator
 import com.miguelrodriguez19.mindmaster.models.comparators.EventGroupComparator
 import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
-import com.miguelrodriguez19.mindmaster.models.structures.AbstractEvent
-import com.miguelrodriguez19.mindmaster.models.structures.AbstractEvent.Companion.getDateOf
-import com.miguelrodriguez19.mindmaster.models.structures.EventsResponse
+import com.miguelrodriguez19.mindmaster.models.structures.abstractClasses.AbstractEvent
+import com.miguelrodriguez19.mindmaster.models.structures.abstractClasses.AbstractEvent.Companion.getDateOf
+import com.miguelrodriguez19.mindmaster.models.structures.abstractClasses.EventsResponse
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit
 

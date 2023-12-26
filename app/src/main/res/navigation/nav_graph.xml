@@ -110,7 +110,7 @@
             app:destination="@id/calendarFragment" />
         <argument
             android:name="user"
-            app:argType="com.miguelrodriguez19.mindmaster.models.structures.UserResponse" />
+            app:argType="com.miguelrodriguez19.mindmaster.models.structures.dto.UserResponse" />
     </fragment>
     <fragment
         android:id="@+id/securityPhraseLoaderFragment"
@@ -122,6 +122,6 @@
             app:destination="@id/calendarFragment" />
         <argument
             android:name="user"
-            app:argType="com.miguelrodriguez19.mindmaster.models.structures.UserResponse" />
+            app:argType="com.miguelrodriguez19.mindmaster.models.structures.dto.UserResponse" />
     </fragment>
 </navigation>

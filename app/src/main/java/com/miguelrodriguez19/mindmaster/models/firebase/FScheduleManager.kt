@@ -6,11 +6,22 @@ import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.models.comparators.EventComparator
 import com.miguelrodriguez19.mindmaster.models.comparators.EventGroupComparator
 import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.getDB
-import com.miguelrodriguez19.mindmaster.models.structures.*
+import com.miguelrodriguez19.mindmaster.models.structures.abstractClasses.AbstractEvent
+import com.miguelrodriguez19.mindmaster.models.structures.abstractClasses.EventsResponse
+import com.miguelrodriguez19.mindmaster.models.structures.enums.EventType
+import com.miguelrodriguez19.mindmaster.models.structures.dto.schedule.Event
+import com.miguelrodriguez19.mindmaster.models.structures.dto.schedule.Reminder
+import com.miguelrodriguez19.mindmaster.models.structures.dto.schedule.Task
 import com.miguelrodriguez19.mindmaster.models.utils.Preferences.getUserUID
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.showToast
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 object FScheduleManager {
 

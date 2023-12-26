@@ -10,8 +10,12 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestoreSettings
 import com.google.firebase.storage.FirebaseStorage
-import com.miguelrodriguez19.mindmaster.models.structures.*
-import com.miguelrodriguez19.mindmaster.models.structures.MonthMovementsResponse.Movement
+import com.miguelrodriguez19.mindmaster.models.structures.dto.MonthMovementsResponse.Movement
+import com.miguelrodriguez19.mindmaster.models.structures.abstractClasses.AbstractEvent
+import com.miguelrodriguez19.mindmaster.models.structures.abstractClasses.EventsResponse
+import com.miguelrodriguez19.mindmaster.models.structures.dto.GroupPasswordsResponse
+import com.miguelrodriguez19.mindmaster.models.structures.dto.MonthMovementsResponse
+import com.miguelrodriguez19.mindmaster.models.structures.dto.UserResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext

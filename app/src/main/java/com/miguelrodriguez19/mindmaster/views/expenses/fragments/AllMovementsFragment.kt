@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.miguelrodriguez19.mindmaster.databinding.FragmentAllMovementsBinding
-import com.miguelrodriguez19.mindmaster.models.structures.MonthMovementsResponse
+import com.miguelrodriguez19.mindmaster.models.structures.dto.MonthMovementsResponse
 import com.miguelrodriguez19.mindmaster.models.utils.AllBottomSheets.Companion.showMovementBS
 import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
 import com.miguelrodriguez19.mindmaster.views.expenses.adapters.AllMovementsAdapter

@@ -1,4 +1,4 @@
-package com.miguelrodriguez19.mindmaster.models.structures
+package com.miguelrodriguez19.mindmaster.models.structures.dto
 
 data class UserResponse(
     val uid:String,

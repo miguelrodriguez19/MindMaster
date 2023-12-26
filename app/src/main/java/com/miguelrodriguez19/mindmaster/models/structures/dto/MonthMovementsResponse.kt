@@ -1,4 +1,4 @@
-package com.miguelrodriguez19.mindmaster.models.structures
+package com.miguelrodriguez19.mindmaster.models.structures.dto
 
 import java.io.Serializable
 

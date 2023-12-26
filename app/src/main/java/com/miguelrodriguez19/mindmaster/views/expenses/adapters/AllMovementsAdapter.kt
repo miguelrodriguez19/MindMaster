@@ -15,13 +15,12 @@ import com.miguelrodriguez19.mindmaster.databinding.CellDayAllMovementsBinding
 import com.miguelrodriguez19.mindmaster.models.comparators.MovementComparator
 import com.miguelrodriguez19.mindmaster.models.comparators.MovementsGroupComparator
 import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
-import com.miguelrodriguez19.mindmaster.models.structures.MonthMovementsResponse
-import com.miguelrodriguez19.mindmaster.models.structures.MonthMovementsResponse.Movement
-import com.miguelrodriguez19.mindmaster.models.structures.MonthMovementsResponse.Type
+import com.miguelrodriguez19.mindmaster.models.structures.dto.MonthMovementsResponse
+import com.miguelrodriguez19.mindmaster.models.structures.dto.MonthMovementsResponse.Movement
+import com.miguelrodriguez19.mindmaster.models.structures.dto.MonthMovementsResponse.Type
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.getMonthYearOf
-import kotlin.streams.toList
 
 class AllMovementsAdapter(
     private val context: Context, var data: ArrayList<MonthMovementsResponse>

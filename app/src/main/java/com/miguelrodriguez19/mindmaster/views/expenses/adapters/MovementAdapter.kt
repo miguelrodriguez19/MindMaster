@@ -8,8 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.CellMovementBinding
-import com.miguelrodriguez19.mindmaster.models.structures.MonthMovementsResponse
-import com.miguelrodriguez19.mindmaster.models.structures.MonthMovementsResponse.*
+import com.miguelrodriguez19.mindmaster.models.structures.dto.MonthMovementsResponse.*
 import com.miguelrodriguez19.mindmaster.models.comparators.MovementComparator
 import com.miguelrodriguez19.mindmaster.models.utils.AllBottomSheets
 import com.miguelrodriguez19.mindmaster.models.utils.Preferences.getCurrency

@@ -11,8 +11,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.Gson
 import com.miguelrodriguez19.mindmaster.R
-import com.miguelrodriguez19.mindmaster.models.structures.MonthMovementsResponse.Movement
-import com.miguelrodriguez19.mindmaster.models.structures.UserResponse
+import com.miguelrodriguez19.mindmaster.models.structures.dto.MonthMovementsResponse.Movement
+import com.miguelrodriguez19.mindmaster.models.structures.dto.UserResponse
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern

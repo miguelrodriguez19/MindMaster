@@ -30,7 +30,7 @@ import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
 import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.getAuth
 import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.logInEmailPwd
 import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.sendResetPassword
-import com.miguelrodriguez19.mindmaster.models.structures.UserResponse
+import com.miguelrodriguez19.mindmaster.models.structures.dto.UserResponse
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.checkFields
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.showToast

@@ -2,7 +2,6 @@ package com.miguelrodriguez19.mindmaster.views.schedule.adapters
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.PorterDuff
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.StrikethroughSpan
@@ -16,7 +15,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.CellCalendarEventsBinding
 import com.miguelrodriguez19.mindmaster.models.comparators.EventComparator
-import com.miguelrodriguez19.mindmaster.models.structures.*
+import com.miguelrodriguez19.mindmaster.models.structures.abstractClasses.AbstractEvent
+import com.miguelrodriguez19.mindmaster.models.structures.enums.EventType
+import com.miguelrodriguez19.mindmaster.models.structures.enums.Priority
+import com.miguelrodriguez19.mindmaster.models.structures.enums.Status
+import com.miguelrodriguez19.mindmaster.models.structures.dto.schedule.Event
+import com.miguelrodriguez19.mindmaster.models.structures.dto.schedule.Reminder
+import com.miguelrodriguez19.mindmaster.models.structures.dto.schedule.Task
 import com.miguelrodriguez19.mindmaster.models.utils.AllBottomSheets.Companion.showEventsBS
 import com.miguelrodriguez19.mindmaster.models.utils.AllBottomSheets.Companion.showRemindersBS
 import com.miguelrodriguez19.mindmaster.models.utils.AllBottomSheets.Companion.showTasksBS
@@ -106,7 +111,7 @@ class CalendarEventsAdapter(
                 header.append(" - ").append(item.category!!.joinToString(", "))
             }
             tvEventType.text = header
-            civColorTag.setCardBackgroundColor(AbstractEvent.getColor(context, item.color_tag))
+            civColorTag.setCardBackgroundColor(AbstractEvent.getColor(context, item.colorTag))
             cvEventArea.setOnClickListener {
                 onClick(item)
                 when (item.type) {

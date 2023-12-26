@@ -20,7 +20,7 @@ import com.miguelrodriguez19.mindmaster.databinding.DrawerHeaderBinding
 import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
 import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.getAuth
 import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.getCurrentUser
-import com.miguelrodriguez19.mindmaster.models.structures.UserResponse
+import com.miguelrodriguez19.mindmaster.models.structures.dto.UserResponse
 import com.miguelrodriguez19.mindmaster.models.utils.AESEncripter
 import com.miguelrodriguez19.mindmaster.models.utils.Preferences
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.showToast
@@ -34,15 +34,19 @@ class MainActivity : AppCompatActivity() {
     private val EXIT_TIME_GAP: Long = 2000
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val screenSplash = installSplashScreen()
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        screenSplash.setKeepOnScreenCondition {
-            false
-        }
+        setupBinding()
+        splashScreen.setKeepOnScreenCondition { false }
+
         initContexts()
         setAppTheme(Preferences.getTheme().toInt())
+        setupNavigation()
+        configureBackButton()
+        setupActionBar()
+    }
+
+    private fun setupNavigation() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
 
@@ -62,7 +66,10 @@ class MainActivity : AppCompatActivity() {
             }
 
         navController.navigate(initialFragment)
-        val callback = object : OnBackPressedCallback(true /* enabled by default */) {
+    }
+
+    private fun configureBackButton() {
+        val onBackPressed = object : OnBackPressedCallback(true /* enabled by default */) {
             override fun handleOnBackPressed() {
                 val exitFragments = arrayOf(
                     R.id.logInFragment, R.id.securityPhraseLoaderFragment,
@@ -82,19 +89,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        onBackPressedDispatcher.addCallback(this, callback)
-        appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.calendarFragment, R.id.diaryFragment, R.id.expensesFragment,
-                R.id.passwordsFragment, R.id.settingsFragment, R.id.helpFragment
-            ),
-            drawerLayout
-        )
+        onBackPressedDispatcher.addCallback(this, onBackPressed)
+    }
 
-        setSupportActionBar(binding.toolbar)
-        setupActionBarWithNavController(navController, appBarConfiguration)
-
-        binding.navView.setupWithNavController(navController)
+    private fun setupBinding() {
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
     }
 
     private fun initContexts() {
@@ -107,7 +107,6 @@ class MainActivity : AppCompatActivity() {
         when (theme) {
             0 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO) // Tema claro
             1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES) // Tema oscuro
-            2 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) // Tema del sistema
             else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) // Por defecto, sigue el tema del sistema
         }
     }
@@ -119,6 +118,21 @@ class MainActivity : AppCompatActivity() {
         Glide.with(this)
             .load(user.photoUrl)
             .into(navHeaderBinding.civDrawerUserPhoto)
+    }
+
+    private fun setupActionBar() {
+        appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.calendarFragment, R.id.diaryFragment, R.id.expensesFragment,
+                R.id.passwordsFragment, R.id.settingsFragment, R.id.helpFragment
+            ),
+            drawerLayout
+        )
+
+        setSupportActionBar(binding.toolbar)
+        setupActionBarWithNavController(navController, appBarConfiguration)
+
+        binding.navView.setupWithNavController(navController)
     }
 
     fun setUpUser(user: UserResponse) {
@@ -145,7 +159,7 @@ class MainActivity : AppCompatActivity() {
 
     fun logOut() {
         getAuth().signOut()
-        Preferences.clearAll()
+        Preferences.clearUserPreferences()
         val intent = Intent(this, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)

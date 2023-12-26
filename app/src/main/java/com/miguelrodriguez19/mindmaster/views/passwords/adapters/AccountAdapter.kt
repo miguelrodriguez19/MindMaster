@@ -11,10 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.CellAccountBinding
 import com.miguelrodriguez19.mindmaster.models.comparators.AccountComparator
-import com.miguelrodriguez19.mindmaster.models.structures.GroupPasswordsResponse
-import com.miguelrodriguez19.mindmaster.models.structures.GroupPasswordsResponse.*
-import com.miguelrodriguez19.mindmaster.models.structures.GroupPasswordsResponse.Type
-import com.miguelrodriguez19.mindmaster.models.structures.MonthMovementsResponse
+import com.miguelrodriguez19.mindmaster.models.structures.dto.GroupPasswordsResponse
+import com.miguelrodriguez19.mindmaster.models.structures.dto.GroupPasswordsResponse.*
+import com.miguelrodriguez19.mindmaster.models.structures.dto.GroupPasswordsResponse.Type
 
 class AccountAdapter(
     private val context: Context, private val data: ArrayList<Account>

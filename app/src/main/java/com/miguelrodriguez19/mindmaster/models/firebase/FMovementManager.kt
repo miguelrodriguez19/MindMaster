@@ -4,9 +4,9 @@ import android.content.Context
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.models.comparators.MovementsGroupComparator
 import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.getDB
-import com.miguelrodriguez19.mindmaster.models.structures.MonthMovementsResponse
-import com.miguelrodriguez19.mindmaster.models.structures.MonthMovementsResponse.Movement
-import com.miguelrodriguez19.mindmaster.models.structures.MonthMovementsResponse.Type
+import com.miguelrodriguez19.mindmaster.models.structures.dto.MonthMovementsResponse
+import com.miguelrodriguez19.mindmaster.models.structures.dto.MonthMovementsResponse.Movement
+import com.miguelrodriguez19.mindmaster.models.structures.dto.MonthMovementsResponse.Type
 import com.miguelrodriguez19.mindmaster.models.utils.Preferences.getUserUID
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.getMonthYearOf
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.showToast

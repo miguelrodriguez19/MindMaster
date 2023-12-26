@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.clans.fab.FloatingActionButton
 import com.github.clans.fab.FloatingActionMenu
 import com.miguelrodriguez19.mindmaster.databinding.FragmentDiaryBinding
-import com.miguelrodriguez19.mindmaster.models.structures.AbstractEvent
-import com.miguelrodriguez19.mindmaster.models.structures.EventsResponse
+import com.miguelrodriguez19.mindmaster.models.structures.abstractClasses.AbstractEvent
+import com.miguelrodriguez19.mindmaster.models.structures.abstractClasses.EventsResponse
 import com.miguelrodriguez19.mindmaster.models.utils.AllBottomSheets
 import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
 import com.miguelrodriguez19.mindmaster.views.schedule.adapters.AllEventsAdapter

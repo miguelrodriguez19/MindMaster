@@ -14,8 +14,8 @@ import com.miguelrodriguez19.mindmaster.databinding.FragmentExpensesBinding
 import com.miguelrodriguez19.mindmaster.models.comparators.MovementComparator
 import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
 import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.loadActualMonthMovements
-import com.miguelrodriguez19.mindmaster.models.structures.MonthMovementsResponse
-import com.miguelrodriguez19.mindmaster.models.structures.MonthMovementsResponse.Movement
+import com.miguelrodriguez19.mindmaster.models.structures.dto.MonthMovementsResponse
+import com.miguelrodriguez19.mindmaster.models.structures.dto.MonthMovementsResponse.Movement
 import com.miguelrodriguez19.mindmaster.models.utils.AllBottomSheets.Companion.showMovementBS
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.getCurrentDate
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.getMonthYearOf

@@ -6,8 +6,8 @@ import com.google.gson.JsonSyntaxException
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.models.comparators.AccountsGroupsComparator
 import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.getDB
-import com.miguelrodriguez19.mindmaster.models.structures.GroupPasswordsResponse
-import com.miguelrodriguez19.mindmaster.models.structures.GroupPasswordsResponse.Account
+import com.miguelrodriguez19.mindmaster.models.structures.dto.GroupPasswordsResponse
+import com.miguelrodriguez19.mindmaster.models.structures.dto.GroupPasswordsResponse.Account
 import com.miguelrodriguez19.mindmaster.models.utils.AESEncripter
 import com.miguelrodriguez19.mindmaster.models.utils.Preferences.getUserUID
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.showToast

@@ -1,8 +1,8 @@
 package com.miguelrodriguez19.mindmaster.models.comparators
 
-import com.miguelrodriguez19.mindmaster.models.structures.AbstractEvent
-import com.miguelrodriguez19.mindmaster.models.structures.Priority
-import com.miguelrodriguez19.mindmaster.models.structures.Task
+import com.miguelrodriguez19.mindmaster.models.structures.abstractClasses.AbstractEvent
+import com.miguelrodriguez19.mindmaster.models.structures.enums.Priority
+import com.miguelrodriguez19.mindmaster.models.structures.dto.schedule.Task
 
 class EventComparator : Comparator<AbstractEvent> {
     override fun compare(a: AbstractEvent, b: AbstractEvent): Int {

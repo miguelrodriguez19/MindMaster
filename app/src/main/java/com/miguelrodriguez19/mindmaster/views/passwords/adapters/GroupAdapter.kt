@@ -12,8 +12,8 @@ import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.CellAllPasswordsGroupsBinding
 import com.miguelrodriguez19.mindmaster.models.comparators.AccountsGroupsComparator
 import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
-import com.miguelrodriguez19.mindmaster.models.structures.GroupPasswordsResponse
-import com.miguelrodriguez19.mindmaster.models.structures.GroupPasswordsResponse.*
+import com.miguelrodriguez19.mindmaster.models.structures.dto.GroupPasswordsResponse
+import com.miguelrodriguez19.mindmaster.models.structures.dto.GroupPasswordsResponse.*
 import com.miguelrodriguez19.mindmaster.models.utils.AllBottomSheets
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit

@@ -24,7 +24,7 @@ import com.miguelrodriguez19.mindmaster.databinding.FragmentCalendarBinding
 import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.deleteInSchedule
 import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.loadScheduleByDate
 import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.saveInSchedule
-import com.miguelrodriguez19.mindmaster.models.structures.AbstractEvent
+import com.miguelrodriguez19.mindmaster.models.structures.abstractClasses.AbstractEvent
 import com.miguelrodriguez19.mindmaster.models.utils.AllBottomSheets
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.getCurrentDate

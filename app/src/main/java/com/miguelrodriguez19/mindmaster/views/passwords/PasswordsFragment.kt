@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.miguelrodriguez19.mindmaster.databinding.FragmentPasswordsBinding
-import com.miguelrodriguez19.mindmaster.models.structures.GroupPasswordsResponse
+import com.miguelrodriguez19.mindmaster.models.structures.dto.GroupPasswordsResponse
 import com.miguelrodriguez19.mindmaster.models.utils.AllBottomSheets.Companion.showPasswordsBS
 import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
 import com.miguelrodriguez19.mindmaster.views.passwords.adapters.GroupAdapter

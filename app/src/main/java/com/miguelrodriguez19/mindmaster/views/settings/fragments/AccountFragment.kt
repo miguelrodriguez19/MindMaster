@@ -1,7 +1,6 @@
 package com.miguelrodriguez19.mindmaster.views.settings.fragments
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
@@ -16,7 +15,6 @@ import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.button.MaterialButton
@@ -27,7 +25,7 @@ import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentAccountBinding
 import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
 import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.saveImageInStorage
-import com.miguelrodriguez19.mindmaster.models.structures.UserResponse
+import com.miguelrodriguez19.mindmaster.models.structures.dto.UserResponse
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs
 import com.miguelrodriguez19.mindmaster.models.utils.Preferences
 import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.showToast
