@@ -21,14 +21,14 @@ import com.github.clans.fab.FloatingActionMenu
 import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentCalendarBinding
-import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.deleteInSchedule
-import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.loadScheduleByDate
-import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.saveInSchedule
-import com.miguelrodriguez19.mindmaster.models.structures.abstractClasses.AbstractEvent
-import com.miguelrodriguez19.mindmaster.models.utils.AllBottomSheets
-import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs
-import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.getCurrentDate
-import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.showUndoSnackBar
+import com.miguelrodriguez19.mindmaster.model.firebase.FManagerFacade.deleteInSchedule
+import com.miguelrodriguez19.mindmaster.model.firebase.FManagerFacade.loadScheduleByDate
+import com.miguelrodriguez19.mindmaster.model.firebase.FManagerFacade.saveInSchedule
+import com.miguelrodriguez19.mindmaster.model.structures.abstractClasses.AbstractActivity
+import com.miguelrodriguez19.mindmaster.model.utils.AllBottomSheets
+import com.miguelrodriguez19.mindmaster.model.utils.AllDialogs
+import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.getCurrentDate
+import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.showUndoSnackBar
 import com.miguelrodriguez19.mindmaster.views.schedule.adapters.CalendarEventsAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -54,7 +54,7 @@ class CalendarFragment : Fragment() {
     private lateinit var pbLoading: View
     private lateinit var gifView: GifImageView
     private lateinit var llNoEvents: LinearLayout
-    private val data = ArrayList<AbstractEvent>()
+    private val data = ArrayList<AbstractActivity>()
     private val listGifs = listOf(R.drawable.gif_no_data_found_1, R.drawable.gif_no_data_found_2)
 
     override fun onCreateView(
@@ -189,8 +189,8 @@ class CalendarFragment : Fragment() {
         itemTouchHelper.attachToRecyclerView(rvCalendarEvents)
     }
 
-    private fun addToView(absEvent: AbstractEvent) {
-        val date = AbstractEvent.getDateOf(absEvent)
+    private fun addToView(absEvent: AbstractActivity) {
+        val date = AbstractActivity.getDateOf(absEvent)
         if (tvSelectedDateEvents.text == date) {
             adapter.addItem(absEvent)
             tvCountOfEvents.text = adapter.itemCount.toString()

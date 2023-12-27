@@ -12,14 +12,14 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.CellDayAllEventsBinding
-import com.miguelrodriguez19.mindmaster.models.comparators.EventComparator
-import com.miguelrodriguez19.mindmaster.models.comparators.EventGroupComparator
-import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
-import com.miguelrodriguez19.mindmaster.models.structures.abstractClasses.AbstractEvent
-import com.miguelrodriguez19.mindmaster.models.structures.abstractClasses.AbstractEvent.Companion.getDateOf
-import com.miguelrodriguez19.mindmaster.models.structures.abstractClasses.EventsResponse
-import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs
-import com.miguelrodriguez19.mindmaster.models.utils.Toolkit
+import com.miguelrodriguez19.mindmaster.model.comparators.EventComparator
+import com.miguelrodriguez19.mindmaster.model.comparators.EventGroupComparator
+import com.miguelrodriguez19.mindmaster.model.firebase.FManagerFacade
+import com.miguelrodriguez19.mindmaster.model.structures.abstractClasses.AbstractActivity
+import com.miguelrodriguez19.mindmaster.model.structures.abstractClasses.AbstractActivity.Companion.getDateOf
+import com.miguelrodriguez19.mindmaster.model.structures.dto.EventsResponse
+import com.miguelrodriguez19.mindmaster.model.utils.AllDialogs
+import com.miguelrodriguez19.mindmaster.model.utils.Toolkit
 
 
 class AllEventsAdapter(
@@ -46,7 +46,7 @@ class AllEventsAdapter(
     }
 
     private fun isDateGroupEmptyOf(
-        absEvent: AbstractEvent,
+        absEvent: AbstractActivity,
         callback: (Int, Boolean) -> Unit
     ) {
         val index = getGroupOf(absEvent)
@@ -67,7 +67,7 @@ class AllEventsAdapter(
         notifyItemChanged(groupPosition)
     }
 
-    private fun getGroupOf(absEvent: AbstractEvent): Int {
+    private fun getGroupOf(absEvent: AbstractActivity): Int {
         val date = getDateOf(absEvent)
         var index = -1
         data.stream()
@@ -79,7 +79,7 @@ class AllEventsAdapter(
         return index
     }
 
-    fun addItem(absEvent: AbstractEvent) {
+    fun addItem(absEvent: AbstractActivity) {
         val index = getGroupOf(absEvent)
         if (index != -1) {
             val oldGroup = data[index]
@@ -112,7 +112,7 @@ class AllEventsAdapter(
             }
         }
 
-        private fun initRecyclerView(data: List<AbstractEvent>) {
+        private fun initRecyclerView(data: List<AbstractActivity>) {
             val mLayoutManager = StaggeredGridLayoutManager(1, 1)
             rvMonthEvents.layoutManager = mLayoutManager
             adapter = CalendarEventsAdapter(context, ArrayList(data)) { }
@@ -136,12 +136,12 @@ class AllEventsAdapter(
                         ) {
                             val position = viewHolder.adapterPosition
                             if (it) {
-                                FirebaseManager.deleteInSchedule(
+                                FManagerFacade.deleteInSchedule(
                                     adapter.getItemAt(position)
                                 ) { absEvent ->
                                     Toolkit.showUndoSnackBar(context, view) { ok ->
                                         if (ok) {
-                                            FirebaseManager.saveInSchedule(
+                                            FManagerFacade.saveInSchedule(
                                                 absEvent
                                             ) { item ->
                                                 addItem(item)

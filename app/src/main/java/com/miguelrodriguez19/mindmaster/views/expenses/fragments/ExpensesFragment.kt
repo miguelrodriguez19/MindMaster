@@ -11,15 +11,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentExpensesBinding
-import com.miguelrodriguez19.mindmaster.models.comparators.MovementComparator
-import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
-import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.loadActualMonthMovements
-import com.miguelrodriguez19.mindmaster.models.structures.dto.MonthMovementsResponse
-import com.miguelrodriguez19.mindmaster.models.structures.dto.MonthMovementsResponse.Movement
-import com.miguelrodriguez19.mindmaster.models.utils.AllBottomSheets.Companion.showMovementBS
-import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.getCurrentDate
-import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.getMonthYearOf
-import com.miguelrodriguez19.mindmaster.models.viewModels.expenses.ExpensesViewModel
+import com.miguelrodriguez19.mindmaster.model.comparators.MovementComparator
+import com.miguelrodriguez19.mindmaster.model.firebase.FManagerFacade
+import com.miguelrodriguez19.mindmaster.model.firebase.FManagerFacade.loadActualMonthMovements
+import com.miguelrodriguez19.mindmaster.model.structures.dto.MonthMovementsResponse
+import com.miguelrodriguez19.mindmaster.model.structures.dto.MonthMovementsResponse.Movement
+import com.miguelrodriguez19.mindmaster.model.utils.AllBottomSheets.Companion.showMovementBS
+import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.getCurrentDate
+import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.getMonthYearOf
+import com.miguelrodriguez19.mindmaster.model.viewModels.expenses.ExpensesViewModel
 import com.miguelrodriguez19.mindmaster.views.expenses.adapters.MovementAdapter
 import com.miguelrodriguez19.mindmaster.views.expenses.adapters.NonSwipeableViewPager
 import com.miguelrodriguez19.mindmaster.views.expenses.adapters.ViewPagerAdapter
@@ -101,7 +101,7 @@ class ExpensesFragment : Fragment() {
             expensesViewModel.setActualMonth(lastMonthPicked)
         }
         CoroutineScope(Dispatchers.IO).launch {
-            FirebaseManager.loadAllMovements() {
+            FManagerFacade.loadAllMovements() {
                 expensesViewModel.setAllMonths(it)
             }
         }
@@ -123,7 +123,7 @@ class ExpensesFragment : Fragment() {
         latestMoves.clear()
 
         withContext(Dispatchers.IO) {
-            FirebaseManager.loadAllMovements() {
+            FManagerFacade.loadAllMovements() {
                 expensesViewModel.setAllMonths(it)
             }
         }

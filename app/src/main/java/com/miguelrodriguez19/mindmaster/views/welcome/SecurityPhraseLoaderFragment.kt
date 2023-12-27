@@ -3,7 +3,6 @@ package com.miguelrodriguez19.mindmaster.views.welcome
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,8 +23,8 @@ import com.google.android.material.textfield.TextInputLayout
 import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentSecurityPhraseLoaderBinding
-import com.miguelrodriguez19.mindmaster.models.utils.AESEncripter
-import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
+import com.miguelrodriguez19.mindmaster.model.utils.AESEncripter
+import com.miguelrodriguez19.mindmaster.model.firebase.FManagerFacade
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -74,7 +73,7 @@ class SecurityPhraseLoaderFragment : Fragment() {
             if (etPassphrase.text.toString().isNotBlank() || !fileContent.isNullOrEmpty()) {
                 progressBar.visibility = View.VISIBLE
                 CoroutineScope(Dispatchers.IO).launch {
-                    expectedHash = FirebaseManager.getSecurePhraseHash(args.user.uid)
+                    expectedHash = FManagerFacade.getSecurePhraseHash(args.user.uid)
                 }.invokeOnCompletion {
                     val phrase = fileContent ?: etPassphrase.text.toString()
                     val inputHash =
@@ -83,7 +82,7 @@ class SecurityPhraseLoaderFragment : Fragment() {
                         CoroutineScope(Dispatchers.IO).launch {
                             val iVector =
                                 withContext(Dispatchers.IO) {
-                                    FirebaseManager.getInitialisationVector(args.user.uid)
+                                    FManagerFacade.getInitialisationVector(args.user.uid)
                                 }
                             if (iVector != null) {
                                 val main = (requireActivity() as MainActivity)

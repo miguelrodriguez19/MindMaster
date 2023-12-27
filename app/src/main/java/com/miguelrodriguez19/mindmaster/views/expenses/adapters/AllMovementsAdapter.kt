@@ -12,15 +12,15 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.CellDayAllMovementsBinding
-import com.miguelrodriguez19.mindmaster.models.comparators.MovementComparator
-import com.miguelrodriguez19.mindmaster.models.comparators.MovementsGroupComparator
-import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
-import com.miguelrodriguez19.mindmaster.models.structures.dto.MonthMovementsResponse
-import com.miguelrodriguez19.mindmaster.models.structures.dto.MonthMovementsResponse.Movement
-import com.miguelrodriguez19.mindmaster.models.structures.dto.MonthMovementsResponse.Type
-import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs
-import com.miguelrodriguez19.mindmaster.models.utils.Toolkit
-import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.getMonthYearOf
+import com.miguelrodriguez19.mindmaster.model.comparators.MovementComparator
+import com.miguelrodriguez19.mindmaster.model.comparators.MovementsGroupComparator
+import com.miguelrodriguez19.mindmaster.model.firebase.FManagerFacade
+import com.miguelrodriguez19.mindmaster.model.structures.dto.MonthMovementsResponse
+import com.miguelrodriguez19.mindmaster.model.structures.dto.MonthMovementsResponse.Movement
+import com.miguelrodriguez19.mindmaster.model.structures.dto.MonthMovementsResponse.Type
+import com.miguelrodriguez19.mindmaster.model.utils.AllDialogs
+import com.miguelrodriguez19.mindmaster.model.utils.Toolkit
+import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.getMonthYearOf
 
 class AllMovementsAdapter(
     private val context: Context, var data: ArrayList<MonthMovementsResponse>
@@ -154,10 +154,10 @@ class AllMovementsAdapter(
                         ) {
                             val position = viewHolder.adapterPosition
                             if (it) {
-                                FirebaseManager.deleteMovement(adapter.getItemAt(position)) { movement ->
+                                FManagerFacade.deleteMovement(adapter.getItemAt(position)) { movement ->
                                     Toolkit.showUndoSnackBar(context, view) { ok ->
                                         if (ok) {
-                                            FirebaseManager.saveMovement(movement) { item ->
+                                            FManagerFacade.saveMovement(movement) { item ->
                                                 addItem(item)
                                             }
                                         }

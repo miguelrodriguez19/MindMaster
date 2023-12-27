@@ -12,9 +12,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.miguelrodriguez19.mindmaster.databinding.FragmentPasswordsBinding
-import com.miguelrodriguez19.mindmaster.models.structures.dto.GroupPasswordsResponse
-import com.miguelrodriguez19.mindmaster.models.utils.AllBottomSheets.Companion.showPasswordsBS
-import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
+import com.miguelrodriguez19.mindmaster.model.structures.dto.GroupPasswordsResponse
+import com.miguelrodriguez19.mindmaster.model.utils.AllBottomSheets.Companion.showPasswordsBS
+import com.miguelrodriguez19.mindmaster.model.firebase.FManagerFacade
 import com.miguelrodriguez19.mindmaster.views.passwords.adapters.GroupAdapter
 
 class PasswordsFragment : Fragment() {
@@ -61,7 +61,7 @@ class PasswordsFragment : Fragment() {
     private fun setUpData() {
         progressBarAllAccounts.visibility = View.VISIBLE
         data.clear()
-        FirebaseManager.loadAllGroups() { accountsGroupsList ->
+        FManagerFacade.loadAllGroups() { accountsGroupsList ->
             data.addAll(accountsGroupsList)
             adapter.setData(accountsGroupsList)
             progressBarAllAccounts.visibility = View.GONE

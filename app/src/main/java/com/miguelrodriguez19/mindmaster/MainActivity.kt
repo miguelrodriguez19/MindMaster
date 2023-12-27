@@ -17,13 +17,13 @@ import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
 import com.miguelrodriguez19.mindmaster.databinding.ActivityMainBinding
 import com.miguelrodriguez19.mindmaster.databinding.DrawerHeaderBinding
-import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
-import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.getAuth
-import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.getCurrentUser
-import com.miguelrodriguez19.mindmaster.models.structures.dto.UserResponse
-import com.miguelrodriguez19.mindmaster.models.utils.AESEncripter
-import com.miguelrodriguez19.mindmaster.models.utils.Preferences
-import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.showToast
+import com.miguelrodriguez19.mindmaster.model.firebase.FManagerFacade
+import com.miguelrodriguez19.mindmaster.model.firebase.FManagerFacade.getAuth
+import com.miguelrodriguez19.mindmaster.model.firebase.FManagerFacade.getCurrentUser
+import com.miguelrodriguez19.mindmaster.model.structures.dto.UserResponse
+import com.miguelrodriguez19.mindmaster.model.utils.AESEncripter
+import com.miguelrodriguez19.mindmaster.model.utils.Preferences
+import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.showToast
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity() {
         splashScreen.setKeepOnScreenCondition { false }
 
         initContexts()
+
         setAppTheme(Preferences.getTheme().toInt())
         setupNavigation()
         configureBackButton()
@@ -100,7 +101,7 @@ class MainActivity : AppCompatActivity() {
     private fun initContexts() {
         Preferences.init(applicationContext)
         AESEncripter.init(applicationContext)
-        FirebaseManager.init(applicationContext)
+        FManagerFacade.init(applicationContext)
     }
 
     private fun setAppTheme(theme: Int) {

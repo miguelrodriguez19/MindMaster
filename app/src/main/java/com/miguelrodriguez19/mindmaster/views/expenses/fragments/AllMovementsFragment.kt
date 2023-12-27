@@ -10,9 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.miguelrodriguez19.mindmaster.databinding.FragmentAllMovementsBinding
-import com.miguelrodriguez19.mindmaster.models.structures.dto.MonthMovementsResponse
-import com.miguelrodriguez19.mindmaster.models.utils.AllBottomSheets.Companion.showMovementBS
-import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
+import com.miguelrodriguez19.mindmaster.model.structures.dto.MonthMovementsResponse
+import com.miguelrodriguez19.mindmaster.model.utils.AllBottomSheets.Companion.showMovementBS
+import com.miguelrodriguez19.mindmaster.model.firebase.FManagerFacade
 import com.miguelrodriguez19.mindmaster.views.expenses.adapters.AllMovementsAdapter
 
 class AllMovementsFragment : Fragment() {
@@ -85,7 +85,7 @@ class AllMovementsFragment : Fragment() {
     private fun setUpData() {
         binding.progressBarAllMovements.visibility = View.VISIBLE
         this@AllMovementsFragment.data.clear()
-        FirebaseManager.loadAllMovements() { monthResponsesList ->
+        FManagerFacade.loadAllMovements() { monthResponsesList ->
             this@AllMovementsFragment.data.addAll(monthResponsesList)
             dataFiltered = data
             adapter.setData(monthResponsesList)

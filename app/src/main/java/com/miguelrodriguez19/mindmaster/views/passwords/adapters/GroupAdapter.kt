@@ -10,13 +10,13 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.CellAllPasswordsGroupsBinding
-import com.miguelrodriguez19.mindmaster.models.comparators.AccountsGroupsComparator
-import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
-import com.miguelrodriguez19.mindmaster.models.structures.dto.GroupPasswordsResponse
-import com.miguelrodriguez19.mindmaster.models.structures.dto.GroupPasswordsResponse.*
-import com.miguelrodriguez19.mindmaster.models.utils.AllBottomSheets
-import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs
-import com.miguelrodriguez19.mindmaster.models.utils.Toolkit
+import com.miguelrodriguez19.mindmaster.model.comparators.AccountsGroupsComparator
+import com.miguelrodriguez19.mindmaster.model.firebase.FManagerFacade
+import com.miguelrodriguez19.mindmaster.model.structures.dto.GroupPasswordsResponse
+import com.miguelrodriguez19.mindmaster.model.structures.dto.GroupPasswordsResponse.*
+import com.miguelrodriguez19.mindmaster.model.utils.AllBottomSheets
+import com.miguelrodriguez19.mindmaster.model.utils.AllDialogs
+import com.miguelrodriguez19.mindmaster.model.utils.Toolkit
 
 @SuppressLint("NotifyDataSetChanged")
 class GroupAdapter(private val context: Context, var data: ArrayList<GroupPasswordsResponse>) :
@@ -112,10 +112,10 @@ class GroupAdapter(private val context: Context, var data: ArrayList<GroupPasswo
                                 context.getString(R.string.delete_password_group_message)
                             ) {
                                 if (it) {
-                                    FirebaseManager.deleteGroup(item) { group ->
+                                    FManagerFacade.deleteGroup(item) { group ->
                                         Toolkit.showUndoSnackBar(context, view) { ok ->
                                             if (ok) {
-                                                FirebaseManager.saveGroup(
+                                                FManagerFacade.saveGroup(
                                                     group
                                                 ) { newGroup ->
                                                     addItem(newGroup)

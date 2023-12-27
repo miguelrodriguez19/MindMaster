@@ -23,12 +23,12 @@ import com.google.android.material.textfield.TextInputLayout
 import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentAccountBinding
-import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
-import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.saveImageInStorage
-import com.miguelrodriguez19.mindmaster.models.structures.dto.UserResponse
-import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs
-import com.miguelrodriguez19.mindmaster.models.utils.Preferences
-import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.showToast
+import com.miguelrodriguez19.mindmaster.model.firebase.FManagerFacade
+import com.miguelrodriguez19.mindmaster.model.firebase.FManagerFacade.saveImageInStorage
+import com.miguelrodriguez19.mindmaster.model.structures.dto.UserResponse
+import com.miguelrodriguez19.mindmaster.model.utils.AllDialogs
+import com.miguelrodriguez19.mindmaster.model.utils.Preferences
+import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.showToast
 import de.hdodenhof.circleimageview.CircleImageView
 
 class AccountFragment : Fragment() {
@@ -147,7 +147,7 @@ class AccountFragment : Fragment() {
         val user = Preferences.getUser()
         user?.let {
             val uri = uriPhoto ?: user.photoUrl
-            FirebaseManager.updateUser(
+            FManagerFacade.updateUser(
                 user.copy(
                     firstName = etFirstName.text.toString(), lastName = etLastName.text.toString(),
                     birthdate = etBirthdate.text.toString(), photoUrl = uri

@@ -14,9 +14,9 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentBarsChartBinding
-import com.miguelrodriguez19.mindmaster.models.structures.dto.MonthMovementsResponse
-import com.miguelrodriguez19.mindmaster.models.utils.Preferences
-import com.miguelrodriguez19.mindmaster.models.viewModels.expenses.ExpensesViewModel
+import com.miguelrodriguez19.mindmaster.model.structures.dto.MonthMovementsResponse
+import com.miguelrodriguez19.mindmaster.model.utils.Preferences
+import com.miguelrodriguez19.mindmaster.model.viewModels.expenses.ExpensesViewModel
 
 class BarsChartFragment : Fragment() {
     private var _binding: FragmentBarsChartBinding? = null

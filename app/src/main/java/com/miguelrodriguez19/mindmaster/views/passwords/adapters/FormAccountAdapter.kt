@@ -11,10 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.CellFormAccountBinding
-import com.miguelrodriguez19.mindmaster.models.structures.dto.GroupPasswordsResponse
-import com.miguelrodriguez19.mindmaster.models.utils.Toolkit
-import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.evaluatePasswordSecurity
-import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.isPasswordStrong
+import com.miguelrodriguez19.mindmaster.model.structures.dto.GroupPasswordsResponse
+import com.miguelrodriguez19.mindmaster.model.utils.Toolkit
+import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.evaluatePasswordSecurity
+import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.isPasswordStrong
 import kotlin.random.Random
 
 class FormAccountAdapter(

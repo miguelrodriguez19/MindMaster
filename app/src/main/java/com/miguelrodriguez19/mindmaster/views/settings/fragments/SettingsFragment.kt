@@ -16,15 +16,15 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentSettingsBinding
-import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
-import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.getAuth
-import com.miguelrodriguez19.mindmaster.models.structures.dto.UserResponse
-import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs
-import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs.Companion.showConfirmationDialog
-import com.miguelrodriguez19.mindmaster.models.utils.Preferences
-import com.miguelrodriguez19.mindmaster.models.utils.Preferences.getUser
-import com.miguelrodriguez19.mindmaster.models.utils.Preferences.setCurrency
-import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.showToast
+import com.miguelrodriguez19.mindmaster.model.firebase.FManagerFacade
+import com.miguelrodriguez19.mindmaster.model.firebase.FManagerFacade.getAuth
+import com.miguelrodriguez19.mindmaster.model.structures.dto.UserResponse
+import com.miguelrodriguez19.mindmaster.model.utils.AllDialogs
+import com.miguelrodriguez19.mindmaster.model.utils.AllDialogs.Companion.showConfirmationDialog
+import com.miguelrodriguez19.mindmaster.model.utils.Preferences
+import com.miguelrodriguez19.mindmaster.model.utils.Preferences.getUser
+import com.miguelrodriguez19.mindmaster.model.utils.Preferences.setCurrency
+import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.showToast
 import de.hdodenhof.circleimageview.CircleImageView
 
 class SettingsFragment : Fragment() {
@@ -69,7 +69,7 @@ class SettingsFragment : Fragment() {
         btnChangePassword.setOnClickListener {
             val user = getUser()
             user?.let {
-                FirebaseManager.sendResetPassword(requireContext(), user.email) { isSuccessful ->
+                FManagerFacade.sendResetPassword(requireContext(), user.email) { isSuccessful ->
                     if (isSuccessful) {
                         AllDialogs.showAlertDialog(
                             requireContext(), requireContext().getString(R.string.reset_password),
@@ -168,7 +168,7 @@ class SettingsFragment : Fragment() {
     private fun deleteAccountFromFirestore() {
         val user = getUser()
         user?.let {
-            FirebaseManager.deleteUser(user)
+            FManagerFacade.deleteUser(user)
         }
         logout()
     }

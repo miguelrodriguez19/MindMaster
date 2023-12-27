@@ -10,10 +10,10 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.CellAccountBinding
-import com.miguelrodriguez19.mindmaster.models.comparators.AccountComparator
-import com.miguelrodriguez19.mindmaster.models.structures.dto.GroupPasswordsResponse
-import com.miguelrodriguez19.mindmaster.models.structures.dto.GroupPasswordsResponse.*
-import com.miguelrodriguez19.mindmaster.models.structures.dto.GroupPasswordsResponse.Type
+import com.miguelrodriguez19.mindmaster.model.comparators.AccountComparator
+import com.miguelrodriguez19.mindmaster.model.structures.dto.GroupPasswordsResponse
+import com.miguelrodriguez19.mindmaster.model.structures.dto.GroupPasswordsResponse.*
+import com.miguelrodriguez19.mindmaster.model.structures.dto.GroupPasswordsResponse.Type
 
 class AccountAdapter(
     private val context: Context, private val data: ArrayList<Account>

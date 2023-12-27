@@ -14,22 +14,22 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.CellCalendarEventsBinding
-import com.miguelrodriguez19.mindmaster.models.comparators.EventComparator
-import com.miguelrodriguez19.mindmaster.models.structures.abstractClasses.AbstractEvent
-import com.miguelrodriguez19.mindmaster.models.structures.enums.EventType
-import com.miguelrodriguez19.mindmaster.models.structures.enums.Priority
-import com.miguelrodriguez19.mindmaster.models.structures.enums.Status
-import com.miguelrodriguez19.mindmaster.models.structures.dto.schedule.Event
-import com.miguelrodriguez19.mindmaster.models.structures.dto.schedule.Reminder
-import com.miguelrodriguez19.mindmaster.models.structures.dto.schedule.Task
-import com.miguelrodriguez19.mindmaster.models.utils.AllBottomSheets.Companion.showEventsBS
-import com.miguelrodriguez19.mindmaster.models.utils.AllBottomSheets.Companion.showRemindersBS
-import com.miguelrodriguez19.mindmaster.models.utils.AllBottomSheets.Companion.showTasksBS
+import com.miguelrodriguez19.mindmaster.model.comparators.EventComparator
+import com.miguelrodriguez19.mindmaster.model.structures.abstractClasses.AbstractActivity
+import com.miguelrodriguez19.mindmaster.model.structures.enums.ActivityType
+import com.miguelrodriguez19.mindmaster.model.structures.enums.Priority
+import com.miguelrodriguez19.mindmaster.model.structures.enums.Status
+import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.Event
+import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.Reminder
+import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.Task
+import com.miguelrodriguez19.mindmaster.model.utils.AllBottomSheets.Companion.showEventsBS
+import com.miguelrodriguez19.mindmaster.model.utils.AllBottomSheets.Companion.showRemindersBS
+import com.miguelrodriguez19.mindmaster.model.utils.AllBottomSheets.Companion.showTasksBS
 
 class CalendarEventsAdapter(
     private val context: Context,
-    private val data: ArrayList<AbstractEvent>,
-    val onClick: (AbstractEvent) -> Unit
+    private val data: ArrayList<AbstractActivity>,
+    val onClick: (AbstractActivity) -> Unit
 ) :
     RecyclerView.Adapter<CalendarEventsAdapter.ViewHolder>() {
 
@@ -51,23 +51,23 @@ class CalendarEventsAdapter(
         notifyItemRangeRemoved(position, 1)
     }
 
-    fun getItemAt(index: Int): AbstractEvent {
+    fun getItemAt(index: Int): AbstractActivity {
         return data[index]
     }
 
-    fun setData(newData: List<AbstractEvent>) {
+    fun setData(newData: List<AbstractActivity>) {
         this.data.clear()
         this.data.addAll(newData.sortedWith(EventComparator()))
         notifyDataSetChanged()
     }
 
-    fun addItem(item: AbstractEvent) {
+    fun addItem(item: AbstractActivity) {
         this.data.add(item)
         this.data.sortedWith(EventComparator())
         notifyDataSetChanged()
     }
 
-    fun foundAndUpdateIt(abs: AbstractEvent) {
+    fun foundAndUpdateIt(abs: AbstractActivity) {
         var index = 0
         data.stream()
             .filter { it.uid == abs.uid }
@@ -87,9 +87,9 @@ class CalendarEventsAdapter(
         private val tvEventTitle = bind.tvEventTitle
         private val civColorTag = bind.civColorTag
 
-        fun bind(item: AbstractEvent) {
+        fun bind(item: AbstractActivity) {
             var title: CharSequence = item.title
-            if (item.type == EventType.TASK) {
+            if (item.type == ActivityType.TASK) {
                 val task = item as Task
                 if (task.status == Status.COMPLETED) {
                     val spannableString = SpannableString(item.title)
@@ -106,22 +106,22 @@ class CalendarEventsAdapter(
                 }
             }
             tvEventTitle.text = title
-            val header = StringBuilder(AbstractEvent.getItemType(context, item.type))
+            val header = StringBuilder(AbstractActivity.getItemType(context, item.type))
             if (!item.category.isNullOrEmpty()) {
                 header.append(" - ").append(item.category!!.joinToString(", "))
             }
             tvEventType.text = header
-            civColorTag.setCardBackgroundColor(AbstractEvent.getColor(context, item.colorTag))
+            civColorTag.setCardBackgroundColor(AbstractActivity.getColor(context, item.colorTag))
             cvEventArea.setOnClickListener {
                 onClick(item)
                 when (item.type) {
-                    EventType.EVENT -> showEventsBS(context, item as Event) {
+                    ActivityType.EVENT -> showEventsBS(context, item as Event) {
                         foundAndUpdateIt(it)
                     }
-                    EventType.REMINDER -> showRemindersBS(context, item as Reminder) {
+                    ActivityType.REMINDER -> showRemindersBS(context, item as Reminder) {
                         foundAndUpdateIt(it)
                     }
-                    EventType.TASK -> showTasksBS(context, item as Task) {
+                    ActivityType.TASK -> showTasksBS(context, item as Task) {
                         foundAndUpdateIt(it)
                     }
                 }

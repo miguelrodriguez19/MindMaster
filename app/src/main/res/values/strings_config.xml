@@ -30,6 +30,9 @@
     <string name="currency_preferences_key">currency</string>
     <string name="init_vector_preferences_key">initializationVector</string>
     <string name="secure_phrase_preferences_key">securePhrase</string>
+        <!-- Notifications -->
+        <string name="last_notification_id_key">lastNotificationId</string>
+        <string name="global_notifications_key">GlobalNotifications</string>
 
     <!-- Firebase Routes -->
     <string name="users_route">users</string>
@@ -42,9 +45,9 @@
     <string name="incomes_route">incomes</string>
     <string name="expenses_route">expenses</string>
 
-    <string name="photo_themes">motorbikes,bikes,cars,automotive,landscape,random,animals,winter,summer,spring,autmn,cute,sports,flowers,plants,wild,freedom,free,coffee</string>
+    <!-- Default profile photo  -->
+    <string name="photo_themes">motorbikes,bikes,cars,automotive,landscape,random,animals,winter,summer,spring,autumn,cute,sports,flowers,plants,wild,freedom,free,coffee,oceans, mountains, cityscapes, space, galaxies, forests, deserts, beaches, underwater, travel, adventure, music, art, urban, vintage, retro, futuristic, abstract, minimalist, vibrant, pastel, neon, culture, traditional, festival, fantasy, superhero, food, dessert, education, science, technology, gaming, pets, happiness, peace, yoga</string>
     <string name="photo_url_request">https://source.unsplash.com/200x200/?%s</string>
-
 
     <string-array name="available_languages">
         <item>en</item>

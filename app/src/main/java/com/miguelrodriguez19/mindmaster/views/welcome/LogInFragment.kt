@@ -26,14 +26,14 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentLogInBinding
-import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
-import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.getAuth
-import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.logInEmailPwd
-import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.sendResetPassword
-import com.miguelrodriguez19.mindmaster.models.structures.dto.UserResponse
-import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs
-import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.checkFields
-import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.showToast
+import com.miguelrodriguez19.mindmaster.model.firebase.FManagerFacade
+import com.miguelrodriguez19.mindmaster.model.firebase.FManagerFacade.getAuth
+import com.miguelrodriguez19.mindmaster.model.firebase.FManagerFacade.logInEmailPwd
+import com.miguelrodriguez19.mindmaster.model.firebase.FManagerFacade.sendResetPassword
+import com.miguelrodriguez19.mindmaster.model.structures.dto.UserResponse
+import com.miguelrodriguez19.mindmaster.model.utils.AllDialogs
+import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.checkFields
+import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.showToast
 
 class LogInFragment : Fragment() {
     private var _binding: FragmentLogInBinding? = null
@@ -169,7 +169,7 @@ class LogInFragment : Fragment() {
                                     val uid = getAuth().currentUser?.uid
 
                                     if (uid != null) {
-                                        FirebaseManager.getUserByUID(uid) {
+                                        FManagerFacade.getUserByUID(uid) {
                                             val actualUser = it
                                                 ?: UserResponse(
                                                     uid, gAcc?.givenName!!, gAcc.familyName,

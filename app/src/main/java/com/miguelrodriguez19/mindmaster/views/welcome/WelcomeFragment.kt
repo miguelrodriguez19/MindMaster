@@ -23,10 +23,10 @@ import com.google.android.material.textfield.TextInputLayout
 import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentWelcomeBinding
-import com.miguelrodriguez19.mindmaster.models.utils.AESEncripter
-import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager
-import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.updateHasLoggedInBefore
-import com.miguelrodriguez19.mindmaster.models.utils.Toolkit.showToast
+import com.miguelrodriguez19.mindmaster.model.utils.AESEncripter
+import com.miguelrodriguez19.mindmaster.model.firebase.FManagerFacade
+import com.miguelrodriguez19.mindmaster.model.firebase.FManagerFacade.updateHasLoggedInBefore
+import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.showToast
 
 class WelcomeFragment : Fragment() {
     private var _binding: FragmentWelcomeBinding? = null
@@ -105,7 +105,7 @@ class WelcomeFragment : Fragment() {
             val phraseHash = AESEncripter.generateHash(passphrase!!)
             val iv = AESEncripter.generateInitializationVector()
             (requireActivity() as MainActivity).updateSecurityPreferences(phraseHash,iv)
-            FirebaseManager.saveCredentials(phraseHash, iv)
+            FManagerFacade.saveCredentials(phraseHash, iv)
         }
     }
 
