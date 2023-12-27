@@ -5,9 +5,9 @@ import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.model.comparators.AccountsGroupsComparator
-import com.miguelrodriguez19.mindmaster.model.firebase.FManagerFacade.getDB
-import com.miguelrodriguez19.mindmaster.model.structures.dto.GroupPasswordsResponse
-import com.miguelrodriguez19.mindmaster.model.structures.dto.GroupPasswordsResponse.Account
+import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade.getDB
+import com.miguelrodriguez19.mindmaster.model.structures.dto.PasswordGroupResponse
+import com.miguelrodriguez19.mindmaster.model.structures.dto.PasswordGroupResponse.Account
 import com.miguelrodriguez19.mindmaster.model.utils.AESEncripter
 import com.miguelrodriguez19.mindmaster.model.utils.Preferences.getUserUID
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.showToast
@@ -20,7 +20,7 @@ object FAccountVaultManager {
     private const val ACCOUNTS = "accounts"
 
     fun saveGroup(
-        context: Context, group: GroupPasswordsResponse, onSuccess: (GroupPasswordsResponse) -> Unit
+        context: Context, group: PasswordGroupResponse, onSuccess: (PasswordGroupResponse) -> Unit
     ) {
         val accountList = ArrayList<Account>()
         val userUID = getUserUID()
@@ -53,7 +53,7 @@ object FAccountVaultManager {
 
 
     fun updateGroup(
-        context: Context, group: GroupPasswordsResponse, onUpdated: (GroupPasswordsResponse) -> Unit
+        context: Context, group: PasswordGroupResponse, onUpdated: (PasswordGroupResponse) -> Unit
     ) {
         val userUID = getUserUID()
         if (userUID != null) {
@@ -89,7 +89,7 @@ object FAccountVaultManager {
         }
     }
 
-    private fun deleteOldAccounts(group: GroupPasswordsResponse) {
+    private fun deleteOldAccounts(group: PasswordGroupResponse) {
         val userUID = getUserUID()
         if (userUID != null) {
             val collectionRef =
@@ -112,7 +112,7 @@ object FAccountVaultManager {
 
     private suspend fun loadGroup(
         context: Context, groupUID: String
-    ): GroupPasswordsResponse = withContext(Dispatchers.IO) {
+    ): PasswordGroupResponse = withContext(Dispatchers.IO) {
         lateinit var groupName: String
         val accountList = ArrayList<Account>()
         val userUID = getUserUID()
@@ -134,11 +134,11 @@ object FAccountVaultManager {
                 }
             }
         }
-        return@withContext GroupPasswordsResponse(groupUID, groupName, accountList)
+        return@withContext PasswordGroupResponse(groupUID, groupName, accountList)
     }
 
     fun loadAllGroups(
-        context: Context, onSuccess: (List<GroupPasswordsResponse>) -> Unit
+        context: Context, onSuccess: (List<PasswordGroupResponse>) -> Unit
     ) {
         CoroutineScope(Dispatchers.IO).launch {
             val userUID = getUserUID()
@@ -146,7 +146,7 @@ object FAccountVaultManager {
                 val movementsRef =
                     getDB().collection(USERS).document(userUID).collection(GROUPS).get().await()
 
-                val deferredList = mutableListOf<Deferred<GroupPasswordsResponse?>>()
+                val deferredList = mutableListOf<Deferred<PasswordGroupResponse?>>()
 
                 for (doc in movementsRef) {
 
@@ -171,7 +171,7 @@ object FAccountVaultManager {
     }
 
     fun deleteGroup(
-        context: Context, group: GroupPasswordsResponse, onDeleted: (GroupPasswordsResponse) -> Unit
+        context: Context, group: PasswordGroupResponse, onDeleted: (PasswordGroupResponse) -> Unit
     ) {
         val userUID = getUserUID()
         if (userUID != null) {

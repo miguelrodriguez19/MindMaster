@@ -5,7 +5,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.model.comparators.EventComparator
 import com.miguelrodriguez19.mindmaster.model.comparators.EventGroupComparator
-import com.miguelrodriguez19.mindmaster.model.firebase.FManagerFacade.getDB
+import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade.getDB
 import com.miguelrodriguez19.mindmaster.model.structures.abstractClasses.AbstractActivity
 import com.miguelrodriguez19.mindmaster.model.structures.dto.EventsResponse
 import com.miguelrodriguez19.mindmaster.model.structures.enums.ActivityType

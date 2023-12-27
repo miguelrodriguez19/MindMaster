@@ -10,8 +10,6 @@ import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.toJson
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.toUserResponse
 import java.util.*
 
-private const val s = "lastNotificationId"
-
 object Preferences {
 
     private lateinit var appContext: Context

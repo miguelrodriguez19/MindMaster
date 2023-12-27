@@ -3,7 +3,7 @@ package com.miguelrodriguez19.mindmaster.model.firebase
 import android.content.Context
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.model.comparators.MovementsGroupComparator
-import com.miguelrodriguez19.mindmaster.model.firebase.FManagerFacade.getDB
+import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade.getDB
 import com.miguelrodriguez19.mindmaster.model.structures.dto.MonthMovementsResponse
 import com.miguelrodriguez19.mindmaster.model.structures.dto.MonthMovementsResponse.Movement
 import com.miguelrodriguez19.mindmaster.model.structures.dto.MonthMovementsResponse.Type

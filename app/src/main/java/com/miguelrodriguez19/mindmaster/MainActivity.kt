@@ -17,9 +17,9 @@ import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
 import com.miguelrodriguez19.mindmaster.databinding.ActivityMainBinding
 import com.miguelrodriguez19.mindmaster.databinding.DrawerHeaderBinding
-import com.miguelrodriguez19.mindmaster.model.firebase.FManagerFacade
-import com.miguelrodriguez19.mindmaster.model.firebase.FManagerFacade.getAuth
-import com.miguelrodriguez19.mindmaster.model.firebase.FManagerFacade.getCurrentUser
+import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade
+import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade.getAuth
+import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade.getCurrentUser
 import com.miguelrodriguez19.mindmaster.model.structures.dto.UserResponse
 import com.miguelrodriguez19.mindmaster.model.utils.AESEncripter
 import com.miguelrodriguez19.mindmaster.model.utils.Preferences
@@ -101,7 +101,7 @@ class MainActivity : AppCompatActivity() {
     private fun initContexts() {
         Preferences.init(applicationContext)
         AESEncripter.init(applicationContext)
-        FManagerFacade.init(applicationContext)
+        FirestoreManagerFacade.init(applicationContext)
     }
 
     private fun setAppTheme(theme: Int) {

@@ -5,10 +5,10 @@ import android.graphics.Color
 import com.google.firebase.firestore.PropertyName
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.Event
-import com.miguelrodriguez19.mindmaster.model.structures.enums.ActivityType
 import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.Reminder
-import com.miguelrodriguez19.mindmaster.model.structures.enums.Repetition
 import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.Task
+import com.miguelrodriguez19.mindmaster.model.structures.enums.ActivityType
+import com.miguelrodriguez19.mindmaster.model.structures.enums.Repetition
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.getDateFromDatetime
 
 abstract class AbstractActivity : java.io.Serializable {
@@ -16,6 +16,7 @@ abstract class AbstractActivity : java.io.Serializable {
     abstract val title: String
     abstract val description: String?
     abstract val category: List<String>?
+
     @get:PropertyName("color_tag")
     abstract val colorTag: String
     abstract val type: ActivityType
@@ -37,12 +38,10 @@ abstract class AbstractActivity : java.io.Serializable {
             }
         }
 
-        fun getDateOf(absEvent: AbstractActivity): String {
-            return when (absEvent.type) {
-                ActivityType.EVENT -> getDateFromDatetime((absEvent as Event).startTime)
-                ActivityType.REMINDER -> (absEvent as Reminder).dateTime
-                ActivityType.TASK -> (absEvent as Task).dueDate
-            }
+        fun getDateOf(absEvent: AbstractActivity): String = when (absEvent.type) {
+            ActivityType.EVENT -> getDateFromDatetime((absEvent as Event).startTime)
+            ActivityType.REMINDER -> (absEvent as Reminder).dateTime
+            ActivityType.TASK -> (absEvent as Task).dueDate
         }
 
         fun getRepetitionString(r: Repetition): Int = when (r) {

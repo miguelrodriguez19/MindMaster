@@ -5,7 +5,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseUser
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.model.structures.dto.UserResponse
-import com.miguelrodriguez19.mindmaster.model.utils.AllDialogs
+import com.miguelrodriguez19.mindmaster.view.dialogs.AllDialogs
 import com.miguelrodriguez19.mindmaster.model.utils.Preferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -31,7 +31,7 @@ object FUserManager {
     }
 
     private fun searchUserInUsers(uid: String, callback: (UserResponse?) -> Unit) {
-        FManagerFacade.getDB()
+        FirestoreManagerFacade.getDB()
             .collection(USERS).document(uid).get().addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val documentSnapshot = task.result
@@ -48,7 +48,7 @@ object FUserManager {
     }
 
     private fun searchUserInTemporal(uid: String, callback: (UserResponse?) -> Unit) {
-        FManagerFacade.getDB()
+        FirestoreManagerFacade.getDB()
             .collection(TEMPORAL).document(uid).get().addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val documentSnapshot = task.result
@@ -71,13 +71,13 @@ object FUserManager {
         deleteTemporalUser(user.uid)
         // Update hasLoggedInBefore -> True
         val upUser = user.copy(hasLoggedInBefore = true)
-        FManagerFacade.updateUser(upUser) {
+        FirestoreManagerFacade.updateUser(upUser) {
             Preferences.setUser(upUser)
         }
     }
 
     fun getCurrentUser(): FirebaseUser? = runBlocking {
-        FManagerFacade.getAuth().currentUser
+        FirestoreManagerFacade.getAuth().currentUser
     }
 
     // LOG_IN & SIGN_UP
@@ -86,12 +86,12 @@ object FUserManager {
         password: String,
         callback: (Boolean, UserResponse?) -> Unit
     ) {
-        FManagerFacade.getAuth().signInWithEmailAndPassword(email, password)
+        FirestoreManagerFacade.getAuth().signInWithEmailAndPassword(email, password)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
                     val user = it.result.user
                     if (user != null && user.isEmailVerified) {
-                        FManagerFacade.getUserByUID(user.uid) { u ->
+                        FirestoreManagerFacade.getUserByUID(user.uid) { u ->
                             if (u != null) {
                                 val token = user.getIdToken(false).result.token
                                 callback(true, u)
@@ -112,12 +112,12 @@ object FUserManager {
         context: Context, name: String, lastname: String?, birthdate: String,
         email: String, password: String, result: (Boolean) -> Unit
     ) {
-        FManagerFacade.getAuth().createUserWithEmailAndPassword(email.trim(), password.trim())
+        FirestoreManagerFacade.getAuth().createUserWithEmailAndPassword(email.trim(), password.trim())
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val theme = context.getString(R.string.photo_themes).split(",").shuffled()[0]
                     val url = context.getString(R.string.photo_url_request, theme)
-                    FManagerFacade.saveImageInStorage(url) { photoUrl ->
+                    FirestoreManagerFacade.saveImageInStorage(url) { photoUrl ->
                         task.result.user?.sendEmailVerification()
                         saveTemporalUser(
                             UserResponse(
@@ -140,7 +140,7 @@ object FUserManager {
     }
 
     private fun saveUser(user: UserResponse) {
-        FManagerFacade.getDB().collection(USERS).document(user.uid).set(user)
+        FirestoreManagerFacade.getDB().collection(USERS).document(user.uid).set(user)
             .addOnSuccessListener { }
             .addOnFailureListener { e ->
                 e.printStackTrace()
@@ -148,7 +148,7 @@ object FUserManager {
     }
 
     private fun saveTemporalUser(user: UserResponse) {
-        FManagerFacade.getDB().collection(TEMPORAL).document(user.uid).set(user)
+        FirestoreManagerFacade.getDB().collection(TEMPORAL).document(user.uid).set(user)
             .addOnSuccessListener { }
             .addOnFailureListener { e ->
                 e.printStackTrace()
@@ -156,7 +156,7 @@ object FUserManager {
     }
 
     fun updateUser(user: UserResponse, onUpdated: (UserResponse) -> Unit) {
-        val docRef = FManagerFacade.getDB().collection(USERS).document(user.uid)
+        val docRef = FirestoreManagerFacade.getDB().collection(USERS).document(user.uid)
         val userData = user.toMap()
         docRef.update(userData).addOnSuccessListener {
             onUpdated(user)
@@ -166,15 +166,15 @@ object FUserManager {
     }
 
     fun deleteUser(user: UserResponse) {
-        FManagerFacade.getAuth().currentUser?.delete()
+        FirestoreManagerFacade.getAuth().currentUser?.delete()
         deleteCredentials()
-        FManagerFacade.getDB().collection(USERS).document(user.uid).delete().addOnFailureListener {
+        FirestoreManagerFacade.getDB().collection(USERS).document(user.uid).delete().addOnFailureListener {
             it.printStackTrace()
         }
     }
 
     private fun deleteTemporalUser(uid: String) {
-        FManagerFacade.getDB().collection(TEMPORAL).document(uid).delete().addOnFailureListener {
+        FirestoreManagerFacade.getDB().collection(TEMPORAL).document(uid).delete().addOnFailureListener {
             it.printStackTrace()
         }
     }
@@ -183,7 +183,7 @@ object FUserManager {
         val user = Preferences.getUser()
         if (user != null) {
             val fields = mapOf(Pair("hash", passPhraseHash), Pair("iv", iv))
-            FManagerFacade.getDB().collection(SECURE).document(user.uid).set(fields)
+            FirestoreManagerFacade.getDB().collection(SECURE).document(user.uid).set(fields)
                 .addOnSuccessListener { }
                 .addOnFailureListener { e ->
                     e.printStackTrace()
@@ -194,7 +194,7 @@ object FUserManager {
     private fun deleteCredentials() {
         val user = Preferences.getUser()
         if (user != null) {
-            FManagerFacade.getDB().collection(SECURE).document(user.uid).delete()
+            FirestoreManagerFacade.getDB().collection(SECURE).document(user.uid).delete()
                 .addOnSuccessListener { }
                 .addOnFailureListener { e ->
                     e.printStackTrace()
@@ -203,19 +203,19 @@ object FUserManager {
     }
 
     suspend fun getSecurePhraseHash(userUID: String): String? = withContext(Dispatchers.IO) {
-        val docRef = FManagerFacade.getDB().collection(SECURE).document(userUID).get().await()
+        val docRef = FirestoreManagerFacade.getDB().collection(SECURE).document(userUID).get().await()
 
         return@withContext docRef.get("hash") as String?
     }
 
     suspend fun getInitialisationVector(userUID: String): String? = withContext(Dispatchers.IO) {
-        val docRef = FManagerFacade.getDB().collection(SECURE).document(userUID).get().await()
+        val docRef = FirestoreManagerFacade.getDB().collection(SECURE).document(userUID).get().await()
 
         return@withContext docRef.get("iv") as String?
     }
 
     fun sendResetPassword(context: Context, email: String, result: (Boolean) -> Unit) {
-        FManagerFacade.getAuth().sendPasswordResetEmail(email).addOnCompleteListener { task ->
+        FirestoreManagerFacade.getAuth().sendPasswordResetEmail(email).addOnCompleteListener { task ->
             result(task.isSuccessful)
         }
     }

@@ -10,4 +10,5 @@ class MainApplication : Application() {
    companion object {
        lateinit var instance: Application
    }
+
 }

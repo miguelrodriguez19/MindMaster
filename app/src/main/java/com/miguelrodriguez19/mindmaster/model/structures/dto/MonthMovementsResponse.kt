@@ -27,6 +27,10 @@ data class MonthMovementsResponse(
         constructor(uid: String, m: Movement) : this(
             uid, m.date, m.concept, m.amount, m.description, m.type
         )
+
+        fun amIEmpty(): Boolean {
+            return uid == "" && concept == ""
+        }
     }
 
     enum class Type {

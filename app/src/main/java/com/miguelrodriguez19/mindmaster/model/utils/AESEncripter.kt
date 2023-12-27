@@ -2,7 +2,7 @@ package com.miguelrodriguez19.mindmaster.model.utils
 
 import android.content.Context
 import com.miguelrodriguez19.mindmaster.R
-import com.miguelrodriguez19.mindmaster.model.firebase.FManagerFacade
+import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade
 import kotlinx.coroutines.*
 import java.security.MessageDigest
 import java.security.SecureRandom
@@ -25,6 +25,7 @@ object AESEncripter {
     private val GCM_IV_LENGTH: Int by lazy {
         appContext.resources.getString(R.string.GCM_IV_LENGTH).toInt()
     }
+
     private val GCM_TAG_LENGTH: Int by lazy {
         appContext.resources.getString(R.string.GCM_TAG_LENGTH).toInt()
     }
@@ -46,7 +47,7 @@ object AESEncripter {
     fun generateSecurePhrase(generatedPhrase: (String) -> Unit ) {
         var words: List<String> = emptyList()
         CoroutineScope(Dispatchers.IO).async {
-            words = FManagerFacade.getWords()
+            words = FirestoreManagerFacade.getWords()
         }.invokeOnCompletion {
             val securePhrase = HashSet<String>()
             val wordCount = appContext.getString(R.string.wordCount4PasswordPhrase).toInt()
@@ -60,8 +61,6 @@ object AESEncripter {
             }
         }
     }
-
-
 
     fun generateInitializationVector(): String {
         val iniVector = ByteArray(GCM_IV_LENGTH)
