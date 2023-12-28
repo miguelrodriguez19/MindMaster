@@ -6,18 +6,21 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Toast
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.CellAccountBinding
 import com.miguelrodriguez19.mindmaster.model.comparators.AccountComparator
-import com.miguelrodriguez19.mindmaster.model.structures.dto.PasswordGroupResponse
-import com.miguelrodriguez19.mindmaster.model.structures.dto.PasswordGroupResponse.*
+import com.miguelrodriguez19.mindmaster.model.structures.dto.PasswordGroupResponse.Account
 import com.miguelrodriguez19.mindmaster.model.structures.dto.PasswordGroupResponse.Type
+import com.miguelrodriguez19.mindmaster.model.utils.diffUtils.AccountDiffCallback
 
 class AccountAdapter(
     private val context: Context, private val data: ArrayList<Account>
 ) : RecyclerView.Adapter<AccountAdapter.ViewHolder>() {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.cell_account, parent, false)
         return ViewHolder(view)
@@ -29,7 +32,7 @@ class AccountAdapter(
 
     override fun getItemCount(): Int = data.size
 
-    fun removeAt(position: Int){
+    fun removeAt(position: Int) {
         data.removeAt(position)
         notifyItemRangeRemoved(position, 1)
     }
@@ -39,10 +42,14 @@ class AccountAdapter(
     }
 
     fun setData(newData: List<Account>) {
+        val diffCallback = AccountDiffCallback(this.data, newData)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+
         this.data.clear()
         this.data.addAll(newData.sortedWith(AccountComparator()))
-        notifyDataSetChanged()
+        diffResult.dispatchUpdatesTo(this)
     }
+
 
     fun foundAndUpdateIt(account: Account) {
         var index = 0
@@ -58,19 +65,20 @@ class AccountAdapter(
 
     inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         private val bind = CellAccountBinding.bind(v)
+
         //private val tilTitleAccount = bind.tilTitleAccount
         private val etTitleAccount = bind.etTitleAccount
         private val tvTypeAccount = bind.tvTypeAccount
         private val llUsername = bind.llUsername
-        private val tilUsername = bind.tilUsername
+        //private val tilUsername = bind.tilUsername
         private val etUsername = bind.etUsername
         private val btnCopyUsername = bind.btnCopyUsername
         private val llEmail = bind.llEmail
-        private val tilEmail = bind.tilEmail
+        //private val tilEmail = bind.tilEmail
         private val etEmail = bind.etEmail
         private val btnCopyEmail = bind.btnCopyEmail
         private val llPassword = bind.llPassword
-        private val tilPassword = bind.tilPassword
+        //private val tilPassword = bind.tilPassword
         private val etPassword = bind.etPassword
         private val btnCopyPassword = bind.btnCopyPassword
         private val etDescription = bind.etDescription
@@ -80,64 +88,73 @@ class AccountAdapter(
             initWidgets(item)
 
             btnCopyUsername.setOnClickListener {
-                val clipboard =
-                    context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("Username", etUsername.text ?: "")
-                clipboard.setPrimaryClip(clip)
-                Toast.makeText(
-                    context,
-                    context.resources.getString(R.string.username_copied),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-            btnCopyEmail.setOnClickListener {
-                val clipboard =
-                    context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("Email", etEmail.text ?: "")
-                clipboard.setPrimaryClip(clip)
-                Toast.makeText(
-                    context, context.getString(R.string.email_copied), Toast.LENGTH_SHORT
-                ).show()
-            }
-            btnCopyPassword.setOnClickListener {
-                val clipboard =
-                    context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("Password", etPassword.text ?: "")
-                clipboard.setPrimaryClip(clip)
-                Toast.makeText(
-                    context, context.getString(R.string.password_copied), Toast.LENGTH_SHORT
-                ).show()
+                copyToClipboardAndShowToast(
+                    context, "Username", etUsername.text ?: "",
+                    context.resources.getString(R.string.username_copied)
+                )
             }
 
+            btnCopyEmail.setOnClickListener {
+                copyToClipboardAndShowToast(
+                    context, "Email", etEmail.text ?: "",
+                    context.resources.getString(R.string.email_copied)
+                )
+            }
+
+            btnCopyPassword.setOnClickListener {
+                copyToClipboardAndShowToast(
+                    context, "Password", etPassword.text ?: "",
+                    context.resources.getString(R.string.password_copied)
+                )
+            }
+        }
+
+        private fun copyToClipboardAndShowToast(
+            context: Context, label: String, text: CharSequence, toastMessage: String
+        ) {
+            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val data = ClipData.newPlainText(label, text)
+            clipboard.setPrimaryClip(data)
+            Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
         }
 
         private fun initWidgets(item: Account) {
             etTitleAccount.text = item.name
             when (item.type) {
-                Type.GOOGLE -> {
-                    tvTypeAccount.visibility = View.VISIBLE
-                    tvTypeAccount.text = context.getString(R.string.google_sign_up_type)
-                    llUsername.visibility = View.GONE
-                    etEmail.setText(item.email!!)
-                    llPassword.visibility = View.GONE
-
-                    if (!item.description.isNullOrBlank()) etDescription.setText(item.description)
-                    else tilDescription.visibility = View.GONE
-                }
-
-                else -> {
-                    if (!item.username.isNullOrBlank()) etUsername.setText(item.username)
-                    else llUsername.visibility = View.GONE
-
-                    if (!item.email.isNullOrBlank()) etEmail.setText(item.email)
-                    else llEmail.visibility = View.GONE
-
-                    etPassword.setText(item.password!!)
-
-                    if (!item.description.isNullOrBlank()) etDescription.setText(item.description)
-                    else tilDescription.visibility = View.GONE
-                }
+                Type.GOOGLE -> configureGoogleAccount(item)
+                else -> configureOtherAccount(item)
             }
         }
+
+        private fun configureGoogleAccount(item: Account) {
+            tvTypeAccount.apply {
+                visibility = View.VISIBLE
+                text = context.getString(R.string.google_sign_up_type)
+            }
+            llUsername.visibility = View.GONE
+            etEmail.setText(item.email!!)
+            llPassword.visibility = View.GONE
+
+            setOrHideDescription(item.description)
+        }
+
+        private fun configureOtherAccount(item: Account) {
+            setTextOrHide(etUsername, llUsername, item.username)
+            setTextOrHide(etEmail, llEmail, item.email)
+            etPassword.setText(item.password!!)
+
+            setOrHideDescription(item.description)
+        }
+
+        private fun setTextOrHide(editText: EditText, layout: View, text: String?) {
+            if (!text.isNullOrBlank()) editText.setText(text)
+            else layout.visibility = View.GONE
+        }
+
+        private fun setOrHideDescription(description: String?) {
+            if (!description.isNullOrBlank()) etDescription.setText(description)
+            else tilDescription.visibility = View.GONE
+        }
+
     }
 }

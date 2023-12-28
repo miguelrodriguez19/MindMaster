@@ -174,7 +174,7 @@ object FAccountVaultManager {
         context: Context, group: PasswordGroupResponse, onDeleted: (PasswordGroupResponse) -> Unit
     ) {
         val userUID = getUserUID()
-        if (userUID != null) {
+        if (!userUID.isNullOrBlank() && group.uid.isNotBlank()) {
             getDB().collection(USERS).document(userUID).collection(GROUPS).document(group.uid)
                 .delete().addOnSuccessListener {
                     onDeleted(group)

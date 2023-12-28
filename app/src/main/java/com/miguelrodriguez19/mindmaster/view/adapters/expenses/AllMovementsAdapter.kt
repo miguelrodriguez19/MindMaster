@@ -37,6 +37,7 @@ class AllMovementsAdapter(
     }
 
     override fun getItemCount(): Int = data.size
+
     fun setData(newData: List<MonthMovementsResponse>) {
         this.data.clear()
         this.data.addAll(newData)
