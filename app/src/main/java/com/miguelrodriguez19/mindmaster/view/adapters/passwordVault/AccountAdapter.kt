@@ -111,8 +111,8 @@ class AccountAdapter(
 
         }
 
-        private fun initWidgets(item: PasswordGroupResponse.Account) {
-            etTitleAccount.setText(item.name)
+        private fun initWidgets(item: Account) {
+            etTitleAccount.text = item.name
             when (item.type) {
                 Type.GOOGLE -> {
                     tvTypeAccount.visibility = View.VISIBLE
@@ -120,20 +120,21 @@ class AccountAdapter(
                     llUsername.visibility = View.GONE
                     etEmail.setText(item.email!!)
                     llPassword.visibility = View.GONE
-                    if (item.description != null) etDescription.setText(item.description)
+
+                    if (!item.description.isNullOrBlank()) etDescription.setText(item.description)
                     else tilDescription.visibility = View.GONE
                 }
 
                 else -> {
-                    if (item.username != null) etUsername.setText(item.username)
+                    if (!item.username.isNullOrBlank()) etUsername.setText(item.username)
                     else llUsername.visibility = View.GONE
 
-                    if (item.email != null) etEmail.setText(item.email)
+                    if (!item.email.isNullOrBlank()) etEmail.setText(item.email)
                     else llEmail.visibility = View.GONE
 
                     etPassword.setText(item.password!!)
 
-                    if (item.description != null) etDescription.setText(item.description)
+                    if (!item.description.isNullOrBlank()) etDescription.setText(item.description)
                     else tilDescription.visibility = View.GONE
                 }
             }

@@ -8,9 +8,7 @@ import com.miguelrodriguez19.mindmaster.model.structures.enums.Repetition
 data class Event(
     override var uid: String,
     override val title: String,
-    @get:PropertyName("start_time")
     val startTime: String,
-    @get:PropertyName("end_time")
     val endTime: String,
     val location: String,
     override val description: String?,

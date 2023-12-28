@@ -8,7 +8,6 @@ import com.miguelrodriguez19.mindmaster.model.structures.enums.Repetition
 data class Reminder(
     override var uid: String,
     override val title: String,
-    @get:PropertyName("date_time")
     val dateTime: String,
     override val description: String?,
     override val category: List<String>?,

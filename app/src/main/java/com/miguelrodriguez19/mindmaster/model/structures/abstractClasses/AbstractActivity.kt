@@ -16,8 +16,6 @@ abstract class AbstractActivity : java.io.Serializable {
     abstract val title: String
     abstract val description: String?
     abstract val category: List<String>?
-
-    @get:PropertyName("color_tag")
     abstract val colorTag: String
     abstract val type: ActivityType
 
@@ -33,7 +31,8 @@ abstract class AbstractActivity : java.io.Serializable {
         fun getColor(context: Context, hexColor: String): Int {
             return try {
                 Color.parseColor(hexColor)
-            } catch (e: IllegalArgumentException) {
+            } catch (e: Exception) {
+                e.printStackTrace()
                 context.resources.getColor(R.color.primaryColor, null)
             }
         }

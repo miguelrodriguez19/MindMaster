@@ -9,7 +9,6 @@ import com.miguelrodriguez19.mindmaster.model.structures.enums.Status
 data class Task(
     override var uid: String,
     override val title: String,
-    @get:PropertyName("due_date")
     val dueDate: String,
     override val description: String?,
     val priority: Priority,
