@@ -7,8 +7,8 @@ import com.miguelrodriguez19.mindmaster.model.comparators.EventComparator
 import com.miguelrodriguez19.mindmaster.model.comparators.EventGroupComparator
 import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade.getDB
 import com.miguelrodriguez19.mindmaster.model.structures.abstractClasses.AbstractActivity
-import com.miguelrodriguez19.mindmaster.model.structures.dto.EventsResponse
-import com.miguelrodriguez19.mindmaster.model.structures.enums.ActivityType
+import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.EventsResponse
+import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.ActivityType
 import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.Event
 import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.Reminder
 import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.Task

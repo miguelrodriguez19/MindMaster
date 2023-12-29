@@ -1,7 +1,7 @@
 package com.miguelrodriguez19.mindmaster.model.comparators
 
 import com.miguelrodriguez19.mindmaster.model.structures.abstractClasses.AbstractActivity
-import com.miguelrodriguez19.mindmaster.model.structures.enums.Priority
+import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.Priority
 import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.Task
 
 class EventComparator : Comparator<AbstractActivity> {

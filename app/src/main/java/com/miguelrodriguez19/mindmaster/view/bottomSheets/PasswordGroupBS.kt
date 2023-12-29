@@ -14,7 +14,9 @@ import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.BottomSheetPasswordBinding
 import com.miguelrodriguez19.mindmaster.databinding.CellFormAccountBinding
 import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade
-import com.miguelrodriguez19.mindmaster.model.structures.dto.PasswordGroupResponse
+import com.miguelrodriguez19.mindmaster.model.structures.dto.accountVault.Account
+import com.miguelrodriguez19.mindmaster.model.structures.dto.accountVault.PasswordGroupResponse
+import com.miguelrodriguez19.mindmaster.model.structures.enums.AccountType
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit
 import com.miguelrodriguez19.mindmaster.view.adapters.passwordVault.FormAccountAdapter
 import com.miguelrodriguez19.mindmaster.view.dialogs.AllDialogs
@@ -85,9 +87,9 @@ class PasswordGroupBS : CustomBottomSheet<PasswordGroupResponse>() {
         }
     }
 
-        private fun getAccounts(rv: RecyclerView): List<PasswordGroupResponse.Account> {
+        private fun getAccounts(rv: RecyclerView): List<Account> {
             val adapter = rv.adapter
-            val accountsList = ArrayList<PasswordGroupResponse.Account>()
+            val accountsList = ArrayList<Account>()
             if (adapter != null) {
                 for (i in 0 until adapter.itemCount) {
                     val view = rv.getChildAt(i)
@@ -98,7 +100,7 @@ class PasswordGroupBS : CustomBottomSheet<PasswordGroupResponse>() {
             return accountsList
         }
 
-        private fun collectDataFromView(view: View): PasswordGroupResponse.Account {
+        private fun collectDataFromView(view: View): Account {
             val bind = CellFormAccountBinding.bind(view)
             val title = bind.etTitleAccount.text.toString()
             val username = bind.etUsername.text.toString()
@@ -106,13 +108,13 @@ class PasswordGroupBS : CustomBottomSheet<PasswordGroupResponse>() {
             val password = bind.etPassword.text.toString()
             val description = bind.etDescription.text.toString()
             val type = when (bind.toggleTypeSignIn.checkedButtonId) {
-                R.id.btn_typeEmail -> PasswordGroupResponse.Type.EMAIL
-                R.id.btn_typeGoogle -> PasswordGroupResponse.Type.GOOGLE
-                R.id.btn_typeOther -> PasswordGroupResponse.Type.OTHER
-                else -> PasswordGroupResponse.Type.OTHER
+                R.id.btn_typeEmail -> AccountType.EMAIL
+                R.id.btn_typeGoogle -> AccountType.GOOGLE
+                R.id.btn_typeOther -> AccountType.OTHER
+                else -> AccountType.OTHER
             }
 
-            return PasswordGroupResponse.Account(
+            return Account(
                 title,
                 username,
                 email,

@@ -1,10 +1,9 @@
 package com.miguelrodriguez19.mindmaster.model.structures.dto.schedule
 
-import com.google.firebase.firestore.PropertyName
 import com.miguelrodriguez19.mindmaster.model.structures.abstractClasses.AbstractActivity
-import com.miguelrodriguez19.mindmaster.model.structures.enums.ActivityType
-import com.miguelrodriguez19.mindmaster.model.structures.enums.Priority
-import com.miguelrodriguez19.mindmaster.model.structures.enums.Status
+import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.ActivityType
+import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.Priority
+import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.Status
 
 data class Task(
     override var uid: String,

@@ -14,7 +14,7 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentBarsChartBinding
-import com.miguelrodriguez19.mindmaster.model.structures.dto.MonthMovementsResponse
+import com.miguelrodriguez19.mindmaster.model.structures.dto.expenses.MonthMovementsResponse
 import com.miguelrodriguez19.mindmaster.model.utils.Preferences
 import com.miguelrodriguez19.mindmaster.model.viewModels.expenses.ExpensesViewModel
 

@@ -17,9 +17,9 @@ import com.miguelrodriguez19.mindmaster.databinding.CellCalendarEventsBinding
 import com.miguelrodriguez19.mindmaster.model.comparators.EventComparator
 import com.miguelrodriguez19.mindmaster.model.structures.abstractClasses.AbstractActivity
 import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.Task
-import com.miguelrodriguez19.mindmaster.model.structures.enums.ActivityType
-import com.miguelrodriguez19.mindmaster.model.structures.enums.Priority
-import com.miguelrodriguez19.mindmaster.model.structures.enums.Status
+import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.ActivityType
+import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.Priority
+import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.Status
 import com.miguelrodriguez19.mindmaster.view.bottomSheets.CustomBottomSheet
 import com.miguelrodriguez19.mindmaster.view.bottomSheets.EventBS
 import com.miguelrodriguez19.mindmaster.view.bottomSheets.ReminderBS

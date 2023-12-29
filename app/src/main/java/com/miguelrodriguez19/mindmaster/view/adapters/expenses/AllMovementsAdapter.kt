@@ -15,9 +15,9 @@ import com.miguelrodriguez19.mindmaster.databinding.CellDayAllMovementsBinding
 import com.miguelrodriguez19.mindmaster.model.comparators.MovementComparator
 import com.miguelrodriguez19.mindmaster.model.comparators.MovementsGroupComparator
 import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade
-import com.miguelrodriguez19.mindmaster.model.structures.dto.MonthMovementsResponse
-import com.miguelrodriguez19.mindmaster.model.structures.dto.MonthMovementsResponse.Movement
-import com.miguelrodriguez19.mindmaster.model.structures.dto.MonthMovementsResponse.Type
+import com.miguelrodriguez19.mindmaster.model.structures.dto.expenses.MonthMovementsResponse
+import com.miguelrodriguez19.mindmaster.model.structures.dto.expenses.Movement
+import com.miguelrodriguez19.mindmaster.model.structures.enums.MovementType
 import com.miguelrodriguez19.mindmaster.view.dialogs.AllDialogs
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.getMonthYearOf
@@ -64,8 +64,8 @@ class AllMovementsAdapter(
             ArrayList((group.expensesList + group.incomeList).sortedWith(MovementComparator()))
         newList.removeAt(eventPosition)
 
-        val incomes = newList.stream().filter { it.type == Type.INCOME }.collect(Collectors.toList())
-        val expenses = newList.stream().filter { it.type == Type.EXPENSE }.collect(Collectors.toList())
+        val incomes = newList.stream().filter { it.type == MovementType.INCOME }.collect(Collectors.toList())
+        val expenses = newList.stream().filter { it.type == MovementType.EXPENSE }.collect(Collectors.toList())
 
         data[groupPosition] = group.copy(expensesList = expenses, incomeList = incomes)
         notifyItemChanged(groupPosition)
@@ -86,13 +86,13 @@ class AllMovementsAdapter(
             val group = data[index]
             val updatedList: List<Movement>
             val updatedGroup = when (movement.type) {
-                Type.INCOME -> {
+                MovementType.INCOME -> {
                     updatedList = group.incomeList.toMutableList().apply { add(movement) }
                     MonthMovementsResponse(
                         group.date, updatedList, group.expensesList
                     )
                 }
-                Type.EXPENSE -> {
+                MovementType.EXPENSE -> {
                     updatedList = group.expensesList.toMutableList().apply { add(movement) }
                     MonthMovementsResponse(
                         group.date, group.incomeList, updatedList
@@ -102,10 +102,10 @@ class AllMovementsAdapter(
             data[index] = updatedGroup
         } else {
             val newGroup = when (movement.type) {
-                Type.INCOME -> MonthMovementsResponse(
+                MovementType.INCOME -> MonthMovementsResponse(
                     getMonthYearOf(movement.date), listOf(movement), listOf()
                 )
-                Type.EXPENSE -> MonthMovementsResponse(
+                MovementType.EXPENSE -> MonthMovementsResponse(
                     getMonthYearOf(movement.date), listOf(), listOf(movement)
                 )
             }

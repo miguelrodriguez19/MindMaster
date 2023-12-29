@@ -17,7 +17,7 @@ import com.miguelrodriguez19.mindmaster.model.comparators.EventGroupComparator
 import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade
 import com.miguelrodriguez19.mindmaster.model.structures.abstractClasses.AbstractActivity
 import com.miguelrodriguez19.mindmaster.model.structures.abstractClasses.AbstractActivity.Companion.getDateOf
-import com.miguelrodriguez19.mindmaster.model.structures.dto.EventsResponse
+import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.EventsResponse
 import com.miguelrodriguez19.mindmaster.view.dialogs.AllDialogs
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit
 

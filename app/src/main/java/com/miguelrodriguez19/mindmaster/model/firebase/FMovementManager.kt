@@ -4,9 +4,9 @@ import android.content.Context
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.model.comparators.MovementsGroupComparator
 import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade.getDB
-import com.miguelrodriguez19.mindmaster.model.structures.dto.MonthMovementsResponse
-import com.miguelrodriguez19.mindmaster.model.structures.dto.MonthMovementsResponse.Movement
-import com.miguelrodriguez19.mindmaster.model.structures.dto.MonthMovementsResponse.Type
+import com.miguelrodriguez19.mindmaster.model.structures.dto.expenses.MonthMovementsResponse
+import com.miguelrodriguez19.mindmaster.model.structures.dto.expenses.Movement
+import com.miguelrodriguez19.mindmaster.model.structures.enums.MovementType
 import com.miguelrodriguez19.mindmaster.model.utils.Preferences.getUserUID
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.getMonthYearOf
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.showToast
@@ -28,10 +28,10 @@ object FMovementManager {
 
             collectionRef.set(mapOf(Pair(DATE, getMonthYearOf(move.date))))
             val collectionType = when (move.type) {
-                Type.INCOME -> {
+                MovementType.INCOME -> {
                     collectionRef.collection(INCOMES)
                 }
-                Type.EXPENSE -> collectionRef.collection(EXPENSES)
+                MovementType.EXPENSE -> collectionRef.collection(EXPENSES)
             }
             collectionType.add(move).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -56,10 +56,10 @@ object FMovementManager {
 
             collectionRef.update(mapOf(Pair(DATE, getMonthYearOf(date))))
             val collectionType = when (movement.type) {
-                Type.INCOME -> {
+                MovementType.INCOME -> {
                     collectionRef.collection(INCOMES)
                 }
-                Type.EXPENSE -> collectionRef.collection(EXPENSES)
+                MovementType.EXPENSE -> collectionRef.collection(EXPENSES)
             }
             collectionType.document(movement.uid).set(movement).addOnCompleteListener { obj ->
                 if (obj.isSuccessful) {
@@ -145,8 +145,8 @@ object FMovementManager {
                 .document(getMonthYearOf(movement.date))
 
             val collectionType = when (movement.type) {
-                Type.INCOME -> collectionRef.collection(INCOMES)
-                Type.EXPENSE -> collectionRef.collection(EXPENSES)
+                MovementType.INCOME -> collectionRef.collection(INCOMES)
+                MovementType.EXPENSE -> collectionRef.collection(EXPENSES)
             }
             collectionType.document(movement.uid).delete().addOnSuccessListener {
                 onDeleted(movement)

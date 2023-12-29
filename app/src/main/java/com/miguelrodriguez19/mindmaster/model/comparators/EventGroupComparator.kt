@@ -1,6 +1,6 @@
 package com.miguelrodriguez19.mindmaster.model.comparators
 
-import com.miguelrodriguez19.mindmaster.model.structures.dto.EventsResponse
+import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.EventsResponse
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.Comparator

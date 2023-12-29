@@ -14,7 +14,7 @@ import com.github.mikephil.charting.data.PieEntry
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentPieChartBinding
 import com.miguelrodriguez19.mindmaster.model.formatters.ChartsValueFormatter
-import com.miguelrodriguez19.mindmaster.model.structures.dto.MonthMovementsResponse
+import com.miguelrodriguez19.mindmaster.model.structures.dto.expenses.MonthMovementsResponse
 import com.miguelrodriguez19.mindmaster.model.utils.Preferences
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.getAmount
 import com.miguelrodriguez19.mindmaster.model.viewModels.expenses.ExpensesViewModel

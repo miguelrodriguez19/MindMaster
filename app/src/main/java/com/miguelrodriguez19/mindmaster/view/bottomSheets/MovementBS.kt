@@ -9,14 +9,14 @@ import com.afollestad.materialdialogs.customview.getCustomView
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.BottomSheetMovementsBinding
 import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade
-import com.miguelrodriguez19.mindmaster.model.structures.dto.MonthMovementsResponse.Movement
-import com.miguelrodriguez19.mindmaster.model.structures.dto.MonthMovementsResponse.Type
+import com.miguelrodriguez19.mindmaster.model.structures.dto.expenses.Movement
+import com.miguelrodriguez19.mindmaster.model.structures.enums.MovementType
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit
 import com.miguelrodriguez19.mindmaster.view.dialogs.AllDialogs
 
 class MovementBS : CustomBottomSheet<Movement>() {
     private lateinit var bind: BottomSheetMovementsBinding
-    private lateinit var selectedType: Type
+    private lateinit var selectedType: MovementType
 
     override fun showViewDetailBS(context: Context, obj: Movement?, callback: (Movement) -> Unit) {
         MaterialDialog(context, BottomSheet(LayoutMode.MATCH_PARENT)).show {
@@ -31,21 +31,21 @@ class MovementBS : CustomBottomSheet<Movement>() {
             }
 
             selectedType = when (obj?.type) {
-                Type.EXPENSE -> {
+                MovementType.EXPENSE -> {
                     bind.toggleTypeMovement.check(R.id.btn_typeExpense)
-                    Type.EXPENSE
+                    MovementType.EXPENSE
                 }
 
                 else -> { // Type.Income or null
                     bind.toggleTypeMovement.check(R.id.btn_typeIncome)
-                    Type.INCOME // By default it is of type income
+                    MovementType.INCOME // By default it is of type income
                 }
             }
 
             bind.toggleTypeMovement.addOnButtonCheckedListener { _, checkedId, _ ->
                 when (checkedId) {
-                    R.id.btn_typeIncome -> selectedType = Type.INCOME
-                    R.id.btn_typeExpense -> selectedType = Type.EXPENSE
+                    R.id.btn_typeIncome -> selectedType = MovementType.INCOME
+                    R.id.btn_typeExpense -> selectedType = MovementType.EXPENSE
                 }
             }
 

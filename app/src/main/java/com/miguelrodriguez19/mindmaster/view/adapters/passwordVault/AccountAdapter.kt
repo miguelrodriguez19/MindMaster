@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.CellAccountBinding
 import com.miguelrodriguez19.mindmaster.model.comparators.AccountComparator
-import com.miguelrodriguez19.mindmaster.model.structures.dto.PasswordGroupResponse.Account
-import com.miguelrodriguez19.mindmaster.model.structures.dto.PasswordGroupResponse.Type
+import com.miguelrodriguez19.mindmaster.model.structures.dto.accountVault.Account
+import com.miguelrodriguez19.mindmaster.model.structures.enums.AccountType
 import com.miguelrodriguez19.mindmaster.model.utils.diffUtils.AccountDiffCallback
 
 class AccountAdapter(
@@ -121,7 +121,7 @@ class AccountAdapter(
         private fun initWidgets(item: Account) {
             etTitleAccount.text = item.name
             when (item.type) {
-                Type.GOOGLE -> configureGoogleAccount(item)
+                AccountType.GOOGLE -> configureGoogleAccount(item)
                 else -> configureOtherAccount(item)
             }
         }

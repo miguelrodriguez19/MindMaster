@@ -3,7 +3,7 @@ package com.miguelrodriguez19.mindmaster.model.viewModels.expenses
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.miguelrodriguez19.mindmaster.model.structures.dto.MonthMovementsResponse
+import com.miguelrodriguez19.mindmaster.model.structures.dto.expenses.MonthMovementsResponse
 
 class ExpensesViewModel : ViewModel() {
     private val _actualMonth = MutableLiveData<MonthMovementsResponse>()

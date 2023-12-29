@@ -8,8 +8,9 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.CellMovementBinding
-import com.miguelrodriguez19.mindmaster.model.structures.dto.MonthMovementsResponse.*
 import com.miguelrodriguez19.mindmaster.model.comparators.MovementComparator
+import com.miguelrodriguez19.mindmaster.model.structures.dto.expenses.Movement
+import com.miguelrodriguez19.mindmaster.model.structures.enums.MovementType
 import com.miguelrodriguez19.mindmaster.model.utils.Preferences.getCurrency
 import com.miguelrodriguez19.mindmaster.view.bottomSheets.CustomBottomSheet
 import com.miguelrodriguez19.mindmaster.view.bottomSheets.MovementBS
@@ -47,7 +48,7 @@ class MovementAdapter(
         notifyDataSetChanged()
     }
 
-    fun addItem(item:Movement) {
+    fun addItem(item: Movement) {
         this.data.add(item)
         this.data.sortedWith(MovementComparator())
         notifyDataSetChanged()
@@ -80,12 +81,12 @@ class MovementAdapter(
             )
 
             when (item.type) {
-                Type.INCOME -> mapColors["green"]?.let {
+                MovementType.INCOME -> mapColors["green"]?.let {
                     tvAmount.setTextColor(
                         it
                     )
                 }
-                Type.EXPENSE -> mapColors["red"]?.let {
+                MovementType.EXPENSE -> mapColors["red"]?.let {
                     tvAmount.setTextColor(
                         it
                     )

@@ -1,6 +1,6 @@
 package com.miguelrodriguez19.mindmaster.model.comparators
 
-import com.miguelrodriguez19.mindmaster.model.structures.dto.PasswordGroupResponse
+import com.miguelrodriguez19.mindmaster.model.structures.dto.accountVault.PasswordGroupResponse
 
 class AccountsGroupsComparator : Comparator<PasswordGroupResponse> {
     override fun compare(o1: PasswordGroupResponse?, o2: PasswordGroupResponse?): Int {

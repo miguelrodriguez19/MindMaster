@@ -12,12 +12,11 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.miguelrodriguez19.mindmaster.databinding.FragmentPasswordsBinding
-import com.miguelrodriguez19.mindmaster.model.structures.dto.PasswordGroupResponse
+import com.miguelrodriguez19.mindmaster.model.structures.dto.accountVault.PasswordGroupResponse
 import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade
-import com.miguelrodriguez19.mindmaster.model.structures.dto.MonthMovementsResponse
+import com.miguelrodriguez19.mindmaster.model.structures.dto.accountVault.Account
 import com.miguelrodriguez19.mindmaster.view.adapters.passwordVault.GroupAdapter
 import com.miguelrodriguez19.mindmaster.view.bottomSheets.CustomBottomSheet
-import com.miguelrodriguez19.mindmaster.view.bottomSheets.MovementBS
 import com.miguelrodriguez19.mindmaster.view.bottomSheets.PasswordGroupBS
 
 class PasswordsFragment : Fragment() {
@@ -77,7 +76,7 @@ class PasswordsFragment : Fragment() {
     private fun search(text: String) {
         val filteredData = ArrayList<PasswordGroupResponse>()
         for (group in data) {
-            val filteredAccount = ArrayList<PasswordGroupResponse.Account>()
+            val filteredAccount = ArrayList<Account>()
             if (group.name.contains(text, true)) {
                 filteredAccount.addAll(group.accountsList)
             } else {

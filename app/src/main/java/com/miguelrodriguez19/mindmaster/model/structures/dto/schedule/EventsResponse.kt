@@ -1,4 +1,4 @@
-package com.miguelrodriguez19.mindmaster.model.structures.dto
+package com.miguelrodriguez19.mindmaster.model.structures.dto.schedule
 
 import com.miguelrodriguez19.mindmaster.model.structures.abstractClasses.AbstractActivity
 

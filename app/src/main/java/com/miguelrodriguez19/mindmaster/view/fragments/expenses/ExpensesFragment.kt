@@ -14,9 +14,9 @@ import com.miguelrodriguez19.mindmaster.databinding.FragmentExpensesBinding
 import com.miguelrodriguez19.mindmaster.model.comparators.MovementComparator
 import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade
 import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade.loadActualMonthMovements
-import com.miguelrodriguez19.mindmaster.model.structures.dto.MonthMovementsResponse
-import com.miguelrodriguez19.mindmaster.model.structures.dto.MonthMovementsResponse.Type
-import com.miguelrodriguez19.mindmaster.model.structures.dto.MonthMovementsResponse.Movement
+import com.miguelrodriguez19.mindmaster.model.structures.dto.expenses.MonthMovementsResponse
+import com.miguelrodriguez19.mindmaster.model.structures.enums.MovementType
+import com.miguelrodriguez19.mindmaster.model.structures.dto.expenses.Movement
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.getCurrentDate
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.getMonthYearOf
 import com.miguelrodriguez19.mindmaster.model.viewModels.expenses.ExpensesViewModel
@@ -71,15 +71,15 @@ class ExpensesFragment : Fragment() {
         }
 
         binding.efabAddExpense.setOnClickListener {
-            createNewMovement(Type.EXPENSE)
+            createNewMovement(MovementType.EXPENSE)
         }
         binding.efabAddIncome.setOnClickListener {
-            createNewMovement(Type.INCOME)
+            createNewMovement(MovementType.INCOME)
 
         }
     }
 
-    private fun createNewMovement(type: Type){
+    private fun createNewMovement(type: MovementType){
         val movementBS = CustomBottomSheet.get<Movement>(MovementBS::class.java.name)
         val movementTypeExample = Movement().copy(type = type)
         movementBS?.showViewDetailBS(requireContext(), movementTypeExample){
@@ -93,12 +93,12 @@ class ExpensesFragment : Fragment() {
         val regex = ("..-${date[1]}-${date[2]}").toRegex()
         if (getCurrentDate().matches(regex)) {
             lastMonthPicked = when (movement.type) {
-                Type.INCOME -> {
+                MovementType.INCOME -> {
                     val list = ArrayList(lastMonthPicked.incomeList)
                     list.add(movement)
                     lastMonthPicked.copy(incomeList = list)
                 }
-                Type.EXPENSE -> {
+                MovementType.EXPENSE -> {
                     val list = ArrayList(lastMonthPicked.expensesList)
                     list.add(movement)
                     lastMonthPicked.copy(expensesList = list)

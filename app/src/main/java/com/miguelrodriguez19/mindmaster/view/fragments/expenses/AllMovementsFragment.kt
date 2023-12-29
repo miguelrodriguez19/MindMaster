@@ -11,7 +11,8 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.miguelrodriguez19.mindmaster.databinding.FragmentAllMovementsBinding
 import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade
-import com.miguelrodriguez19.mindmaster.model.structures.dto.MonthMovementsResponse
+import com.miguelrodriguez19.mindmaster.model.structures.dto.expenses.MonthMovementsResponse
+import com.miguelrodriguez19.mindmaster.model.structures.dto.expenses.Movement
 import com.miguelrodriguez19.mindmaster.view.adapters.expenses.AllMovementsAdapter
 import com.miguelrodriguez19.mindmaster.view.bottomSheets.CustomBottomSheet
 import com.miguelrodriguez19.mindmaster.view.bottomSheets.MovementBS
@@ -53,7 +54,7 @@ class AllMovementsFragment : Fragment() {
 
         btnAddMov.setOnClickListener {
             val movementBS =
-                CustomBottomSheet.get<MonthMovementsResponse.Movement>(MovementBS::class.java.name)
+                CustomBottomSheet.get<Movement>(MovementBS::class.java.name)
 
             movementBS?.showViewDetailBS(requireContext(), null) {
                 adapter.addItem(it)
@@ -64,8 +65,8 @@ class AllMovementsFragment : Fragment() {
     private fun search(text: String) {
         val filteredData = ArrayList<MonthMovementsResponse>()
         for (item in data) {
-            val filteredIncome = ArrayList<MonthMovementsResponse.Movement>()
-            val filteredExpense = ArrayList<MonthMovementsResponse.Movement>()
+            val filteredIncome = ArrayList<Movement>()
+            val filteredExpense = ArrayList<Movement>()
             val expensesList = item.expensesList
             val incomeList = item.incomeList
             for (movement in expensesList) {

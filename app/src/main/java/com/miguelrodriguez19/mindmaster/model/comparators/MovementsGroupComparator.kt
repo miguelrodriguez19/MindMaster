@@ -1,6 +1,6 @@
 package com.miguelrodriguez19.mindmaster.model.comparators
 
-import com.miguelrodriguez19.mindmaster.model.structures.dto.MonthMovementsResponse
+import com.miguelrodriguez19.mindmaster.model.structures.dto.expenses.MonthMovementsResponse
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.Comparator

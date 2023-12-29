@@ -11,7 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.CellFormAccountBinding
-import com.miguelrodriguez19.mindmaster.model.structures.dto.PasswordGroupResponse
+import com.miguelrodriguez19.mindmaster.model.structures.dto.accountVault.Account
+import com.miguelrodriguez19.mindmaster.model.structures.enums.AccountType
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.evaluatePasswordSecurity
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.isPasswordStrong
@@ -19,7 +20,7 @@ import kotlin.random.Random
 
 class FormAccountAdapter(
     private val context: Context,
-    private val data: ArrayList<PasswordGroupResponse.Account?>
+    private val data: ArrayList<Account?>
 ) : RecyclerView.Adapter<FormAccountAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -64,7 +65,7 @@ class FormAccountAdapter(
         private val tilDescription = bind.tilDescription
         private val etDescription = bind.etDescription
 
-        fun bind(item: PasswordGroupResponse.Account?) {
+        fun bind(item: Account?) {
             if (item != null) {
                 setUpData(item)
             }
@@ -91,13 +92,13 @@ class FormAccountAdapter(
             tgTypeSignIn.addOnButtonCheckedListener { group, checkedId, isChecked ->
                 when (checkedId) {
                     R.id.btn_typeEmail -> {
-                        checkVisibility(PasswordGroupResponse.Type.EMAIL)
+                        checkVisibility(AccountType.EMAIL)
                     }
                     R.id.btn_typeGoogle -> {
-                        checkVisibility(PasswordGroupResponse.Type.GOOGLE)
+                        checkVisibility(AccountType.GOOGLE)
                     }
                     R.id.btn_typeOther -> {
-                        checkVisibility(PasswordGroupResponse.Type.OTHER)
+                        checkVisibility(AccountType.OTHER)
                     }
                 }
             }
@@ -124,39 +125,39 @@ class FormAccountAdapter(
             return safePwd
         }
 
-        private fun setUpData(item: PasswordGroupResponse.Account) {
+        private fun setUpData(item: Account) {
             etTitleAccount.setText(item.name)
             etUsername.setText(item.username)
             etEmail.setText(item.email)
             etPassword.setText(item.password)
             etDescription.setText(item.description)
             when (item.type) {
-                PasswordGroupResponse.Type.EMAIL -> {
+                AccountType.EMAIL -> {
                     tgTypeSignIn.check(R.id.btn_typeEmail)
-                    checkVisibility(PasswordGroupResponse.Type.EMAIL)
+                    checkVisibility(AccountType.EMAIL)
                 }
-                PasswordGroupResponse.Type.GOOGLE -> {
+                AccountType.GOOGLE -> {
                     tgTypeSignIn.check(R.id.btn_typeGoogle)
-                    checkVisibility(PasswordGroupResponse.Type.GOOGLE)
+                    checkVisibility(AccountType.GOOGLE)
                 }
-                PasswordGroupResponse.Type.OTHER -> {
+                AccountType.OTHER -> {
                     tgTypeSignIn.check(R.id.btn_typeOther)
-                    checkVisibility(PasswordGroupResponse.Type.OTHER)
+                    checkVisibility(AccountType.OTHER)
                 }
             }
         }
 
-        private fun checkVisibility(type: PasswordGroupResponse.Type) {
+        private fun checkVisibility(type: AccountType) {
             when (type) {
-                PasswordGroupResponse.Type.EMAIL -> {
+                AccountType.EMAIL -> {
                     changeVisibility(arrayOf(tilUsername, tilPassword, tilEmail), arrayOf())
                     btnGeneratePwd.visibility = View.VISIBLE
                 }
-                PasswordGroupResponse.Type.GOOGLE -> {
+                AccountType.GOOGLE -> {
                     changeVisibility(arrayOf(tilEmail), arrayOf(tilPassword, tilUsername))
                     btnGeneratePwd.visibility = View.GONE
                 }
-                PasswordGroupResponse.Type.OTHER -> {
+                AccountType.OTHER -> {
                     changeVisibility(arrayOf(tilUsername, tilPassword), arrayOf())
                     btnGeneratePwd.visibility = View.VISIBLE
                 }

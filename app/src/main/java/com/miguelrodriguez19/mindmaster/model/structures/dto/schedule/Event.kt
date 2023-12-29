@@ -1,9 +1,8 @@
 package com.miguelrodriguez19.mindmaster.model.structures.dto.schedule
 
-import com.google.firebase.firestore.PropertyName
 import com.miguelrodriguez19.mindmaster.model.structures.abstractClasses.AbstractActivity
-import com.miguelrodriguez19.mindmaster.model.structures.enums.ActivityType
-import com.miguelrodriguez19.mindmaster.model.structures.enums.Repetition
+import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.ActivityType
+import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.Repetition
 
 data class Event(
     override var uid: String,

@@ -17,8 +17,8 @@ import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.BottomSheetEventsBinding
 import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade
 import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.Event
-import com.miguelrodriguez19.mindmaster.model.structures.enums.ActivityType
-import com.miguelrodriguez19.mindmaster.model.structures.enums.Repetition
+import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.ActivityType
+import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.Repetition
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.checkFields
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.compareDates
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.getPeekHeight

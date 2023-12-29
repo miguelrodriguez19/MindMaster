@@ -14,7 +14,7 @@ import com.github.clans.fab.FloatingActionMenu
 import com.miguelrodriguez19.mindmaster.databinding.FragmentDiaryBinding
 import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade
 import com.miguelrodriguez19.mindmaster.model.structures.abstractClasses.AbstractActivity
-import com.miguelrodriguez19.mindmaster.model.structures.dto.EventsResponse
+import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.EventsResponse
 import com.miguelrodriguez19.mindmaster.view.adapters.schedule.AllEventsAdapter
 import com.miguelrodriguez19.mindmaster.view.bottomSheets.CustomBottomSheet
 import com.miguelrodriguez19.mindmaster.view.bottomSheets.EventBS
