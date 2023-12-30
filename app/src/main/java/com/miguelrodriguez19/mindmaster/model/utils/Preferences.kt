@@ -6,8 +6,8 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.model.structures.dto.UserResponse
-import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.toJson
-import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.toUserResponse
+import com.miguelrodriguez19.mindmaster.model.utils.jsonUtils.toJson
+import com.miguelrodriguez19.mindmaster.model.utils.jsonUtils.toUserResponse
 import java.util.*
 
 object Preferences {
@@ -101,7 +101,7 @@ object Preferences {
     }
 
     fun getNextNotificationId(): Int {
-        val lastId = getEncryptedSharedPrefs().getInt(LAST_NOTIFICATION_ID, 0) + 1
+        val lastId = getEncryptedSharedPrefs().getInt(LAST_NOTIFICATION_ID, 1000) + 1
         getEncryptedSharedPrefs().edit().putInt(LAST_NOTIFICATION_ID, lastId).apply()
         return lastId
     }

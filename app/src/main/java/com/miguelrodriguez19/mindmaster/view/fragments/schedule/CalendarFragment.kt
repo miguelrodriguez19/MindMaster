@@ -25,7 +25,8 @@ import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade.de
 import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade.loadScheduleByDate
 import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade.saveInSchedule
 import com.miguelrodriguez19.mindmaster.model.structures.abstractClasses.AbstractActivity
-import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.getCurrentDate
+import com.miguelrodriguez19.mindmaster.model.utils.DateTimeUtils.defaultDateFormat
+import com.miguelrodriguez19.mindmaster.model.utils.DateTimeUtils.getCurrentDate
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.showUndoSnackBar
 import com.miguelrodriguez19.mindmaster.view.adapters.schedule.CalendarEventsAdapter
 import com.miguelrodriguez19.mindmaster.view.bottomSheets.CustomBottomSheet
@@ -94,7 +95,7 @@ class CalendarFragment : Fragment() {
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
             val selectedDate = Calendar.getInstance()
             selectedDate.set(year, month, dayOfMonth)
-            val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+            val dateFormat = SimpleDateFormat(defaultDateFormat, Locale.getDefault())
             val formattedDate = dateFormat.format(selectedDate.time)
             CoroutineScope(Dispatchers.Main).launch { setUpData(formattedDate) }
         }
@@ -182,7 +183,7 @@ class CalendarFragment : Fragment() {
         val activityBS = CustomBottomSheet.get<AbstractActivity>(name)
 
         activityBS?.showViewDetailBS(requireContext(), null) { absEvent ->
-            val date = AbstractActivity.getDateOf(absEvent)
+            val date = AbstractActivity.getFormattedDateOf(absEvent)
             if (tvSelectedDateEvents.text == date) {
                 adapter.addItem(absEvent)
                 tvCountOfEvents.text = adapter.itemCount.toString()

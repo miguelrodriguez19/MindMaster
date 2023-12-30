@@ -18,9 +18,9 @@ import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade
 import com.miguelrodriguez19.mindmaster.model.structures.dto.expenses.MonthMovementsResponse
 import com.miguelrodriguez19.mindmaster.model.structures.dto.expenses.Movement
 import com.miguelrodriguez19.mindmaster.model.structures.enums.MovementType
+import com.miguelrodriguez19.mindmaster.model.utils.DateTimeUtils.getMonthYearOf
 import com.miguelrodriguez19.mindmaster.view.dialogs.AllDialogs
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit
-import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.getMonthYearOf
 import java.util.stream.Collectors
 
 class AllMovementsAdapter(

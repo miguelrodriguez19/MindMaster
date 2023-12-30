@@ -1,8 +1,11 @@
 package com.miguelrodriguez19.mindmaster.model.structures.dto.schedule
 
+import android.content.Context
+import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.model.structures.abstractClasses.AbstractActivity
 import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.ActivityType
 import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.Repetition
+import com.miguelrodriguez19.mindmaster.model.utils.DateTimeUtils
 
 data class Event(
     override var uid: String,
@@ -15,35 +18,21 @@ data class Event(
     override val category: List<String>,
     val repetition: Repetition,
     override val colorTag: String,
-    override val type: ActivityType
+    override val type: ActivityType,
+    //override val notificationId: Int
 ) : AbstractActivity() {
     constructor() : this(
-        "",
-        "",
-        "",
-        "",
-        "",
-        null,
-        emptyList(),
-        emptyList(),
-        Repetition.ONCE,
-        "",
-        ActivityType.EVENT
+        "", "", "", "", "", null,
+        emptyList(), emptyList(), Repetition.ONCE, "", ActivityType.EVENT
     )
 
-    constructor(
-        title: String, startTime: String, endTime: String,
-        location: String, description: String?, participants: List<String>,
-        category: List<String>, repetition: Repetition, colorTag: String, type: ActivityType
-    ) : this(
-        "", title, startTime, endTime, location,
-        description, participants, category, repetition,
-        colorTag, type
-    )
+    override fun getNotificationTitle(context: Context): String {
+        return context.getString(R.string.event_notification_custom_title, this.title)
+    }
 
-    constructor(uid: String, e: Event) : this(
-        uid, e.title, e.startTime, e.endTime, e.location,
-        e.description, e.participants, e.category, e.repetition,
-        e.colorTag, e.type
-    )
+    override fun getNotificationMessage(context: Context): String {
+        val time = DateTimeUtils.getTimeFromDatetimeStr(this.startTime)
+        return context.getString(R.string.event_notification_custom_message, this.title, time)
+    }
+
 }

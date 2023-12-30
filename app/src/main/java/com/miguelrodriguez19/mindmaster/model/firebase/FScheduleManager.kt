@@ -7,11 +7,11 @@ import com.miguelrodriguez19.mindmaster.model.comparators.EventComparator
 import com.miguelrodriguez19.mindmaster.model.comparators.EventGroupComparator
 import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade.getDB
 import com.miguelrodriguez19.mindmaster.model.structures.abstractClasses.AbstractActivity
-import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.EventsResponse
-import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.ActivityType
 import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.Event
+import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.EventsResponse
 import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.Reminder
 import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.Task
+import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.ActivityType
 import com.miguelrodriguez19.mindmaster.model.utils.Preferences.getUserUID
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.showToast
 import kotlinx.coroutines.CoroutineScope
@@ -35,7 +35,7 @@ object FScheduleManager {
 
     private fun getRefAndDate(absEvent: AbstractActivity, callback: (String, String) -> Unit) {
 
-        val date = AbstractActivity.getDateOf(absEvent)
+        val date = AbstractActivity.getFormattedDateOf(absEvent)
         val ref = when (absEvent.type) {
             ActivityType.EVENT -> EVENTS
             ActivityType.REMINDER -> REMINDERS
@@ -58,16 +58,10 @@ object FScheduleManager {
                 collection.add(absEvent).addOnCompleteListener { obj ->
                     if (obj.isSuccessful) {
                         val id = obj.result.id
-                        when (absEvent.type) {
-                            ActivityType.EVENT -> {
-                                onAdded(Event(id, (absEvent as Event)))
-                            }
-                            ActivityType.REMINDER -> {
-                                onAdded(Reminder(id, (absEvent as Reminder)))
-                            }
-                            ActivityType.TASK -> {
-                                onAdded(Task(id, (absEvent as Task)))
-                            }
+                        val type = when (absEvent.type) {
+                            ActivityType.EVENT -> onAdded((absEvent as Event).copy(uid = id))
+                            ActivityType.REMINDER -> onAdded((absEvent as Reminder).copy(uid = id))
+                            ActivityType.TASK -> onAdded((absEvent as Task).copy(uid = id))
                         }
                     } else {
                         obj.exception?.printStackTrace()
@@ -152,21 +146,21 @@ object FScheduleManager {
             for (eventDoc in eventsQuerySnapshot.documents) {
                 val event = eventDoc.toObject(Event::class.java)
                 if (event != null) {
-                    dayList.add(Event(eventDoc.id, event))
+                    dayList.add(event.copy(uid = eventDoc.id))
                 }
             }
 
             for (reminderDoc in reminderQuerySnapshot.documents) {
                 val reminder = reminderDoc.toObject(Reminder::class.java)
                 if (reminder != null) {
-                    dayList.add(Reminder(reminderDoc.id, reminder))
+                    dayList.add(reminder.copy(uid = reminderDoc.id))
                 }
             }
 
             for (taskDoc in tasksQuerySnapshot.documents) {
                 val task = taskDoc.toObject(Task::class.java)
                 if (task != null) {
-                    dayList.add(Task(taskDoc.id, task))
+                    dayList.add(task.copy(uid = taskDoc.id))
                 }
             }
         }

@@ -13,6 +13,7 @@ import com.google.gson.Gson
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.model.structures.dto.expenses.Movement
 import com.miguelrodriguez19.mindmaster.model.structures.dto.UserResponse
+import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.Reminder
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
@@ -37,12 +38,6 @@ object Toolkit {
         callback(flag)
     }
 
-    fun compareDates(date1Str: String, date2Str: String): Int {
-        val format = SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault())
-        val date1 = format.parse(date1Str)
-        val date2 = format.parse(date2Str)
-        return date1.compareTo(date2)
-    }
 
     fun showToast(context: Context, message: Int) =
         Toast.makeText(context, context.getString(message), Toast.LENGTH_SHORT).show()
@@ -79,29 +74,6 @@ object Toolkit {
         .filterIsInstance<Chip>()
         .map { chip -> chip.text.toString() }
         .toList()
-
-    fun getCurrentDate(): String {
-        val calendar = Calendar.getInstance()
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-        val month = calendar.get(Calendar.MONTH) + 1
-        val year = calendar.get(Calendar.YEAR)
-        return String.format("%02d-%02d-%04d", day, month, year)
-    }
-
-    fun getDateFromDatetime(dateTime: String): String {
-        val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
-        val date = dateFormat.parse(dateTime)
-        return dateFormat.format(date)
-    }
-
-    fun String.toUserResponse(): UserResponse = Gson().fromJson(this, UserResponse::class.java)
-
-    fun UserResponse.toJson(): String = Gson().toJson(this)
-
-    fun getMonthYearOf(currentDate: String): String {
-        val date = currentDate.split("-")
-        return "${date[1]}-${date[2]}"
-    }
 
     fun getAmount(list: List<Movement>): Float {
         var amount = 0.0F

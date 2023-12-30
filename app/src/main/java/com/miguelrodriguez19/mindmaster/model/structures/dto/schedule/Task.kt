@@ -1,5 +1,7 @@
 package com.miguelrodriguez19.mindmaster.model.structures.dto.schedule
 
+import android.content.Context
+import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.model.structures.abstractClasses.AbstractActivity
 import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.ActivityType
 import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.Priority
@@ -15,17 +17,19 @@ data class Task(
     override val category: List<String>?,
     override val colorTag: String,
     override val type: ActivityType
+    //override val notificationId: Int
 ) : AbstractActivity() {
     constructor() : this("", "", "", null, Priority.LOW, Status.PENDING, null, "", ActivityType.TASK)
 
-    constructor(
-        title: String, dueDate: String, description: String?,
-        priority: Priority, status: Status, category: List<String>?,
-        colorTag: String, type: ActivityType
-    ) : this("", title, dueDate, description, priority, status, category, colorTag, type)
+    override fun getNotificationTitle(context: Context): String {
+        val title = context.getString(R.string.task_notification_custom_title, this.title)
+        return when (this.priority) {
+            Priority.HIGH, Priority.URGENT -> "⚠ $title"
+            else -> title
+        }
+    }
 
-    constructor(uid: String, t: Task) : this(
-        uid, t.title, t.dueDate, t.description,
-        t.priority, t.status, t.category, t.colorTag, t.type
-    )
+    override fun getNotificationMessage(context: Context): String {
+        return context.getString(R.string.task_notification_custom_message, this.title)
+    }
 }

@@ -27,6 +27,7 @@ import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentSignUpBinding
 import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade.createUser
+import com.miguelrodriguez19.mindmaster.model.utils.DateTimeUtils.defaultDateFormat
 import com.miguelrodriguez19.mindmaster.view.dialogs.AllDialogs.Companion.showAlertDialog
 import com.miguelrodriguez19.mindmaster.view.dialogs.AllDialogs.Companion.showDatePicker
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit
@@ -78,7 +79,7 @@ class SignUpFragment : Fragment() {
         etEmail.addTextChangedListener(emailWatcher)
         etBirthdate.setOnClickListener {
             showDatePicker(requireContext()) { date ->
-                val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+                val formatter = DateTimeFormatter.ofPattern(defaultDateFormat)
                 val birthdate = LocalDate.parse(date, formatter)
                 val now = LocalDate.now()
                 val period = Period.between(birthdate, now)

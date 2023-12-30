@@ -48,6 +48,8 @@
     <!-- Default profile photo  -->
     <string name="photo_themes">motorbikes,bikes,cars,automotive,landscape,random,animals,winter,summer,spring,autumn,cute,sports,flowers,plants,wild,freedom,free,coffee,oceans, mountains, cityscapes, space, galaxies, forests, deserts, beaches, underwater, travel, adventure, music, art, urban, vintage, retro, futuristic, abstract, minimalist, vibrant, pastel, neon, culture, traditional, festival, fantasy, superhero, food, dessert, education, science, technology, gaming, pets, happiness, peace, yoga</string>
     <string name="photo_url_request">https://source.unsplash.com/200x200/?%s</string>
+    <string name="global_notifications_channel_id">global_channel_id</string>
+    <string name="notification_caller_schedule">schedule</string>
 
     <string-array name="available_languages">
         <item>en</item>

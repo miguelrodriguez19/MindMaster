@@ -200,4 +200,14 @@
     <string name="accept_permissions">Por favor acepta los permisos</string>
     <string name="see_faqs">ver preguntas frecuentes</string>
 
+    <!-- Notificaciones -->
+    <string name="default_notifications_title">Revisa tu agenda</string>
+    <string name="default_notifications_message">Revisa tu agenda, algunas de tus actividades están a punto de caducar.</string>
+    <string name="event_notification_custom_title">Mañana tienes %s</string>
+    <string name="event_notification_custom_message">%s1 comienza mañana a las %s2.</string>
+    <string name="reminder_notification_custom_title">Recuerda %s</string>
+    <string name="reminder_notification_custom_message">Recuerda que mañana tienes %s</string>
+    <string name="task_notification_custom_title">Mañana se vence %s</string>
+    <string name="task_notification_custom_message">Tu tarea %s caduca mañana</string>
+
 </resources>

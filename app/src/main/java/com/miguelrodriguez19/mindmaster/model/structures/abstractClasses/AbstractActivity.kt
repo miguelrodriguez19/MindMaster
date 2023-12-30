@@ -2,13 +2,16 @@ package com.miguelrodriguez19.mindmaster.model.structures.abstractClasses
 
 import android.content.Context
 import android.graphics.Color
+import com.google.gson.Gson
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.Event
 import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.Reminder
 import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.Task
 import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.ActivityType
 import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.Repetition
-import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.getDateFromDatetime
+import com.miguelrodriguez19.mindmaster.model.utils.DateTimeUtils.getDateFromDatetimeStr
+import com.miguelrodriguez19.mindmaster.model.utils.NotificationUtils
+import com.miguelrodriguez19.mindmaster.model.utils.Preferences
 
 abstract class AbstractActivity : java.io.Serializable {
     abstract var uid: String
@@ -17,6 +20,35 @@ abstract class AbstractActivity : java.io.Serializable {
     abstract val category: List<String>?
     abstract val colorTag: String
     abstract val type: ActivityType
+    //abstract val notificationId: Int
+
+    abstract fun getNotificationTitle(context: Context) : String
+    abstract fun getNotificationMessage(context: Context) : String
+    fun toJSON() : String {
+        return Gson().toJson(this)
+    }
+
+    fun fromJSON(json:String) : AbstractActivity {
+        return Gson().fromJson(json, this::class.java)
+    }
+
+    fun createNotification(context: Context, repetition: Repetition){
+        when (repetition) {
+            Repetition.ONCE-> {
+                NotificationUtils.scheduleOneTimeNotification(
+                    context, Preferences.getNextNotificationId(), this
+                )
+            }
+
+            else -> {
+                try {
+                    TODO("Develop a function in NotificationUtils that creates notifications with repetition.")
+                } catch (e: NotImplementedError) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
 
     companion object {
         fun getItemType(context: Context, type: ActivityType): String {
@@ -36,27 +68,11 @@ abstract class AbstractActivity : java.io.Serializable {
             }
         }
 
-        fun getDateOf(absEvent: AbstractActivity): String = when (absEvent.type) {
-            ActivityType.EVENT -> getDateFromDatetime((absEvent as Event).startTime)
-            ActivityType.REMINDER -> (absEvent as Reminder).dateTime
-            ActivityType.TASK -> (absEvent as Task).dueDate
+        fun getFormattedDateOf(absActivity: AbstractActivity): String = when (absActivity.type) {
+            ActivityType.EVENT -> getDateFromDatetimeStr((absActivity as Event).startTime)
+            ActivityType.REMINDER -> (absActivity as Reminder).dateTime
+            ActivityType.TASK -> (absActivity as Task).dueDate
         }
 
-        fun getRepetitionString(r: Repetition): Int = when (r) {
-            Repetition.ONCE -> R.string.time_once
-            Repetition.DAILY -> R.string.time_daily
-            Repetition.WEEKLY -> R.string.time_weekly
-            Repetition.MONTHLY -> R.string.time_monthly
-            Repetition.ANNUAL -> R.string.time_annual
-        }
-
-        fun getRepetitionOf(context: Context, repStr: String): Repetition = when (repStr) {
-            context.getString(R.string.time_once) -> Repetition.ONCE
-            context.getString(R.string.time_daily) -> Repetition.DAILY
-            context.getString(R.string.time_weekly) -> Repetition.WEEKLY
-            context.getString(R.string.time_monthly) -> Repetition.MONTHLY
-            context.getString(R.string.time_annual) -> Repetition.ANNUAL
-            else -> Repetition.ONCE
-        }
     }
 }

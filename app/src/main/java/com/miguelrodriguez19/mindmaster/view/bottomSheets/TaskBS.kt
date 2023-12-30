@@ -19,7 +19,10 @@ import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade
 import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.Task
 import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.ActivityType
 import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.Priority
+import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.Repetition
 import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.Status
+import com.miguelrodriguez19.mindmaster.model.utils.NotificationUtils.scheduleOneTimeNotification
+import com.miguelrodriguez19.mindmaster.model.utils.Preferences.getNextNotificationId
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit
 import com.miguelrodriguez19.mindmaster.view.dialogs.AllDialogs
 
@@ -101,21 +104,23 @@ class TaskBS : CustomBottomSheet<Task>() {
                 Toolkit.checkFields(context, arrayOf(bind.tilTitle, bind.tilDueDate)) { ok ->
                     if (ok) {
                         val task = Task(
-                            bind.etTitle.text.toString(),
-                            bind.etDueDate.text.toString(),
-                            bind.etDescription.text.toString(),
-                            Priority.values()[priorityAdapter.getPosition(bind.atvPriority.text.toString())],
-                            Status.values()[statusAdapter.getPosition(bind.atvStatus.text.toString())],
-                            Toolkit.processChipGroup(bind.cgCategory),
-                            color,
-                            ActivityType.TASK
+                            uid = "",
+                            title = bind.etTitle.text.toString(),
+                            dueDate = bind.etDueDate.text.toString(),
+                            description = bind.etDescription.text.toString(),
+                            priority = Priority.values()[priorityAdapter.getPosition(bind.atvPriority.text.toString())],
+                            status = Status.values()[statusAdapter.getPosition(bind.atvStatus.text.toString())],
+                            category = Toolkit.processChipGroup(bind.cgCategory),
+                            colorTag = color,
+                            type = ActivityType.TASK
                         )
                         if (obj == null) {
                             FirestoreManagerFacade.saveInSchedule(task) { added ->
                                 callback(added as Task)
+                                added.createNotification(context, Repetition.ONCE)
                             }
                         } else {
-                            FirestoreManagerFacade.updateInSchedule(Task(obj.uid, task)) {
+                            FirestoreManagerFacade.updateInSchedule(task.copy(uid = obj.uid)) {
                                 callback(it as Task)
                             }
                         }
@@ -126,7 +131,7 @@ class TaskBS : CustomBottomSheet<Task>() {
         }
     }
 
-    override fun fillData(context: Context,obj: Task) {
+    override fun fillData(context: Context, obj: Task) {
         bind.etTitle.setText(obj.title)
         bind.etDueDate.setText(obj.dueDate)
         bind.etDueDate.isEnabled = false

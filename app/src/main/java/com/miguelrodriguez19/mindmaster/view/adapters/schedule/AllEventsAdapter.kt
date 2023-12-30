@@ -16,7 +16,7 @@ import com.miguelrodriguez19.mindmaster.model.comparators.EventComparator
 import com.miguelrodriguez19.mindmaster.model.comparators.EventGroupComparator
 import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade
 import com.miguelrodriguez19.mindmaster.model.structures.abstractClasses.AbstractActivity
-import com.miguelrodriguez19.mindmaster.model.structures.abstractClasses.AbstractActivity.Companion.getDateOf
+import com.miguelrodriguez19.mindmaster.model.structures.abstractClasses.AbstractActivity.Companion.getFormattedDateOf
 import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.EventsResponse
 import com.miguelrodriguez19.mindmaster.view.dialogs.AllDialogs
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit
@@ -68,7 +68,7 @@ class AllEventsAdapter(
     }
 
     private fun getGroupOf(absEvent: AbstractActivity): Int {
-        val date = getDateOf(absEvent)
+        val date = getFormattedDateOf(absEvent)
         var index = -1
         data.stream()
             .filter { it.date == date }
@@ -87,7 +87,7 @@ class AllEventsAdapter(
                 .sortedWith(EventComparator())
             data[index] = EventsResponse(oldGroup.date, arr)
         } else {
-            val newGroup = EventsResponse(getDateOf(absEvent), listOf(absEvent))
+            val newGroup = EventsResponse(getFormattedDateOf(absEvent), listOf(absEvent))
             data.add(newGroup)
         }
         data = ArrayList(data.sortedWith(EventGroupComparator()))

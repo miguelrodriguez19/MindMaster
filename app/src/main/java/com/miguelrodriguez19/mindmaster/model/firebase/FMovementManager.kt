@@ -7,8 +7,8 @@ import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade.ge
 import com.miguelrodriguez19.mindmaster.model.structures.dto.expenses.MonthMovementsResponse
 import com.miguelrodriguez19.mindmaster.model.structures.dto.expenses.Movement
 import com.miguelrodriguez19.mindmaster.model.structures.enums.MovementType
+import com.miguelrodriguez19.mindmaster.model.utils.DateTimeUtils.getMonthYearOf
 import com.miguelrodriguez19.mindmaster.model.utils.Preferences.getUserUID
-import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.getMonthYearOf
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.showToast
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await

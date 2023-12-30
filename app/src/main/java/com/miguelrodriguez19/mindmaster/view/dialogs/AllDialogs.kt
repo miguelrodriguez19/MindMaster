@@ -8,6 +8,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.color.ColorPalette
 import com.afollestad.materialdialogs.color.colorChooser
 import com.miguelrodriguez19.mindmaster.R
+import com.miguelrodriguez19.mindmaster.model.utils.DateTimeUtils
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -114,7 +115,7 @@ class AllDialogs {
                         selectedDate.set(Calendar.HOUR_OF_DAY, hourOfDay)
                         selectedDate.set(Calendar.MINUTE, minute)
 
-                        val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault())
+                        val dateFormat = SimpleDateFormat(DateTimeUtils.defaultDateTimeFormat, Locale.getDefault())
                         val selectedDateTime = dateFormat.format(selectedDate.time)
                         listener(selectedDateTime)
                     }

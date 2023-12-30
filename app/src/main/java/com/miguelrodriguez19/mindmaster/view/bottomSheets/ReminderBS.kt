@@ -19,6 +19,8 @@ import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade
 import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.Reminder
 import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.ActivityType
 import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.Repetition
+import com.miguelrodriguez19.mindmaster.model.utils.NotificationUtils
+import com.miguelrodriguez19.mindmaster.model.utils.Preferences
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit
 import com.miguelrodriguez19.mindmaster.view.dialogs.AllDialogs
 
@@ -93,20 +95,22 @@ class ReminderBS : CustomBottomSheet<Reminder>() {
                 Toolkit.checkFields(context, arrayOf(bind.tilTitle, bind.tilDate)) { ok ->
                     if (ok) {
                         val reminder = Reminder(
-                            bind.etTitle.text.toString(),
-                            bind.etDate.text.toString(),
-                            bind.etDescription.text.toString(),
-                            Toolkit.processChipGroup(bind.cgCategory),
-                            color,
-                            Repetition.values()[arrAdapter.getPosition(bind.atvRepetition.text.toString())],
-                            ActivityType.REMINDER
+                            uid = "",
+                            title = bind.etTitle.text.toString(),
+                            dateTime = bind.etDate.text.toString(),
+                            description = bind.etDescription.text.toString(),
+                            category = Toolkit.processChipGroup(bind.cgCategory),
+                            colorTag = color,
+                            repetition = Repetition.values()[arrAdapter.getPosition(bind.atvRepetition.text.toString())],
+                            type = ActivityType.REMINDER
                         )
                         if (obj == null) {
                             FirestoreManagerFacade.saveInSchedule(reminder) { added ->
                                 callback(added as Reminder)
+                                added.createNotification(context, added.repetition)
                             }
                         } else {
-                            FirestoreManagerFacade.updateInSchedule(Reminder(obj.uid, reminder)) {
+                            FirestoreManagerFacade.updateInSchedule(reminder.copy(uid = obj.uid)) {
                                 callback(it as Reminder)
                             }
                         }

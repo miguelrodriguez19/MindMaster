@@ -19,8 +19,8 @@ import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade
 import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.Event
 import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.ActivityType
 import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.Repetition
+import com.miguelrodriguez19.mindmaster.model.utils.DateTimeUtils.compareDateTimes
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.checkFields
-import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.compareDates
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.getPeekHeight
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.makeChip
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.processChipGroup
@@ -83,7 +83,7 @@ class EventBS : CustomBottomSheet<Event>() {
                     bind.etEndTime.setText(datetime)
                     bind.tilEndTime.error = null
                     if (bind.etStartTime.text!!.isNotBlank()) {
-                        if (compareDates(datetime, bind.etStartTime.text.toString()) < 0) {
+                        if (compareDateTimes(datetime, bind.etStartTime.text.toString()) < 0) {
                             bind.etEndTime.text = null
                             bind.tilEndTime.error =
                                 context.getString(R.string.err_end_date_incorrect)
@@ -138,24 +138,28 @@ class EventBS : CustomBottomSheet<Event>() {
                     context, arrayOf(bind.tilTitle, bind.tilStartTime, bind.tilEndTime)
                 ) { ok ->
                     if (ok) {
+                        val repetition =
+                            Repetition.values()[arrAdapter.getPosition(bind.atvRepetition.text.toString())]
                         val event = Event(
-                            bind.etTitle.text.toString(),
-                            bind.etStartTime.text.toString(),
-                            bind.etEndTime.text.toString(),
-                            bind.etLocation.text.toString(),
-                            bind.etDescription.text.toString(),
-                            processChipGroup(bind.cgParticipants),
-                            processChipGroup(bind.cgCategory),
-                            Repetition.values()[arrAdapter.getPosition(bind.atvRepetition.text.toString())],
-                            color,
-                            ActivityType.EVENT
+                            uid = "",
+                            title = bind.etTitle.text.toString(),
+                            startTime = bind.etStartTime.text.toString(),
+                            endTime = bind.etEndTime.text.toString(),
+                            location = bind.etLocation.text.toString(),
+                            description = bind.etDescription.text.toString(),
+                            participants = processChipGroup(bind.cgParticipants),
+                            category = processChipGroup(bind.cgCategory),
+                            repetition = repetition,
+                            colorTag = color,
+                            type = ActivityType.EVENT
                         )
                         if (obj == null) {
                             FirestoreManagerFacade.saveInSchedule(event) { added ->
                                 callback(added as Event)
+                                added.createNotification(context, added.repetition)
                             }
                         } else {
-                            FirestoreManagerFacade.updateInSchedule(Event(obj.uid, event)) {
+                            FirestoreManagerFacade.updateInSchedule(event.copy(uid = obj.uid)) {
                                 callback(it as Event)
                             }
                         }

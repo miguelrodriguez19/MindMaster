@@ -17,8 +17,8 @@ import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade.lo
 import com.miguelrodriguez19.mindmaster.model.structures.dto.expenses.MonthMovementsResponse
 import com.miguelrodriguez19.mindmaster.model.structures.enums.MovementType
 import com.miguelrodriguez19.mindmaster.model.structures.dto.expenses.Movement
-import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.getCurrentDate
-import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.getMonthYearOf
+import com.miguelrodriguez19.mindmaster.model.utils.DateTimeUtils.getCurrentDate
+import com.miguelrodriguez19.mindmaster.model.utils.DateTimeUtils.getMonthYearOf
 import com.miguelrodriguez19.mindmaster.model.viewModels.expenses.ExpensesViewModel
 import com.miguelrodriguez19.mindmaster.view.adapters.expenses.MovementAdapter
 import com.miguelrodriguez19.mindmaster.view.adapters.expenses.NonSwipeableViewPager

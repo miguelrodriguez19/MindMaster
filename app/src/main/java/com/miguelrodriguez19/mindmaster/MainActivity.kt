@@ -1,6 +1,10 @@
 package com.miguelrodriguez19.mindmaster
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -40,12 +44,35 @@ class MainActivity : AppCompatActivity() {
         splashScreen.setKeepOnScreenCondition { false }
 
         initContexts()
+        initNotifications()
 
         setAppTheme(Preferences.getTheme().toInt())
         setupNavigation()
-        configureBackButton()
         setupActionBar()
+
+        configureBackButton()
     }
+
+    private fun initNotifications() {
+        createNotificationChannel(
+            channelId = getString(R.string.global_notifications_channel_id),
+            channelName = "Global Notifications",
+            channelDescription = "Notifications for all activities"
+        )
+    }
+
+    private fun createNotificationChannel(channelId: String, channelName: String, channelDescription: String) {
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel(channelId, channelName, importance).apply {
+            description = channelDescription
+        }
+
+        val notificationManager: NotificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        notificationManager.createNotificationChannel(channel)
+    }
+
 
     private fun setupNavigation() {
         val navHostFragment =
