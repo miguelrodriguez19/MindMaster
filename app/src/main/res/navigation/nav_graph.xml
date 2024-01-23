@@ -73,8 +73,8 @@
         android:label="@string/help_faqs"
         tools:layout="@layout/fragment_help" />
     <fragment
-        android:id="@+id/settingsFragment"
-        android:name="com.miguelrodriguez19.mindmaster.view.fragments.settings.SettingsFragment"
+        android:id="@+id/settingsFragment_old"
+        android:name="com.miguelrodriguez19.mindmaster.view.fragments.settings.SettingsFragment_OLD"
         android:label="@string/settings"
         tools:layout="@layout/fragment_settings" >
         <action
@@ -123,5 +123,16 @@
         <argument
             android:name="user"
             app:argType="com.miguelrodriguez19.mindmaster.model.structures.dto.UserResponse" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.miguelrodriguez19.mindmaster.view.fragments.settings.SettingsFragment"
+        android:label="SettingsFragment" >
+        <action
+            android:id="@+id/action_settingsFragment_to_accountFragment2"
+            app:destination="@id/accountFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_logInFragment2"
+            app:destination="@id/logInFragment" />
     </fragment>
 </navigation>

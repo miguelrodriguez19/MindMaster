@@ -50,6 +50,8 @@
     <string name="photo_url_request">https://source.unsplash.com/200x200/?%s</string>
     <string name="global_notifications_channel_id">global_channel_id</string>
     <string name="notification_caller_schedule">schedule</string>
+    <string name="preferred_notification_hour">preferredNotificationHour</string>
+    <string name="preferred_notification_minutes">preferredNotificationMinutes</string>
 
     <string-array name="available_languages">
         <item>en</item>

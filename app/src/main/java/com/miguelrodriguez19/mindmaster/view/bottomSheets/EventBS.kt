@@ -20,6 +20,7 @@ import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.Event
 import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.ActivityType
 import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.Repetition
 import com.miguelrodriguez19.mindmaster.model.utils.DateTimeUtils.compareDateTimes
+import com.miguelrodriguez19.mindmaster.model.utils.Preferences
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.checkFields
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.getPeekHeight
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.makeChip
@@ -151,12 +152,13 @@ class EventBS : CustomBottomSheet<Event>() {
                             category = processChipGroup(bind.cgCategory),
                             repetition = repetition,
                             colorTag = color,
-                            type = ActivityType.EVENT
+                            type = ActivityType.EVENT,
+                            notificationId = Preferences.getNextNotificationId()
                         )
                         if (obj == null) {
                             FirestoreManagerFacade.saveInSchedule(event) { added ->
                                 callback(added as Event)
-                                added.createNotification(context, added.repetition)
+                                added.createNotification(context)
                             }
                         } else {
                             FirestoreManagerFacade.updateInSchedule(event.copy(uid = obj.uid)) {

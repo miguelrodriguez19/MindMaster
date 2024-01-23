@@ -8,20 +8,35 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.R
-import com.miguelrodriguez19.mindmaster.model.utils.NotificationUtils.DESCRIPTION
-import com.miguelrodriguez19.mindmaster.model.utils.NotificationUtils.MESSAGE
-import com.miguelrodriguez19.mindmaster.model.utils.NotificationUtils.NOTIFICATION_ID
-import com.miguelrodriguez19.mindmaster.model.utils.NotificationUtils.TITLE
+import com.miguelrodriguez19.mindmaster.model.structures.abstractClasses.AbstractActivity
+import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.Repetition
+import com.miguelrodriguez19.mindmaster.model.utils.NotificationUtils
+import com.miguelrodriguez19.mindmaster.model.utils.NotificationUtils.ABSTRACT_ACTIVITY
+import com.miguelrodriguez19.mindmaster.model.utils.NotificationUtils.CALLER
 
 class NotificationReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
-        val notificationId = intent?.getIntExtra(NOTIFICATION_ID, 1000) ?: 1000
-        val title =
-            intent?.getStringExtra(TITLE) ?: context.getString(R.string.default_notifications_title)
-        val message = intent?.getStringExtra(MESSAGE) ?: context.getString(R.string.default_notifications_message)
-        val description = intent?.getStringExtra(DESCRIPTION)
+        when (intent?.getStringExtra(CALLER)) {
+            context.getString(R.string.notification_caller_schedule) -> {
+                val absActivityJson = intent.getStringExtra(ABSTRACT_ACTIVITY)
+                val absActivity = absActivityJson?.let { AbstractActivity.fromJSON(it) } ?: return
 
-        createSimpleNotification(context, notificationId, title, message, description)
+                val notificationId = absActivity.notificationId
+                val title = absActivity.getNotificationTitle(context)
+                val message = absActivity.getNotificationMessage(context)
+                val description = absActivity.description
+
+                // Shows actual notification
+                createSimpleNotification(context, notificationId, title, message, description)
+
+                // If the notification is repetitive, reschedule the next alarm
+                if (absActivity.getActivityRepetition() != Repetition.ONCE) {
+                    NotificationUtils.createNextScheduleRepeatingNotification(context, notificationId ,absActivity)
+                }
+            }
+
+            else -> {}
+        }
     }
 
     private fun createSimpleNotification(

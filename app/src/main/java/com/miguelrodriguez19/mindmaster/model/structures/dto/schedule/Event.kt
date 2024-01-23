@@ -19,11 +19,11 @@ data class Event(
     val repetition: Repetition,
     override val colorTag: String,
     override val type: ActivityType,
-    //override val notificationId: Int
+    override val notificationId: Int
 ) : AbstractActivity() {
     constructor() : this(
         "", "", "", "", "", null,
-        emptyList(), emptyList(), Repetition.ONCE, "", ActivityType.EVENT
+        emptyList(), emptyList(), Repetition.ONCE, "", ActivityType.EVENT,0
     )
 
     override fun getNotificationTitle(context: Context): String {
@@ -34,5 +34,7 @@ data class Event(
         val time = DateTimeUtils.getTimeFromDatetimeStr(this.startTime)
         return context.getString(R.string.event_notification_custom_message, this.title, time)
     }
+
+    override fun getActivityRepetition(): Repetition = this.repetition
 
 }

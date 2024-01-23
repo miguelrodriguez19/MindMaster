@@ -102,12 +102,13 @@ class ReminderBS : CustomBottomSheet<Reminder>() {
                             category = Toolkit.processChipGroup(bind.cgCategory),
                             colorTag = color,
                             repetition = Repetition.values()[arrAdapter.getPosition(bind.atvRepetition.text.toString())],
-                            type = ActivityType.REMINDER
+                            type = ActivityType.REMINDER,
+                            notificationId = Preferences.getNextNotificationId()
                         )
                         if (obj == null) {
                             FirestoreManagerFacade.saveInSchedule(reminder) { added ->
                                 callback(added as Reminder)
-                                added.createNotification(context, added.repetition)
+                                added.createNotification(context)
                             }
                         } else {
                             FirestoreManagerFacade.updateInSchedule(reminder.copy(uid = obj.uid)) {

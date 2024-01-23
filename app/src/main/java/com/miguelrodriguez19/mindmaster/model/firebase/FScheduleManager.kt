@@ -116,7 +116,6 @@ object FScheduleManager {
         }
     }
 
-
     suspend fun loadScheduleByDate(
         context: Context, date: String
     ): List<AbstractActivity> = withContext(Dispatchers.IO) {

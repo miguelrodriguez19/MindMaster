@@ -4,7 +4,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -152,7 +151,7 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.calendarFragment, R.id.diaryFragment, R.id.expensesFragment,
-                R.id.passwordsFragment, R.id.settingsFragment, R.id.helpFragment
+                R.id.passwordsFragment, R.id.settingsFragment_old, R.id.helpFragment
             ),
             drawerLayout
         )

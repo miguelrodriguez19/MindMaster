@@ -15,10 +15,10 @@ data class Reminder(
     override val category: List<String>?,
     override val colorTag: String,
     val repetition: Repetition,
-    override val type: ActivityType
-    //override val notificationId: Int
+    override val type: ActivityType,
+    override val notificationId: Int
 ) : AbstractActivity() {
-    constructor() : this("", "", "", null, null, "", Repetition.ONCE, ActivityType.REMINDER)
+    constructor() : this("", "", "", null, null, "", Repetition.ONCE, ActivityType.REMINDER,0)
     override fun getNotificationTitle(context: Context): String {
         return context.getString(R.string.reminder_notification_custom_title, this.title)
     }
@@ -26,4 +26,6 @@ data class Reminder(
     override fun getNotificationMessage(context: Context): String {
         return context.getString(R.string.reminder_notification_custom_message, this.title)
     }
+
+    override fun getActivityRepetition(): Repetition = this.repetition
 }

@@ -19,9 +19,7 @@ import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade
 import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.Task
 import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.ActivityType
 import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.Priority
-import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.Repetition
 import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.Status
-import com.miguelrodriguez19.mindmaster.model.utils.NotificationUtils.scheduleOneTimeNotification
 import com.miguelrodriguez19.mindmaster.model.utils.Preferences.getNextNotificationId
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit
 import com.miguelrodriguez19.mindmaster.view.dialogs.AllDialogs
@@ -112,12 +110,13 @@ class TaskBS : CustomBottomSheet<Task>() {
                             status = Status.values()[statusAdapter.getPosition(bind.atvStatus.text.toString())],
                             category = Toolkit.processChipGroup(bind.cgCategory),
                             colorTag = color,
-                            type = ActivityType.TASK
+                            type = ActivityType.TASK,
+                            notificationId = getNextNotificationId()
                         )
                         if (obj == null) {
                             FirestoreManagerFacade.saveInSchedule(task) { added ->
                                 callback(added as Task)
-                                added.createNotification(context, Repetition.ONCE)
+                                added.createNotification(context)
                             }
                         } else {
                             FirestoreManagerFacade.updateInSchedule(task.copy(uid = obj.uid)) {

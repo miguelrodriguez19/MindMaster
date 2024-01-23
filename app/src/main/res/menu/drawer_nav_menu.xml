@@ -20,7 +20,7 @@
     </group>
     <group android:id="@+id/submenu_settings">
         <item
-            android:id="@+id/settingsFragment"
+            android:id="@+id/settingsFragment_old"
             android:icon="@drawable/ic_settings_24"
             android:title="@string/settings" />
         <item
