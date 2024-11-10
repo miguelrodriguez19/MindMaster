@@ -17,17 +17,29 @@ import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.google.android.material.chip.Chip
 import com.miguelrodriguez19.mindmaster.R
-import com.miguelrodriguez19.mindmaster.databinding.*
+import com.miguelrodriguez19.mindmaster.databinding.BottomSheetEventsBinding
+import com.miguelrodriguez19.mindmaster.databinding.BottomSheetMovementsBinding
+import com.miguelrodriguez19.mindmaster.databinding.BottomSheetPasswordBinding
+import com.miguelrodriguez19.mindmaster.databinding.BottomSheetReminderBinding
+import com.miguelrodriguez19.mindmaster.databinding.BottomSheetTasksBinding
+import com.miguelrodriguez19.mindmaster.databinding.CellFormAccountBinding
 import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.saveGroup
 import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.saveInSchedule
 import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.saveMovement
 import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.updateGroup
 import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.updateInSchedule
 import com.miguelrodriguez19.mindmaster.models.firebase.FirebaseManager.updateMovement
-import com.miguelrodriguez19.mindmaster.models.structures.*
+import com.miguelrodriguez19.mindmaster.models.structures.Event
+import com.miguelrodriguez19.mindmaster.models.structures.EventType
+import com.miguelrodriguez19.mindmaster.models.structures.GroupPasswordsResponse
 import com.miguelrodriguez19.mindmaster.models.structures.GroupPasswordsResponse.Account
 import com.miguelrodriguez19.mindmaster.models.structures.MonthMovementsResponse.Movement
 import com.miguelrodriguez19.mindmaster.models.structures.MonthMovementsResponse.Type
+import com.miguelrodriguez19.mindmaster.models.structures.Priority
+import com.miguelrodriguez19.mindmaster.models.structures.Reminder
+import com.miguelrodriguez19.mindmaster.models.structures.Repetition
+import com.miguelrodriguez19.mindmaster.models.structures.Status
+import com.miguelrodriguez19.mindmaster.models.structures.Task
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs.Companion.colorPickerDialog
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs.Companion.showConfirmationDialog
 import com.miguelrodriguez19.mindmaster.models.utils.AllDialogs.Companion.showDatePicker
@@ -54,7 +66,7 @@ class AllBottomSheets {
                 setPeekHeight(getPeekHeight(context))
 
                 val bind = BottomSheetEventsBinding.bind(getCustomView())
-                var color = e?.color_tag ?: String.format(
+                var color = e?.colorTag ?: String.format(
                     "#%06X", 0xFFFFFF and ContextCompat.getColor(context, R.color.primaryColor)
                 )
                 val repetitionArr = context.resources.getStringArray(R.array.repetition_enum)
@@ -75,7 +87,7 @@ class AllBottomSheets {
                         setAdapter(arrAdapter)
                     }
                     bind.etDescription.setText(e.description)
-                    bind.tilColorTag.setStartIconTintList(ColorStateList.valueOf(Color.parseColor(e.color_tag)))
+                    bind.tilColorTag.setStartIconTintList(ColorStateList.valueOf(Color.parseColor(e.colorTag)))
                     for (cat in e.category) {
                         val chip = makeChip(context, cat)
                         bind.cgCategory.addView(chip)
@@ -205,7 +217,7 @@ class AllBottomSheets {
                 setPeekHeight(getPeekHeight(context))
 
                 val bind = BottomSheetReminderBinding.bind(getCustomView())
-                var color = r?.color_tag ?: String.format(
+                var color = r?.colorTag ?: String.format(
                     "#%06X", 0xFFFFFF and ContextCompat.getColor(context, R.color.primaryColor)
                 )
                 val repetitionArr = context.resources.getStringArray(R.array.repetition_enum)
@@ -214,7 +226,7 @@ class AllBottomSheets {
 
                 if (r != null) {
                     bind.etTitle.setText(r.title)
-                    bind.etDate.setText(r.date_time)
+                    bind.etDate.setText(r.dateTime)
                     bind.etDate.isEnabled = false
                     bind.atvRepetition.apply {
                         setText(
@@ -224,7 +236,7 @@ class AllBottomSheets {
                         setAdapter(arrAdapter)
                     }
                     bind.etDescription.setText(r.description)
-                    bind.tilColorTag.setStartIconTintList(ColorStateList.valueOf(Color.parseColor(r.color_tag)))
+                    bind.tilColorTag.setStartIconTintList(ColorStateList.valueOf(Color.parseColor(r.colorTag)))
                     for (cat in r.category ?: ArrayList()) {
                         val chip = makeChip(context, cat)
                         bind.cgCategory.addView(chip)
@@ -308,7 +320,7 @@ class AllBottomSheets {
                 setPeekHeight(getPeekHeight(context))
 
                 val bind = BottomSheetTasksBinding.bind(getCustomView())
-                var color = t?.color_tag ?: String.format(
+                var color = t?.colorTag ?: String.format(
                     "#%06X", 0xFFFFFF and ContextCompat.getColor(context, R.color.primaryColor)
                 )
                 val statusArr = context.resources.getStringArray(R.array.status_enum)
@@ -320,7 +332,7 @@ class AllBottomSheets {
 
                 if (t != null) {
                     bind.etTitle.setText(t.title)
-                    bind.etDueDate.setText(t.due_date)
+                    bind.etDueDate.setText(t.dueDate)
                     bind.etDueDate.isEnabled = false
                     bind.atvStatus.apply {
                         setText(
@@ -337,7 +349,7 @@ class AllBottomSheets {
                         setAdapter(priorityAdapter)
                     }
                     bind.etDescription.setText(t.description)
-                    bind.tilColorTag.setStartIconTintList(ColorStateList.valueOf(Color.parseColor(t.color_tag)))
+                    bind.tilColorTag.setStartIconTintList(ColorStateList.valueOf(Color.parseColor(t.colorTag)))
                     for (cat in t.category ?: ArrayList()) {
                         val chip = makeChip(context, cat)
                         bind.cgCategory.addView(chip)

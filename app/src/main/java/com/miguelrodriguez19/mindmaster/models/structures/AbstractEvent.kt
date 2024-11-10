@@ -14,7 +14,7 @@ abstract class AbstractEvent : java.io.Serializable {
     abstract val title: String
     abstract val description: String?
     abstract val category: List<String>?
-    abstract val color_tag: String
+    abstract val colorTag: String
     abstract val type: EventType
 
     companion object {
@@ -37,8 +37,8 @@ abstract class AbstractEvent : java.io.Serializable {
         fun getDateOf(absEvent: AbstractEvent): String {
             return when (absEvent.type) {
                 EventType.EVENT -> getDateFromDatetime((absEvent as Event).start_time)
-                EventType.REMINDER -> (absEvent as Reminder).date_time
-                EventType.TASK -> (absEvent as Task).due_date
+                EventType.REMINDER -> (absEvent as Reminder).dateTime
+                EventType.TASK -> (absEvent as Task).dueDate
             }
         }
 
@@ -71,7 +71,7 @@ data class Event(
     val participants: List<String>,
     override val category: List<String>,
     val repetition: Repetition,
-    override val color_tag: String,
+    override val colorTag: String,
     override val type: EventType
 ) : AbstractEvent() {
     constructor() : this(
@@ -101,54 +101,54 @@ data class Event(
     constructor(uid: String, e: Event) : this(
         uid, e.title, e.start_time, e.end_time, e.location,
         e.description, e.participants, e.category, e.repetition,
-        e.color_tag, e.type
+        e.colorTag, e.type
     )
 }
 
 data class Reminder(
     override var uid: String,
     override val title: String,
-    val date_time: String,
+    val dateTime: String,
     override val description: String?,
     override val category: List<String>?,
-    override val color_tag: String,
+    override val colorTag: String,
     val repetition: Repetition,
     override val type: EventType
 ) : AbstractEvent() {
     constructor() : this("", "", "", null, null, "", Repetition.ONCE,EventType.REMINDER)
     constructor(
-        title: String, date_time: String, description: String?,
-        category: List<String>?, color_tag: String, repetition: Repetition,type: EventType
-    ) : this("", title, date_time, description, category, color_tag,repetition, type)
+        title: String, dateTime: String, description: String?,
+        category: List<String>?, colorTag: String, repetition: Repetition, type: EventType
+    ) : this("", title, dateTime, description, category, colorTag,repetition, type)
 
     constructor(uid: String, r: Reminder) : this(
-        uid, r.title, r.date_time, r.description,
-        r.category, r.color_tag, r.repetition, r.type
+        uid, r.title, r.dateTime, r.description,
+        r.category, r.colorTag, r.repetition, r.type
     )
 }
 
 data class Task(
     override var uid: String,
     override val title: String,
-    val due_date: String,
+    val dueDate: String,
     override val description: String?,
     val priority: Priority,
     val status: Status,
     override val category: List<String>?,
-    override val color_tag: String,
+    override val colorTag: String,
     override val type: EventType
 ) : AbstractEvent() {
     constructor() : this("", "", "", null, Priority.LOW, Status.PENDING, null, "", EventType.TASK)
 
     constructor(
-        title: String, due_date: String, description: String?,
+        title: String, dueDate: String, description: String?,
         priority: Priority, status: Status, category: List<String>?,
-        color_tag: String, type: EventType
-    ) : this("", title, due_date, description, priority, status, category, color_tag, type)
+        colorTag: String, type: EventType
+    ) : this("", title, dueDate, description, priority, status, category, colorTag, type)
 
     constructor(uid: String, t: Task) : this(
-        uid, t.title, t.due_date, t.description,
-        t.priority, t.status, t.category, t.color_tag, t.type
+        uid, t.title, t.dueDate, t.description,
+        t.priority, t.status, t.category, t.colorTag, t.type
     )
 }
 
