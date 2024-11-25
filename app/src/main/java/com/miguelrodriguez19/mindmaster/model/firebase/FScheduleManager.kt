@@ -33,10 +33,10 @@ object FScheduleManager {
     private const val DATE = "date"
 
 
-    private fun getRefAndDate(absEvent: AbstractActivity, callback: (String, String) -> Unit) {
+    private fun getRefAndDate(absActivity: AbstractActivity, callback: (String, String) -> Unit) {
 
-        val date = AbstractActivity.getFormattedDateOf(absEvent)
-        val ref = when (absEvent.type) {
+        val date = AbstractActivity.getFormattedDateOf(absActivity)
+        val ref = when (absActivity.type) {
             ActivityType.EVENT -> EVENTS
             ActivityType.REMINDER -> REMINDERS
             ActivityType.TASK -> TASKS
@@ -45,23 +45,22 @@ object FScheduleManager {
     }
 
     fun saveInSchedule(
-        context: Context, absEvent: AbstractActivity, onAdded: (AbstractActivity) -> Unit
+        context: Context, absActivity: AbstractActivity, onAdded: (AbstractActivity) -> Unit
     ) {
         val userUID = getUserUID()
         if (userUID != null) {
-            getRefAndDate(absEvent) { ref, date ->
-                val schedule =
-                    getDB().collection(USERS).document(userUID).collection(SCHEDULE).document(date)
+            getRefAndDate(absActivity) { ref, date ->
+                val schedule = getDB().collection(USERS).document(userUID).collection(SCHEDULE).document(date)
                 schedule.set(mapOf(Pair(DATE, date)))
 
                 val collection = schedule.collection(ref)
-                collection.add(absEvent).addOnCompleteListener { obj ->
+                collection.add(absActivity).addOnCompleteListener { obj ->
                     if (obj.isSuccessful) {
                         val id = obj.result.id
-                        val type = when (absEvent.type) {
-                            ActivityType.EVENT -> onAdded((absEvent as Event).copy(uid = id))
-                            ActivityType.REMINDER -> onAdded((absEvent as Reminder).copy(uid = id))
-                            ActivityType.TASK -> onAdded((absEvent as Task).copy(uid = id))
+                        val type = when (absActivity.type) {
+                            ActivityType.EVENT -> onAdded((absActivity as Event).copy(uid = id))
+                            ActivityType.REMINDER -> onAdded((absActivity as Reminder).copy(uid = id))
+                            ActivityType.TASK -> onAdded((absActivity as Task).copy(uid = id))
                         }
                     } else {
                         obj.exception?.printStackTrace()

@@ -1,25 +1,24 @@
 package com.miguelrodriguez19.mindmaster.view.adapters.passwordVault
 
-import android.content.Context
+import android.app.Activity
 import android.content.res.ColorStateList
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.textfield.TextInputLayout
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.CellFormAccountBinding
 import com.miguelrodriguez19.mindmaster.model.structures.dto.accountVault.Account
 import com.miguelrodriguez19.mindmaster.model.structures.enums.AccountType
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.evaluatePasswordSecurity
-import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.isPasswordStrong
-import kotlin.random.Random
+import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.generateSafePassword
 
 class FormAccountAdapter(
-    private val context: Context,
+    private val activity: Activity,
     private val data: ArrayList<Account?>
 ) : RecyclerView.Adapter<FormAccountAdapter.ViewHolder>() {
 
@@ -45,7 +44,7 @@ class FormAccountAdapter(
             data.removeAt(index)
             notifyItemRemoved(index)
         } else {
-            Toolkit.showToast(context, R.string.at_least_one_account)
+            Toolkit.showToast(activity, R.string.at_least_one_account)
         }
     }
 
@@ -58,6 +57,7 @@ class FormAccountAdapter(
         private val etUsername = bind.etUsername
         private val tilEmail = bind.tilEmail
         private val etEmail = bind.etEmail
+        private val llPassword = bind.llPassword
         private val tilPassword = bind.tilPassword
         private val etPassword = bind.etPassword
         private val btnGeneratePwd = bind.btnRandomPassword
@@ -73,32 +73,22 @@ class FormAccountAdapter(
             etPassword.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                     val pair = evaluatePasswordSecurity(s.toString())
-                    tilPassword.helperText = context.getString(pair.first)
-                    tilPassword.setHelperTextColor(ColorStateList.valueOf(context.getColor(pair.second)))
-                    tilPassword.boxStrokeColor = context.getColor(pair.second)
+                    tilPassword.helperText = activity.getString(pair.first)
+                    tilPassword.setHelperTextColor(ColorStateList.valueOf(activity.getColor(pair.second)))
+                    tilPassword.boxStrokeColor = activity.getColor(pair.second)
                 }
 
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                }
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             })
 
             tgTypeSignIn.addOnButtonCheckedListener { group, checkedId, isChecked ->
-                when (checkedId) {
-                    R.id.btn_typeEmail -> {
-                        checkVisibility(AccountType.EMAIL)
-                    }
-                    R.id.btn_typeGoogle -> {
-                        checkVisibility(AccountType.GOOGLE)
-                    }
-                    R.id.btn_typeOther -> {
-                        checkVisibility(AccountType.OTHER)
+                if (isChecked) {
+                    when (checkedId) {
+                        R.id.btn_typeEmail -> updateView(AccountType.EMAIL)
+                        R.id.btn_typeGoogle -> updateView(AccountType.GOOGLE)
+                        R.id.btn_typeOther -> updateView(AccountType.OTHER)
                     }
                 }
             }
@@ -108,21 +98,32 @@ class FormAccountAdapter(
             }
 
             btnGeneratePwd.setOnClickListener {
-                etPassword.setText(generateSafePassword())
+                etPassword.setText(generateSafePassword(activity))
             }
+
+            etDescription.apply {
+                setOnTouchListener { v, event ->
+                    if (v.id == R.id.et_description) {
+                        v.parent.requestDisallowInterceptTouchEvent(true)
+                        when (event.action and MotionEvent.ACTION_MASK) {
+                            MotionEvent.ACTION_UP -> {
+                                v.parent.requestDisallowInterceptTouchEvent(false)
+                                v.performClick()
+                            }
+                        }
+                    }
+                    false
+                }
+                setOnClickListener { }
+            }
+
         }
 
-        private fun generateSafePassword(): String {
-            val length = context.getString(R.string.secure_pwd_lenght).toInt()
-            val chars = context.getString(R.string.secure_pwd_characters).toList().shuffled()
-            var safePwd: String
-            do {
-                safePwd = (1..length)
-                    .map { Random.nextInt(0, chars.size) }
-                    .map(chars::get)
-                    .joinToString("")
-            } while (!isPasswordStrong(safePwd))
-            return safePwd
+        private fun updateView(type: AccountType) {
+            checkVisibility(type)
+            // We ensure that the state view is actualized
+            tgTypeSignIn.requestLayout()
+            tgTypeSignIn.invalidate()
         }
 
         private fun setUpData(item: Account) {
@@ -148,34 +149,32 @@ class FormAccountAdapter(
         }
 
         private fun checkVisibility(type: AccountType) {
+            resetAllFields() // Show all
+
             when (type) {
                 AccountType.EMAIL -> {
-                    changeVisibility(arrayOf(tilUsername, tilPassword, tilEmail), arrayOf())
-                    btnGeneratePwd.visibility = View.VISIBLE
+                    changeVisibility(listOf(tilUsername))
                 }
                 AccountType.GOOGLE -> {
-                    changeVisibility(arrayOf(tilEmail), arrayOf(tilPassword, tilUsername))
-                    btnGeneratePwd.visibility = View.GONE
+                    changeVisibility(listOf(tilUsername, llPassword))
                 }
-                AccountType.OTHER -> {
-                    changeVisibility(arrayOf(tilUsername, tilPassword), arrayOf())
-                    btnGeneratePwd.visibility = View.VISIBLE
+                AccountType.OTHER -> { /* Nothing to do, shows all */
                 }
             }
         }
 
-        private fun changeVisibility(
-            show: Array<TextInputLayout>,
-            dismiss: Array<TextInputLayout>
-        ) {
-            for (til in show) {
+        private fun resetAllFields() {
+            llPassword.visibility = View.VISIBLE
+            listOf(tilUsername, tilPassword, tilEmail).forEach { til ->
                 til.visibility = View.VISIBLE
                 til.error = null
-            }
-            for (til in dismiss) {
-                til.visibility = View.GONE
-                til.error = null
                 til.editText?.text = null
+            }
+        }
+
+        private fun changeVisibility(hide: List<View>) {
+            hide.forEach { field ->
+                field.visibility = View.GONE
             }
         }
     }

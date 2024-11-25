@@ -1,8 +1,8 @@
 package com.miguelrodriguez19.mindmaster.model.structures.abstractClasses
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Color
-import com.google.gson.Gson
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.Event
 import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.Reminder
@@ -11,7 +11,7 @@ import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.Activity
 import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.Repetition
 import com.miguelrodriguez19.mindmaster.model.utils.DateTimeUtils.getDateFromDatetimeStr
 import com.miguelrodriguez19.mindmaster.model.utils.NotificationUtils
-import com.miguelrodriguez19.mindmaster.model.utils.Preferences
+import com.miguelrodriguez19.mindmaster.model.utils.PermissionsUtils
 
 abstract class AbstractActivity : java.io.Serializable {
     abstract var uid: String
@@ -20,34 +20,30 @@ abstract class AbstractActivity : java.io.Serializable {
     abstract val category: List<String>?
     abstract val colorTag: String
     abstract val type: ActivityType
-    //abstract val notificationId: Int
+    abstract val notificationId: Int
 
     abstract fun getNotificationTitle(context: Context) : String
     abstract fun getNotificationMessage(context: Context) : String
-    fun toJSON() : String {
-        return Gson().toJson(this)
+
+    fun getActivityRepetition(): Repetition {
+        return when (this.type) {
+            ActivityType.EVENT -> (this as Event).repetition
+            ActivityType.REMINDER -> (this as Reminder).repetition
+            ActivityType.TASK -> Repetition.ONCE
+        }
     }
 
-    fun fromJSON(json:String) : AbstractActivity {
-        return Gson().fromJson(json, this::class.java)
-    }
-
-    fun createNotification(context: Context, repetition: Repetition){
-        when (repetition) {
-            Repetition.ONCE-> {
-                NotificationUtils.scheduleOneTimeNotification(
-                    context, Preferences.getNextNotificationId(), this
-                )
-            }
-
-            else -> {
-                try {
-                    TODO("Develop a function in NotificationUtils that creates notifications with repetition.")
-                } catch (e: NotImplementedError) {
-                    e.printStackTrace()
-                }
+    fun createNotification(activity: Activity){
+        PermissionsUtils.checkExactAlarmPermission(activity) { granted ->
+            if(granted){
+                NotificationUtils.createActivityNotification(activity.applicationContext, this)
             }
         }
+    }
+
+
+    fun removeNotifications(context: Context) {
+        NotificationUtils.removeNotifications(context, this.notificationId)
     }
 
     companion object {

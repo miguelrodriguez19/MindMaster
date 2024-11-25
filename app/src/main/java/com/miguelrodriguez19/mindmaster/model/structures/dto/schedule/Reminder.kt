@@ -6,6 +6,7 @@ import com.miguelrodriguez19.mindmaster.model.structures.abstractClasses.Abstrac
 import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.ActivityType
 import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.Repetition
 import com.miguelrodriguez19.mindmaster.model.utils.DateTimeUtils
+import com.miguelrodriguez19.mindmaster.model.utils.Preferences
 
 data class Reminder(
     override var uid: String,
@@ -15,10 +16,14 @@ data class Reminder(
     override val category: List<String>?,
     override val colorTag: String,
     val repetition: Repetition,
-    override val type: ActivityType
-    //override val notificationId: Int
+    override val type: ActivityType,
+    override val notificationId: Int
 ) : AbstractActivity() {
-    constructor() : this("", "", "", null, null, "", Repetition.ONCE, ActivityType.REMINDER)
+    constructor() : this(
+        "", "", "", null, null, "",
+        Repetition.ONCE, ActivityType.REMINDER, Preferences.getNextNotificationId()
+    )
+
     override fun getNotificationTitle(context: Context): String {
         return context.getString(R.string.reminder_notification_custom_title, this.title)
     }

@@ -8,7 +8,7 @@ import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.model.structures.dto.UserResponse
 import com.miguelrodriguez19.mindmaster.model.utils.jsonUtils.toJson
 import com.miguelrodriguez19.mindmaster.model.utils.jsonUtils.toUserResponse
-import java.util.*
+import java.util.Base64
 
 object Preferences {
 
@@ -21,6 +21,8 @@ object Preferences {
     private val SECURE_PHRASE:String by lazy{ appContext.resources.getString(R.string.secure_phrase_preferences_key)}
     private val LAST_NOTIFICATION_ID:String by lazy{ appContext.resources.getString(R.string.last_notification_id_key)}
     private val GLOBAL_NOTIFICATIONS:String by lazy{ appContext.resources.getString(R.string.global_notifications_key)}
+    private val PREFERRED_NOTIFICATION_HOUR:String by lazy{ appContext.resources.getString(R.string.preferred_notification_hour)}
+    private val PREFERRED_NOTIFICATION_MINUTE:String by lazy{ appContext.resources.getString(R.string.preferred_notification_minute)}
 
     fun init(context: Context) {
         this.appContext = context.applicationContext
@@ -109,8 +111,24 @@ object Preferences {
     fun setGlobalNotificationsEnabled(enabled: Boolean) {
         getEncryptedSharedPrefs().edit().putBoolean(GLOBAL_NOTIFICATIONS, enabled).apply()
     }
-
     fun areGlobalNotificationsEnabled(): Boolean {
         return getEncryptedSharedPrefs().getBoolean(GLOBAL_NOTIFICATIONS, true)
     }
+
+    fun setUserPreferredNotificationHour(hour: Int) {
+        getEncryptedSharedPrefs().edit().putInt(PREFERRED_NOTIFICATION_HOUR, hour).apply()
+    }
+    fun getUserPreferredNotificationHour(): Int {
+        return getEncryptedSharedPrefs().getInt(PREFERRED_NOTIFICATION_HOUR, 10)
+    }
+
+    fun setUserPreferredNotificationMinute(minute:Int) {
+        getEncryptedSharedPrefs().edit().putInt(PREFERRED_NOTIFICATION_MINUTE, minute).apply()
+    }
+    fun getUserPreferredNotificationMinute(): Int {
+        return getEncryptedSharedPrefs().getInt(PREFERRED_NOTIFICATION_MINUTE, 30)
+
+    }
+
+
 }

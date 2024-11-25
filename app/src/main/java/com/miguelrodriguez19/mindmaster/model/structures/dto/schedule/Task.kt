@@ -6,6 +6,7 @@ import com.miguelrodriguez19.mindmaster.model.structures.abstractClasses.Abstrac
 import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.ActivityType
 import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.Priority
 import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.Status
+import com.miguelrodriguez19.mindmaster.model.utils.Preferences
 
 data class Task(
     override var uid: String,
@@ -16,10 +17,13 @@ data class Task(
     val status: Status,
     override val category: List<String>?,
     override val colorTag: String,
-    override val type: ActivityType
-    //override val notificationId: Int
+    override val type: ActivityType,
+    override val notificationId: Int
 ) : AbstractActivity() {
-    constructor() : this("", "", "", null, Priority.LOW, Status.PENDING, null, "", ActivityType.TASK)
+    constructor() : this(
+        "", "", "", null, Priority.LOW, Status.PENDING,
+        null, "", ActivityType.TASK, Preferences.getNextNotificationId()
+    )
 
     override fun getNotificationTitle(context: Context): String {
         val title = context.getString(R.string.task_notification_custom_title, this.title)

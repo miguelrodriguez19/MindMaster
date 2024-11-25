@@ -6,22 +6,39 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
+import com.google.gson.Gson
 import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.R
+import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.Repetition
+import com.miguelrodriguez19.mindmaster.model.utils.NotificationUtils
 import com.miguelrodriguez19.mindmaster.model.utils.NotificationUtils.DESCRIPTION
+import com.miguelrodriguez19.mindmaster.model.utils.NotificationUtils.EXTRAS
 import com.miguelrodriguez19.mindmaster.model.utils.NotificationUtils.MESSAGE
 import com.miguelrodriguez19.mindmaster.model.utils.NotificationUtils.NOTIFICATION_ID
+import com.miguelrodriguez19.mindmaster.model.utils.NotificationUtils.REPETITION
 import com.miguelrodriguez19.mindmaster.model.utils.NotificationUtils.TITLE
 
 class NotificationReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
-        val notificationId = intent?.getIntExtra(NOTIFICATION_ID, 1000) ?: 1000
-        val title =
-            intent?.getStringExtra(TITLE) ?: context.getString(R.string.default_notifications_title)
-        val message = intent?.getStringExtra(MESSAGE) ?: context.getString(R.string.default_notifications_message)
-        val description = intent?.getStringExtra(DESCRIPTION)
+        val extrasStr = intent?.getStringExtra(EXTRAS)
+        val extrasMap = extrasStr?.let { Gson().fromJson(it, HashMap<String, String>()::class.java) }
 
-        createSimpleNotification(context, notificationId, title, message, description)
+        if (extrasMap != null) {
+            val title = extrasMap.getOrDefault(TITLE, "")
+            val message = extrasMap.getOrDefault(MESSAGE, "")
+            val description = extrasMap.getOrDefault(DESCRIPTION, null)
+            val notificationId:String = extrasMap.getOrDefault(NOTIFICATION_ID, "0")
+            val repetition = extrasMap.getOrDefault(REPETITION, "ONCE")
+
+            createSimpleNotification(
+                context, notificationId.toInt(), title, message, description
+            )
+
+            // If repetition's activity isn't ONCE, we calculate the next notification
+            if (Repetition.valueOf(repetition) != Repetition.ONCE) {
+                NotificationUtils.createNextScheduleRepeatingNotification(context, extrasMap)
+            }
+        }
     }
 
     private fun createSimpleNotification(
@@ -41,6 +58,7 @@ class NotificationReceiver : BroadcastReceiver() {
         val channelId = context.getString(R.string.global_notifications_channel_id)
         val notificationBuilder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_notification_logo)
+            .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
             .setContentTitle(title)
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
