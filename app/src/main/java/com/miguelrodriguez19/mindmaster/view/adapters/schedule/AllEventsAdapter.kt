@@ -1,6 +1,6 @@
 package com.miguelrodriguez19.mindmaster.view.adapters.schedule
 
-import android.content.Context
+import android.app.Activity
 import android.graphics.Canvas
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
@@ -18,12 +18,12 @@ import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade
 import com.miguelrodriguez19.mindmaster.model.structures.abstractClasses.AbstractActivity
 import com.miguelrodriguez19.mindmaster.model.structures.abstractClasses.AbstractActivity.Companion.getFormattedDateOf
 import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.EventsResponse
-import com.miguelrodriguez19.mindmaster.view.dialogs.AllDialogs
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit
+import com.miguelrodriguez19.mindmaster.view.dialogs.AllDialogs
 
 
 class AllEventsAdapter(
-    private val context: Context,
+    private val activity: Activity,
     var data: ArrayList<EventsResponse>
 ) :
     RecyclerView.Adapter<AllEventsAdapter.ViewHolder>() {
@@ -115,7 +115,7 @@ class AllEventsAdapter(
         private fun initRecyclerView(data: List<AbstractActivity>) {
             val mLayoutManager = StaggeredGridLayoutManager(1, 1)
             rvMonthEvents.layoutManager = mLayoutManager
-            adapter = CalendarEventsAdapter(context, ArrayList(data)) { }
+            adapter = CalendarEventsAdapter(activity, ArrayList(data)) { }
             rvMonthEvents.adapter = adapter
 
             val itemTouchHelper =
@@ -130,25 +130,25 @@ class AllEventsAdapter(
 
                     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                         AllDialogs.showConfirmationDialog(
-                            context,
-                            context.getString(R.string.delete_confirmation),
-                            context.getString(R.string.delete_event_message)
+                            activity,
+                            activity.getString(R.string.delete_confirmation),
+                            activity.getString(R.string.delete_event_message)
                         ) {
                             val position = viewHolder.adapterPosition
                             if (it) {
                                 FirestoreManagerFacade.deleteInSchedule(
                                     adapter.getItemAt(position)
-                                ) { absEvent ->
-                                    Toolkit.showUndoSnackBar(context, view) { ok ->
+                                ) { absActivity ->
+                                    Toolkit.showUndoSnackBar(activity, view) { ok ->
                                         if (ok) {
-                                            FirestoreManagerFacade.saveInSchedule(
-                                                absEvent
-                                            ) { item ->
+                                            FirestoreManagerFacade.saveInSchedule(absActivity) { item ->
                                                 addItem(item)
                                             }
+                                        }else{
+                                            absActivity.removeNotifications(activity)
                                         }
                                     }
-                                    isDateGroupEmptyOf(absEvent) { index, isEmpty ->
+                                    isDateGroupEmptyOf(absActivity) { index, isEmpty ->
                                         removeEventAt(index, position)
                                         adapter.removeAt(position)
                                         if (isEmpty) {
@@ -167,10 +167,10 @@ class AllEventsAdapter(
                         dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean
                     ) {
                         val icon =
-                            ContextCompat.getDrawable(context, R.drawable.ic_delete_24)?.mutate()
-                        icon?.setTint(ContextCompat.getColor(context, android.R.color.white))
+                            ContextCompat.getDrawable(activity, R.drawable.ic_delete_24)?.mutate()
+                        icon?.setTint(ContextCompat.getColor(activity, android.R.color.white))
                         val background =
-                            ColorDrawable(context.getColor(R.color.red_bittersweet_200))
+                            ColorDrawable(activity.getColor(R.color.red_bittersweet_200))
                         val itemView = viewHolder.itemView
                         val iconMargin = (itemView.height - icon!!.intrinsicHeight) / 2
                         val iconTop = itemView.top + (itemView.height - icon.intrinsicHeight) / 2

@@ -1,6 +1,6 @@
 package com.miguelrodriguez19.mindmaster.view.adapters.expenses
 
-import android.content.Context
+import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +16,7 @@ import com.miguelrodriguez19.mindmaster.view.bottomSheets.CustomBottomSheet
 import com.miguelrodriguez19.mindmaster.view.bottomSheets.MovementBS
 
 class MovementAdapter(
-    private val context: Context,
+    private val activity: Activity,
     private val data: ArrayList<Movement>,
     val onClick: (Movement) -> Unit
 ) :
@@ -99,7 +99,7 @@ class MovementAdapter(
                 onClick(item)
                 val movementBS = CustomBottomSheet.get<Movement>(MovementBS::class.java.name)
 
-                movementBS?.showViewDetailBS(context, item){
+                movementBS?.showViewDetailBS(activity, item){
                     foundAndUpdateIt(it)
                 }
             }

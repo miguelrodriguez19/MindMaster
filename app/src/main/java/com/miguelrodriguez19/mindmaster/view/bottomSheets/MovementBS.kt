@@ -1,5 +1,6 @@
 package com.miguelrodriguez19.mindmaster.view.bottomSheets
 
+import android.app.Activity
 import android.content.Context
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
@@ -11,15 +12,23 @@ import com.miguelrodriguez19.mindmaster.databinding.BottomSheetMovementsBinding
 import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade
 import com.miguelrodriguez19.mindmaster.model.structures.dto.expenses.Movement
 import com.miguelrodriguez19.mindmaster.model.structures.enums.MovementType
+import com.miguelrodriguez19.mindmaster.model.utils.DateTimeUtils.DEFAULT_DATE_FORMAT
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit
 import com.miguelrodriguez19.mindmaster.view.dialogs.AllDialogs
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class MovementBS : CustomBottomSheet<Movement>() {
     private lateinit var bind: BottomSheetMovementsBinding
     private lateinit var selectedType: MovementType
 
-    override fun showViewDetailBS(context: Context, obj: Movement?, callback: (Movement) -> Unit) {
-        MaterialDialog(context, BottomSheet(LayoutMode.MATCH_PARENT)).show {
+    override fun showViewDetailBS(
+        activity: Activity,
+        obj: Movement?,
+        date: LocalDate,
+        callback: (Movement) -> Unit
+    ) {
+        MaterialDialog(activity, BottomSheet(LayoutMode.MATCH_PARENT)).show {
             customView(
                 R.layout.bottom_sheet_movements, scrollable = true, horizontalPadding = true
             )
@@ -27,7 +36,7 @@ class MovementBS : CustomBottomSheet<Movement>() {
             cornerRadius(res = R.dimen.corner_radius_bottom_sheets)
 
             if (obj != null && obj.amIEmpty()) {
-                fillData(context, obj)
+                fillData(activity, obj)
             }
 
             selectedType = when (obj?.type) {
@@ -49,17 +58,20 @@ class MovementBS : CustomBottomSheet<Movement>() {
                 }
             }
 
-            bind.etDate.setOnClickListener {
-                AllDialogs.showDatePicker(context) { date ->
-                    bind.etDate.setText(date)
+            bind.etDate.let {
+                if (obj == null) it.setText(date.format(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)))
+                it.setOnClickListener {
+                    AllDialogs.showDatePicker(activity) { date ->
+                        bind.etDate.setText(date)
+                    }
                 }
             }
 
             bind.btnClose.setOnClickListener {
                 AllDialogs.showConfirmationDialog(
-                    context,
-                    context.getString(R.string.changes_will_lost),
-                    context.getString(R.string.confirm_lost_changes_message)
+                    activity,
+                    activity.getString(R.string.changes_will_lost),
+                    activity.getString(R.string.confirm_lost_changes_message)
                 ) {
                     if (it) {
                         dismiss()
@@ -68,7 +80,7 @@ class MovementBS : CustomBottomSheet<Movement>() {
             }
             bind.efabSave.setOnClickListener {
                 Toolkit.checkFields(
-                    context, arrayOf(bind.tilConcept, bind.tilDate, bind.tilAmount)
+                    activity, arrayOf(bind.tilConcept, bind.tilDate, bind.tilAmount)
                 ) { ok ->
                     if (ok) {
                         val move = Movement(

@@ -1,6 +1,6 @@
 package com.miguelrodriguez19.mindmaster.view.adapters.expenses
 
-import android.content.Context
+import android.app.Activity
 import android.graphics.Canvas
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
@@ -19,12 +19,12 @@ import com.miguelrodriguez19.mindmaster.model.structures.dto.expenses.MonthMovem
 import com.miguelrodriguez19.mindmaster.model.structures.dto.expenses.Movement
 import com.miguelrodriguez19.mindmaster.model.structures.enums.MovementType
 import com.miguelrodriguez19.mindmaster.model.utils.DateTimeUtils.getMonthYearOf
-import com.miguelrodriguez19.mindmaster.view.dialogs.AllDialogs
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit
+import com.miguelrodriguez19.mindmaster.view.dialogs.AllDialogs
 import java.util.stream.Collectors
 
 class AllMovementsAdapter(
-    private val context: Context, var data: ArrayList<MonthMovementsResponse>
+    private val activity: Activity, var data: ArrayList<MonthMovementsResponse>
 ) : RecyclerView.Adapter<AllMovementsAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -136,7 +136,7 @@ class AllMovementsAdapter(
         private fun initRecyclerView(data: List<Movement>) {
             val mLayoutManager = StaggeredGridLayoutManager(1, 1)
             rvMonthMovements.layoutManager = mLayoutManager
-            adapter = MovementAdapter(context, ArrayList(data)) { }
+            adapter = MovementAdapter(activity, ArrayList(data)) { }
             rvMonthMovements.adapter = adapter
 
             val itemTouchHelper =
@@ -151,13 +151,13 @@ class AllMovementsAdapter(
 
                     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                         AllDialogs.showConfirmationDialog(
-                            context, context.getString(R.string.delete_confirmation),
-                            context.getString(R.string.delete_event_message)
+                            activity, activity.getString(R.string.delete_confirmation),
+                            activity.getString(R.string.delete_event_message)
                         ) {
                             val position = viewHolder.adapterPosition
                             if (it) {
                                 FirestoreManagerFacade.deleteMovement(adapter.getItemAt(position)) { movement ->
-                                    Toolkit.showUndoSnackBar(context, view) { ok ->
+                                    Toolkit.showUndoSnackBar(activity, view) { ok ->
                                         if (ok) {
                                             FirestoreManagerFacade.saveMovement(movement) { item ->
                                                 addItem(item)
@@ -183,10 +183,10 @@ class AllMovementsAdapter(
                         dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean
                     ) {
                         val icon =
-                            ContextCompat.getDrawable(context, R.drawable.ic_delete_24)?.mutate()
-                        icon?.setTint(ContextCompat.getColor(context, android.R.color.white))
+                            ContextCompat.getDrawable(activity, R.drawable.ic_delete_24)?.mutate()
+                        icon?.setTint(ContextCompat.getColor(activity, android.R.color.white))
                         val background =
-                            ColorDrawable(context.getColor(R.color.red_bittersweet_200))
+                            ColorDrawable(activity.getColor(R.color.red_bittersweet_200))
                         val itemView = viewHolder.itemView
                         val iconMargin = (itemView.height - icon!!.intrinsicHeight) / 2
                         val iconTop = itemView.top + (itemView.height - icon.intrinsicHeight) / 2

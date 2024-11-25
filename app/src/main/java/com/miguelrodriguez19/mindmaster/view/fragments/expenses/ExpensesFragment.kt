@@ -37,7 +37,7 @@ class ExpensesFragment : Fragment() {
     private val expensesViewModel: ExpensesViewModel by activityViewModels()
 
     private val movementAdapter: MovementAdapter by lazy {
-        MovementAdapter(requireContext(), arrayListOf()) { movement ->
+        MovementAdapter(requireActivity(), arrayListOf()) { movement ->
             Log.i(TAG, "onViewCreated - event: ${movement.concept}")
         }
     }
@@ -82,7 +82,7 @@ class ExpensesFragment : Fragment() {
     private fun createNewMovement(type: MovementType){
         val movementBS = CustomBottomSheet.get<Movement>(MovementBS::class.java.name)
         val movementTypeExample = Movement().copy(type = type)
-        movementBS?.showViewDetailBS(requireContext(), movementTypeExample){
+        movementBS?.showViewDetailBS(requireActivity(), movementTypeExample){
             addToLatestMoves(it)
             updateLiveData(it)
         }

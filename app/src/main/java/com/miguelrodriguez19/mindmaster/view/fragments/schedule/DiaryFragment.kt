@@ -52,14 +52,17 @@ class DiaryFragment : Fragment() {
         setUpData()
 
         btnAddEvent.setOnClickListener {
+            disableButtons()
             showBottomSheet(EventBS::class.java.name)
         }
 
         btnAddReminder.setOnClickListener {
+            disableButtons()
             showBottomSheet(ReminderBS::class.java.name)
         }
 
         btnAddTask.setOnClickListener {
+            disableButtons()
             showBottomSheet(TaskBS::class.java.name)
         }
 
@@ -78,11 +81,12 @@ class DiaryFragment : Fragment() {
     private fun showBottomSheet(name: String) {
         val activityBS = CustomBottomSheet.get<AbstractActivity>(name)
 
-        activityBS?.showViewDetailBS(requireContext(), null) { absEvent ->
-            adapter.addItem(absEvent)
+        activityBS?.showViewDetailBS(requireActivity(), null) { absActivity ->
+            adapter.addItem(absActivity)
         }
 
         btnMenuEvents.close(true)
+        enableButtons()
     }
 
     private fun setUpData() {
@@ -94,6 +98,18 @@ class DiaryFragment : Fragment() {
             adapter.setData(allEvents)
             progressBarSchedule.visibility = View.GONE
         }
+    }
+
+    private fun disableButtons() {
+        btnAddEvent.isEnabled = false
+        btnAddReminder.isEnabled = false
+        btnAddTask.isEnabled = false
+    }
+
+    private fun enableButtons() {
+        btnAddEvent.isEnabled = true
+        btnAddReminder.isEnabled = true
+        btnAddTask.isEnabled = true
     }
 
     private fun search(text: String) {
@@ -122,7 +138,7 @@ class DiaryFragment : Fragment() {
         rvEventsPerMonth = binding.rvAllEvents
         progressBarSchedule = binding.progressBarSchedule
         rvEventsPerMonth.layoutManager = StaggeredGridLayoutManager(1, 1)
-        adapter = AllEventsAdapter(requireContext(), data)
+        adapter = AllEventsAdapter(requireActivity(), data)
         rvEventsPerMonth.adapter = adapter
     }
 

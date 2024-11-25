@@ -1,5 +1,6 @@
 package com.miguelrodriguez19.mindmaster.view.bottomSheets
 
+import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -19,12 +20,13 @@ import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade
 import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.Task
 import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.ActivityType
 import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.Priority
-import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.Repetition
 import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.Status
-import com.miguelrodriguez19.mindmaster.model.utils.NotificationUtils.scheduleOneTimeNotification
-import com.miguelrodriguez19.mindmaster.model.utils.Preferences.getNextNotificationId
+import com.miguelrodriguez19.mindmaster.model.utils.DateTimeUtils.DEFAULT_DATE_FORMAT
+import com.miguelrodriguez19.mindmaster.model.utils.Preferences
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit
 import com.miguelrodriguez19.mindmaster.view.dialogs.AllDialogs
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class TaskBS : CustomBottomSheet<Task>() {
     private lateinit var bind: BottomSheetTasksBinding
@@ -33,34 +35,42 @@ class TaskBS : CustomBottomSheet<Task>() {
     private lateinit var priorityArr: Array<String>
     private lateinit var priorityAdapter: ArrayAdapter<String>
 
-    override fun showViewDetailBS(context: Context, obj: Task?, callback: (Task) -> Unit) {
-        MaterialDialog(context, BottomSheet(LayoutMode.MATCH_PARENT)).show {
+    override fun showViewDetailBS(
+        activity: Activity,
+        obj: Task?,
+        date: LocalDate,
+        callback: (Task) -> Unit
+    ) {
+        MaterialDialog(activity, BottomSheet(LayoutMode.MATCH_PARENT)).show {
             customView(R.layout.bottom_sheet_tasks, scrollable = true, horizontalPadding = true)
             cornerRadius(res = R.dimen.corner_radius_bottom_sheets)
-            setPeekHeight(Toolkit.getPeekHeight(context))
+            setPeekHeight(Toolkit.getPeekHeight(activity))
 
             bind = BottomSheetTasksBinding.bind(getCustomView())
             var color = obj?.colorTag ?: String.format(
-                "#%06X", 0xFFFFFF and ContextCompat.getColor(context, R.color.primaryColor)
+                "#%06X", 0xFFFFFF and ContextCompat.getColor(activity, R.color.primaryColor)
             )
 
             // Status dropdown
-            statusArr = context.resources.getStringArray(R.array.status_enum)
-            statusAdapter = ArrayAdapter(context, R.layout.dropdown_item, statusArr)
+            statusArr = activity.resources.getStringArray(R.array.status_enum)
+            statusAdapter = ArrayAdapter(activity, R.layout.dropdown_item, statusArr)
             bind.atvStatus.setAdapter(statusAdapter)
 
             // Priority dropdown
-            priorityArr = context.resources.getStringArray(R.array.priority_enum)
-            priorityAdapter = ArrayAdapter(context, R.layout.dropdown_item, priorityArr)
+            priorityArr = activity.resources.getStringArray(R.array.priority_enum)
+            priorityAdapter = ArrayAdapter(activity, R.layout.dropdown_item, priorityArr)
             bind.atvPriority.setAdapter(priorityAdapter)
 
             if (obj != null) {
-                fillData(context, obj)
+                fillData(activity, obj)
             }
 
-            bind.etDueDate.setOnClickListener {
-                AllDialogs.showDatePicker(context) { date ->
-                    bind.etDueDate.setText(date)
+            bind.etDueDate.let {
+                if (obj == null) it.setText(date.format(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)))
+                it.setOnClickListener {
+                    AllDialogs.showDatePicker(activity) { date ->
+                        bind.etDueDate.setText(date)
+                    }
                 }
             }
             bind.cgCategory.setOnCheckedChangeListener { _, checkedId ->
@@ -69,21 +79,21 @@ class TaskBS : CustomBottomSheet<Task>() {
             }
             bind.btnAddCategory.setOnClickListener {
                 if ((bind.etCategory.text ?: "").isNotBlank() && bind.cgCategory.size < 3) {
-                    val chip = Toolkit.makeChip(context, bind.etCategory.text.toString())
+                    val chip = Toolkit.makeChip(activity, bind.etCategory.text.toString())
                     bind.cgCategory.addView(chip)
                     bind.tilCategory.error = null
                     bind.etCategory.text = null
                 } else {
                     if (bind.cgCategory.size >= 3) {
                         bind.tilCategory.error =
-                            context.getString(R.string.reached_max_categories)
+                            activity.getString(R.string.reached_max_categories)
                     } else {
-                        bind.tilCategory.error = context.getString(R.string.type_anything)
+                        bind.tilCategory.error = activity.getString(R.string.type_anything)
                     }
                 }
             }
             bind.etColorTag.setOnClickListener {
-                AllDialogs.colorPickerDialog(context) {
+                AllDialogs.colorPickerDialog(activity) {
                     val colorStateList = ColorStateList.valueOf(Color.parseColor(it))
                     bind.tilColorTag.setStartIconTintList(colorStateList)
                     color = it
@@ -91,9 +101,9 @@ class TaskBS : CustomBottomSheet<Task>() {
             }
             bind.btnClose.setOnClickListener {
                 AllDialogs.showConfirmationDialog(
-                    context,
-                    context.getString(R.string.changes_will_lost),
-                    context.getString(R.string.confirm_lost_changes_message)
+                    activity,
+                    activity.getString(R.string.changes_will_lost),
+                    activity.getString(R.string.confirm_lost_changes_message)
                 ) {
                     if (it) {
                         dismiss()
@@ -101,7 +111,7 @@ class TaskBS : CustomBottomSheet<Task>() {
                 }
             }
             bind.efabSave.setOnClickListener {
-                Toolkit.checkFields(context, arrayOf(bind.tilTitle, bind.tilDueDate)) { ok ->
+                Toolkit.checkFields(activity, arrayOf(bind.tilTitle, bind.tilDueDate)) { ok ->
                     if (ok) {
                         val task = Task(
                             uid = "",
@@ -112,12 +122,13 @@ class TaskBS : CustomBottomSheet<Task>() {
                             status = Status.values()[statusAdapter.getPosition(bind.atvStatus.text.toString())],
                             category = Toolkit.processChipGroup(bind.cgCategory),
                             colorTag = color,
-                            type = ActivityType.TASK
+                            type = ActivityType.TASK,
+                            notificationId = Preferences.getNextNotificationId()
                         )
                         if (obj == null) {
                             FirestoreManagerFacade.saveInSchedule(task) { added ->
+                                added.createNotification(activity)
                                 callback(added as Task)
-                                added.createNotification(context, Repetition.ONCE)
                             }
                         } else {
                             FirestoreManagerFacade.updateInSchedule(task.copy(uid = obj.uid)) {

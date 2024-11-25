@@ -56,7 +56,7 @@ class AllMovementsFragment : Fragment() {
             val movementBS =
                 CustomBottomSheet.get<Movement>(MovementBS::class.java.name)
 
-            movementBS?.showViewDetailBS(requireContext(), null) {
+            movementBS?.showViewDetailBS(requireActivity(), null) {
                 adapter.addItem(it)
             }
         }
@@ -104,7 +104,7 @@ class AllMovementsFragment : Fragment() {
         rvAllMovements = binding.rvAllMovements
 
         rvAllMovements.layoutManager = StaggeredGridLayoutManager(1, 1)
-        adapter = AllMovementsAdapter(requireContext(), data)
+        adapter = AllMovementsAdapter(requireActivity(), data)
         rvAllMovements.adapter = adapter
     }
 

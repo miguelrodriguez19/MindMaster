@@ -1,6 +1,6 @@
 package com.miguelrodriguez19.mindmaster.view.adapters.schedule
 
-import android.content.Context
+import android.app.Activity
 import android.content.res.ColorStateList
 import android.text.SpannableString
 import android.text.Spanned
@@ -26,7 +26,7 @@ import com.miguelrodriguez19.mindmaster.view.bottomSheets.ReminderBS
 import com.miguelrodriguez19.mindmaster.view.bottomSheets.TaskBS
 
 class CalendarEventsAdapter(
-    private val context: Context,
+    private val activity: Activity,
     private val data: ArrayList<AbstractActivity>,
     val onClick: (AbstractActivity) -> Unit
 ) :
@@ -105,12 +105,12 @@ class CalendarEventsAdapter(
                 }
             }
             tvEventTitle.text = title
-            val header = StringBuilder(AbstractActivity.getItemType(context, item.type))
+            val header = StringBuilder(AbstractActivity.getItemType(activity, item.type))
             if (!item.category.isNullOrEmpty()) {
                 header.append(" - ").append(item.category!!.joinToString(", "))
             }
             tvEventType.text = header
-            civColorTag.setCardBackgroundColor(AbstractActivity.getColor(context, item.colorTag))
+            civColorTag.setCardBackgroundColor(AbstractActivity.getColor(activity, item.colorTag))
             cvEventArea.setOnClickListener {
                 onClick(item)
 
@@ -119,7 +119,7 @@ class CalendarEventsAdapter(
                     ActivityType.REMINDER -> CustomBottomSheet.get(ReminderBS::class.java.name)
                     ActivityType.TASK -> CustomBottomSheet.get(TaskBS::class.java.name)
                 }
-                activityBS?.showViewDetailBS(context, item) {
+                activityBS?.showViewDetailBS(activity, item) {
                     foundAndUpdateIt(it)
                 }
             }
@@ -128,22 +128,22 @@ class CalendarEventsAdapter(
         private fun setInfoLayout(priority: Priority) {
             val text: String
             val icon =
-                AppCompatResources.getDrawable(context, R.drawable.ic_report_problem_24)!!.mutate()
+                AppCompatResources.getDrawable(activity, R.drawable.ic_report_problem_24)!!.mutate()
 
             val color = when (priority) {
                 Priority.HIGH -> {
-                    text = context.getString(R.string.priority_high)
-                    ContextCompat.getColor(context, R.color.orange)
+                    text = activity.getString(R.string.priority_high)
+                    ContextCompat.getColor(activity, R.color.orange)
                 }
 
                 Priority.URGENT -> {
-                    text = context.getString(R.string.priority_urgent)
-                    ContextCompat.getColor(context, R.color.red_error_500)
+                    text = activity.getString(R.string.priority_urgent)
+                    ContextCompat.getColor(activity, R.color.red_error_500)
                 }
 
                 else -> {
                     text = ""
-                    ContextCompat.getColor(context, R.color.black)
+                    ContextCompat.getColor(activity, R.color.black)
                 }
             }
 

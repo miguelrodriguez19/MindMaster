@@ -1,7 +1,7 @@
 package com.miguelrodriguez19.mindmaster.view.adapters.passwordVault
 
 import android.annotation.SuppressLint
-import android.content.Context
+import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,14 +14,13 @@ import com.miguelrodriguez19.mindmaster.model.comparators.AccountsGroupsComparat
 import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade
 import com.miguelrodriguez19.mindmaster.model.structures.dto.accountVault.Account
 import com.miguelrodriguez19.mindmaster.model.structures.dto.accountVault.PasswordGroupResponse
-import com.miguelrodriguez19.mindmaster.model.structures.dto.accountVault.PasswordGroupResponse.*
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit
 import com.miguelrodriguez19.mindmaster.view.bottomSheets.CustomBottomSheet
 import com.miguelrodriguez19.mindmaster.view.bottomSheets.PasswordGroupBS
 import com.miguelrodriguez19.mindmaster.view.dialogs.AllDialogs
 
 @SuppressLint("NotifyDataSetChanged")
-class GroupAdapter(private val context: Context, var data: ArrayList<PasswordGroupResponse>) :
+class GroupAdapter(private val activity: Activity, var data: ArrayList<PasswordGroupResponse>) :
     RecyclerView.Adapter<GroupAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -97,7 +96,7 @@ class GroupAdapter(private val context: Context, var data: ArrayList<PasswordGro
                 }
             }
             btnMoreOptions.setOnClickListener { view ->
-                menu = PopupMenu(context, view)
+                menu = PopupMenu(activity, view)
                 menu.menuInflater.inflate(R.menu.passwords_group_context_menu, menu.menu)
                 menu.setOnMenuItemClickListener { menuItem ->
                     when (menuItem.itemId) {
@@ -106,7 +105,7 @@ class GroupAdapter(private val context: Context, var data: ArrayList<PasswordGro
                                 PasswordGroupBS::class.java.name
                             )
 
-                            passwordGroupBS?.showViewDetailBS(context, item) { group ->
+                            passwordGroupBS?.showViewDetailBS(activity, item) { group ->
                                 updateItem(group)
                             }
 
@@ -115,13 +114,13 @@ class GroupAdapter(private val context: Context, var data: ArrayList<PasswordGro
 
                         R.id.delete_group -> {
                             AllDialogs.showConfirmationDialog(
-                                context,
-                                context.getString(R.string.delete_confirmation),
-                                context.getString(R.string.delete_password_group_message)
+                                activity,
+                                activity.getString(R.string.delete_confirmation),
+                                activity.getString(R.string.delete_password_group_message)
                             ) {
                                 if (it) {
                                     FirestoreManagerFacade.deleteGroup(item) { group ->
-                                        Toolkit.showUndoSnackBar(context, view) { ok ->
+                                        Toolkit.showUndoSnackBar(activity, view) { ok ->
                                             if (ok) {
                                                 FirestoreManagerFacade.saveGroup(
                                                     group
@@ -149,7 +148,7 @@ class GroupAdapter(private val context: Context, var data: ArrayList<PasswordGro
 
         private fun initRecyclerView(data: List<Account>) {
             rvAccounts.layoutManager = StaggeredGridLayoutManager(1, 1)
-            adapter = AccountAdapter(context, ArrayList(data))
+            adapter = AccountAdapter(activity, ArrayList(data))
             rvAccounts.adapter = adapter
         }
 

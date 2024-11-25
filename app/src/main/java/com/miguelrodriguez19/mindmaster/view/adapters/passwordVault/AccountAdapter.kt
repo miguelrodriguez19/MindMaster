@@ -1,9 +1,11 @@
 package com.miguelrodriguez19.mindmaster.view.adapters.passwordVault
 
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
@@ -18,7 +20,7 @@ import com.miguelrodriguez19.mindmaster.model.structures.enums.AccountType
 import com.miguelrodriguez19.mindmaster.model.utils.diffUtils.AccountDiffCallback
 
 class AccountAdapter(
-    private val context: Context, private val data: ArrayList<Account>
+    private val activity: Activity, private val data: ArrayList<Account>
 ) : RecyclerView.Adapter<AccountAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -89,22 +91,22 @@ class AccountAdapter(
 
             btnCopyUsername.setOnClickListener {
                 copyToClipboardAndShowToast(
-                    context, "Username", etUsername.text ?: "",
-                    context.resources.getString(R.string.username_copied)
+                    activity, "Username", etUsername.text ?: "",
+                    activity.resources.getString(R.string.username_copied)
                 )
             }
 
             btnCopyEmail.setOnClickListener {
                 copyToClipboardAndShowToast(
-                    context, "Email", etEmail.text ?: "",
-                    context.resources.getString(R.string.email_copied)
+                    activity, "Email", etEmail.text ?: "",
+                    activity.resources.getString(R.string.email_copied)
                 )
             }
 
             btnCopyPassword.setOnClickListener {
                 copyToClipboardAndShowToast(
-                    context, "Password", etPassword.text ?: "",
-                    context.resources.getString(R.string.password_copied)
+                    activity, "Password", etPassword.text ?: "",
+                    activity.resources.getString(R.string.password_copied)
                 )
             }
         }
@@ -112,10 +114,10 @@ class AccountAdapter(
         private fun copyToClipboardAndShowToast(
             context: Context, label: String, text: CharSequence, toastMessage: String
         ) {
-            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clipboard = activity.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val data = ClipData.newPlainText(label, text)
             clipboard.setPrimaryClip(data)
-            Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, toastMessage, Toast.LENGTH_SHORT).show()
         }
 
         private fun initWidgets(item: Account) {
@@ -124,12 +126,30 @@ class AccountAdapter(
                 AccountType.GOOGLE -> configureGoogleAccount(item)
                 else -> configureOtherAccount(item)
             }
+
+            etDescription.apply {
+                setOnTouchListener { v, event ->
+                    if (v.id == R.id.et_description) {
+                        v.parent.requestDisallowInterceptTouchEvent(true)
+                        when (event.action and MotionEvent.ACTION_MASK) {
+                            MotionEvent.ACTION_UP -> {
+                                v.parent.requestDisallowInterceptTouchEvent(false)
+                                v.performClick()
+                            }
+                        }
+                    }
+                    false
+                }
+                setOnClickListener { }
+            }
+
+
         }
 
         private fun configureGoogleAccount(item: Account) {
             tvTypeAccount.apply {
                 visibility = View.VISIBLE
-                text = context.getString(R.string.google_sign_up_type)
+                text = activity.getString(R.string.google_sign_up_type)
             }
             llUsername.visibility = View.GONE
             etEmail.setText(item.email!!)

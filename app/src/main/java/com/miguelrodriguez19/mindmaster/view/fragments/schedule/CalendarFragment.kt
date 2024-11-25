@@ -25,7 +25,7 @@ import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade.de
 import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade.loadScheduleByDate
 import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade.saveInSchedule
 import com.miguelrodriguez19.mindmaster.model.structures.abstractClasses.AbstractActivity
-import com.miguelrodriguez19.mindmaster.model.utils.DateTimeUtils.defaultDateFormat
+import com.miguelrodriguez19.mindmaster.model.utils.DateTimeUtils.DEFAULT_DATE_FORMAT
 import com.miguelrodriguez19.mindmaster.model.utils.DateTimeUtils.getCurrentDate
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.showUndoSnackBar
 import com.miguelrodriguez19.mindmaster.view.adapters.schedule.CalendarEventsAdapter
@@ -40,6 +40,8 @@ import kotlinx.coroutines.launch
 import pl.droidsonroids.gif.GifDrawable
 import pl.droidsonroids.gif.GifImageView
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
 
@@ -61,6 +63,7 @@ class CalendarFragment : Fragment() {
     private lateinit var llNoEvents: LinearLayout
     private val data = ArrayList<AbstractActivity>()
     private val listGifs = listOf(R.drawable.gif_no_data_found_1, R.drawable.gif_no_data_found_2)
+    private lateinit var formattedDate:String
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -77,26 +80,30 @@ class CalendarFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initWidgets()
         CoroutineScope(Dispatchers.Main).launch {
-            setUpData(getCurrentDate())
+            formattedDate = getCurrentDate()
+            setUpData(formattedDate)
         }
 
         btnAddEvent.setOnClickListener {
-            showBottomSheet(EventBS::class.java.name)
+            disableButtons()
+            showBottomSheet(EventBS::class.java.name, formattedDate)
         }
 
         btnAddReminder.setOnClickListener {
-            showBottomSheet(ReminderBS::class.java.name)
+            disableButtons()
+            showBottomSheet(ReminderBS::class.java.name, formattedDate)
         }
 
         btnAddTask.setOnClickListener {
-            showBottomSheet(TaskBS::class.java.name)
+            disableButtons()
+            showBottomSheet(TaskBS::class.java.name, formattedDate)
         }
 
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
             val selectedDate = Calendar.getInstance()
             selectedDate.set(year, month, dayOfMonth)
-            val dateFormat = SimpleDateFormat(defaultDateFormat, Locale.getDefault())
-            val formattedDate = dateFormat.format(selectedDate.time)
+            val dateFormat = SimpleDateFormat(DEFAULT_DATE_FORMAT, Locale.getDefault())
+            formattedDate = dateFormat.format(selectedDate.time)
             CoroutineScope(Dispatchers.Main).launch { setUpData(formattedDate) }
         }
 
@@ -118,14 +125,16 @@ class CalendarFragment : Fragment() {
                     ) {
                         val position = viewHolder.adapterPosition
                         if (it) {
-                            deleteInSchedule(adapter.getItemAt(position)) { absEvent ->
+                            deleteInSchedule(adapter.getItemAt(position)) { absActivity ->
                                 showUndoSnackBar(requireContext(), requireView()) { ok ->
                                     if (ok) {
-                                        saveInSchedule(absEvent) { item ->
+                                        saveInSchedule(absActivity) { item ->
                                             adapter.addItem(item)
                                             llNoEvents.visibility = View.GONE
                                             tvCountOfEvents.text = adapter.itemCount.toString()
                                         }
+                                    }else{
+                                        absActivity.removeNotifications(requireContext())
                                     }
                                 }
                             }
@@ -179,19 +188,33 @@ class CalendarFragment : Fragment() {
         itemTouchHelper.attachToRecyclerView(rvCalendarEvents)
     }
 
-    private fun showBottomSheet(name: String) {
+    private fun showBottomSheet(name: String, dateStr: String) {
         val activityBS = CustomBottomSheet.get<AbstractActivity>(name)
+        val date = LocalDate.parse(dateStr, DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT))
 
-        activityBS?.showViewDetailBS(requireContext(), null) { absEvent ->
-            val date = AbstractActivity.getFormattedDateOf(absEvent)
-            if (tvSelectedDateEvents.text == date) {
-                adapter.addItem(absEvent)
+        activityBS?.showViewDetailBS(requireActivity(), null, date) { absActivity ->
+            val activityDate = AbstractActivity.getFormattedDateOf(absActivity)
+            if (tvSelectedDateEvents.text == activityDate) {
+                adapter.addItem(absActivity)
                 tvCountOfEvents.text = adapter.itemCount.toString()
                 llNoEvents.visibility = View.GONE
             }
         }
 
-        btnMenuEvents.close(true)
+        btnMenuEvents.close(false)
+        enableButtons()
+    }
+
+    private fun disableButtons() {
+        btnAddEvent.isEnabled = false
+        btnAddReminder.isEnabled = false
+        btnAddTask.isEnabled = false
+    }
+
+    private fun enableButtons() {
+        btnAddEvent.isEnabled = true
+        btnAddReminder.isEnabled = true
+        btnAddTask.isEnabled = true
     }
 
     private suspend fun setUpData(date: String) {
@@ -235,9 +258,10 @@ class CalendarFragment : Fragment() {
         llNoEvents = binding.llNoEvents
         val mLayoutManager = StaggeredGridLayoutManager(1, 1)
         rvCalendarEvents.layoutManager = mLayoutManager
-        adapter = CalendarEventsAdapter(requireContext(), data) { item ->
+        adapter = CalendarEventsAdapter(requireActivity(), data) { item ->
             Log.i(TAG, "onViewCreated - event: ${item.title}")
         }
+
         rvCalendarEvents.adapter = adapter
     }
 

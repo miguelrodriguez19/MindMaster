@@ -1,5 +1,6 @@
 package com.miguelrodriguez19.mindmaster.view.bottomSheets
 
+import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -19,7 +20,9 @@ import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade
 import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.Event
 import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.ActivityType
 import com.miguelrodriguez19.mindmaster.model.structures.enums.schedule.Repetition
+import com.miguelrodriguez19.mindmaster.model.utils.DateTimeUtils.DEFAULT_DATE_TIME_FORMAT
 import com.miguelrodriguez19.mindmaster.model.utils.DateTimeUtils.compareDateTimes
+import com.miguelrodriguez19.mindmaster.model.utils.Preferences
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.checkFields
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.getPeekHeight
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.makeChip
@@ -27,32 +30,41 @@ import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.processChipGroup
 import com.miguelrodriguez19.mindmaster.view.dialogs.AllDialogs.Companion.colorPickerDialog
 import com.miguelrodriguez19.mindmaster.view.dialogs.AllDialogs.Companion.showConfirmationDialog
 import com.miguelrodriguez19.mindmaster.view.dialogs.AllDialogs.Companion.showDateTimePicker
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 class EventBS : CustomBottomSheet<Event>() {
     private lateinit var bind: BottomSheetEventsBinding
     private lateinit var repetitionArr: Array<String>
     private lateinit var arrAdapter: ArrayAdapter<String>
 
-    override fun showViewDetailBS(context: Context, obj: Event?, callback: (Event) -> Unit) {
-        MaterialDialog(context, BottomSheet(LayoutMode.MATCH_PARENT)).show {
+    override fun showViewDetailBS(
+        activity: Activity,
+        obj: Event?,
+        date: LocalDate,
+        callback: (Event) -> Unit
+    ) {
+        MaterialDialog(activity, BottomSheet(LayoutMode.MATCH_PARENT)).show {
             customView(
                 R.layout.bottom_sheet_events,
                 scrollable = true,
                 horizontalPadding = true
             )
             cornerRadius(res = R.dimen.corner_radius_bottom_sheets)
-            setPeekHeight(getPeekHeight(context))
+            setPeekHeight(getPeekHeight(activity))
 
             bind = BottomSheetEventsBinding.bind(getCustomView())
             var color = obj?.colorTag ?: String.format(
-                "#%06X", 0xFFFFFF and ContextCompat.getColor(context, R.color.primaryColor)
+                "#%06X", 0xFFFFFF and ContextCompat.getColor(activity, R.color.primaryColor)
             )
-            repetitionArr = context.resources.getStringArray(R.array.repetition_enum)
-            arrAdapter = ArrayAdapter(context, R.layout.dropdown_item, repetitionArr)
+            repetitionArr = activity.resources.getStringArray(R.array.repetition_enum)
+            arrAdapter = ArrayAdapter(activity, R.layout.dropdown_item, repetitionArr)
             bind.atvRepetition.setAdapter(arrAdapter)
 
             if (obj != null) {
-                fillData(context, obj)
+                fillData(activity, obj)
             }
 
             bind.cgParticipants.setOnCheckedChangeListener { _, checkedId ->
@@ -62,34 +74,41 @@ class EventBS : CustomBottomSheet<Event>() {
 
             bind.btnAddParticipant.setOnClickListener {
                 if ((bind.etParticipants.text ?: "").isNotBlank()) {
-                    val chip = makeChip(context, bind.etParticipants.text.toString())
+                    val chip = makeChip(activity, bind.etParticipants.text.toString())
                     bind.cgParticipants.addView(chip)
                     bind.tilParticipants.error = null
                     bind.etParticipants.text = null
                 } else {
-                    bind.tilParticipants.error = context.getString(R.string.type_anything)
+                    bind.tilParticipants.error = activity.getString(R.string.type_anything)
                 }
             }
-            bind.etStartTime.setOnClickListener {
-                showDateTimePicker(context) { datetime ->
-                    bind.etStartTime.setText(datetime)
-                    if (bind.etEndTime.text!!.isBlank()) {
-                        bind.etEndTime.setText(datetime)
+
+            bind.etStartTime.let {
+                if (obj == null) it.setText(getDateTime(date))
+                it.setOnClickListener {
+                    showDateTimePicker(activity) { datetime ->
+                        bind.etStartTime.setText(datetime)
+                        if (bind.etEndTime.text!!.isBlank()) {
+                            bind.etEndTime.setText(datetime)
+                        }
                     }
                 }
             }
-            bind.etEndTime.setOnClickListener {
-                showDateTimePicker(context) { datetime ->
-                    bind.etEndTime.setText(datetime)
-                    bind.tilEndTime.error = null
-                    if (bind.etStartTime.text!!.isNotBlank()) {
-                        if (compareDateTimes(datetime, bind.etStartTime.text.toString()) < 0) {
-                            bind.etEndTime.text = null
-                            bind.tilEndTime.error =
-                                context.getString(R.string.err_end_date_incorrect)
+            bind.etEndTime.let{
+                if (obj == null) it.setText(getDateTime(date))
+                it.setOnClickListener {
+                    showDateTimePicker(activity) { datetime ->
+                        bind.etEndTime.setText(datetime)
+                        bind.tilEndTime.error = null
+                        if (bind.etStartTime.text!!.isNotBlank()) {
+                            if (compareDateTimes(datetime, bind.etStartTime.text.toString()) < 0) {
+                                bind.etEndTime.text = null
+                                bind.tilEndTime.error =
+                                    activity.getString(R.string.err_end_date_incorrect)
+                            }
+                        } else {
+                            bind.etStartTime.setText(datetime)
                         }
-                    } else {
-                        bind.etStartTime.setText(datetime)
                     }
                 }
             }
@@ -100,22 +119,22 @@ class EventBS : CustomBottomSheet<Event>() {
 
             bind.btnAddCategory.setOnClickListener {
                 if ((bind.etCategory.text ?: "").isNotBlank() && bind.cgCategory.size < 3) {
-                    val chip = makeChip(context, bind.etCategory.text.toString())
+                    val chip = makeChip(activity, bind.etCategory.text.toString())
                     bind.cgCategory.addView(chip)
                     bind.tilCategory.error = null
                     bind.etCategory.text = null
                 } else {
                     if (bind.cgCategory.size >= 3) {
                         bind.tilCategory.error =
-                            context.getString(R.string.reached_max_categories)
+                            activity.getString(R.string.reached_max_categories)
                     } else {
-                        bind.tilCategory.error = context.getString(R.string.type_anything)
+                        bind.tilCategory.error = activity.getString(R.string.type_anything)
                     }
                 }
             }
 
             bind.etColorTag.setOnClickListener {
-                colorPickerDialog(context) {
+                colorPickerDialog(activity) {
                     val colorStateList = ColorStateList.valueOf(Color.parseColor(it))
                     bind.tilColorTag.setStartIconTintList(colorStateList)
                     color = it
@@ -124,8 +143,8 @@ class EventBS : CustomBottomSheet<Event>() {
 
             bind.btnClose.setOnClickListener {
                 showConfirmationDialog(
-                    context, context.getString(R.string.changes_will_lost),
-                    context.getString(R.string.confirm_lost_changes_message)
+                    activity, activity.getString(R.string.changes_will_lost),
+                    activity.getString(R.string.confirm_lost_changes_message)
                 ) {
                     if (it) {
                         dismiss()
@@ -135,7 +154,7 @@ class EventBS : CustomBottomSheet<Event>() {
 
             bind.efabSave.setOnClickListener {
                 checkFields(
-                    context, arrayOf(bind.tilTitle, bind.tilStartTime, bind.tilEndTime)
+                    activity, arrayOf(bind.tilTitle, bind.tilStartTime, bind.tilEndTime)
                 ) { ok ->
                     if (ok) {
                         val repetition =
@@ -151,12 +170,13 @@ class EventBS : CustomBottomSheet<Event>() {
                             category = processChipGroup(bind.cgCategory),
                             repetition = repetition,
                             colorTag = color,
-                            type = ActivityType.EVENT
+                            type = ActivityType.EVENT,
+                            notificationId = Preferences.getNextNotificationId()
                         )
                         if (obj == null) {
                             FirestoreManagerFacade.saveInSchedule(event) { added ->
+                                added.createNotification(activity)
                                 callback(added as Event)
-                                added.createNotification(context, added.repetition)
                             }
                         } else {
                             FirestoreManagerFacade.updateInSchedule(event.copy(uid = obj.uid)) {
@@ -169,6 +189,11 @@ class EventBS : CustomBottomSheet<Event>() {
             }
 
         }
+    }
+
+    private fun getDateTime(date: LocalDate): String {
+        val formatter = DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT)
+        return LocalDateTime.of(date, LocalTime.now()).format(formatter)
     }
 
     override fun fillData(context: Context, obj: Event) {

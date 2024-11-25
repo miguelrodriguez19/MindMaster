@@ -46,7 +46,7 @@ class PasswordsFragment : Fragment() {
         btnAddGroup.setOnClickListener {
             val passwordsBS = CustomBottomSheet.get<PasswordGroupResponse>(PasswordGroupBS::class.java.name)
 
-            passwordsBS?.showViewDetailBS(requireContext(), null) {
+            passwordsBS?.showViewDetailBS(requireActivity(), null) {
                 adapter.addItem(it)
             }
         }
@@ -101,7 +101,7 @@ class PasswordsFragment : Fragment() {
         progressBarAllAccounts = binding.progressBarAllAccounts
 
         rvAccountsGroups.layoutManager = StaggeredGridLayoutManager(1, 1)
-        adapter = GroupAdapter(requireContext(), data)
+        adapter = GroupAdapter(requireActivity(), data)
         rvAccountsGroups.adapter = adapter
     }
 
