@@ -9,18 +9,18 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
-import com.google.gson.Gson
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.model.structures.dto.expenses.Movement
-import com.miguelrodriguez19.mindmaster.model.structures.dto.UserResponse
-import com.miguelrodriguez19.mindmaster.model.structures.dto.schedule.Reminder
-import java.text.SimpleDateFormat
-import java.util.*
+import com.miguelrodriguez19.mindmaster.model.structures.exceptions.ExceptionHolder
+import java.util.Base64
 import java.util.regex.Pattern
 
 
 object Toolkit {
-    val PASSWORD_PATTERN: Pattern = Pattern.compile("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}\$")
+    val PASSWORD_PATTERN: Pattern = Pattern.compile(
+        "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@.#\$%^&+=]).{8,20}$"
+    )
+
 
     fun checkFields(context: Context, tilArr: Array<TextInputLayout>, callback: (Boolean) -> Unit) {
         var flag = true
@@ -62,7 +62,7 @@ object Toolkit {
     }
 
     fun makeChip(context: Context, text: String): View {
-        val chip = Chip(context, null, com.miguelrodriguez19.mindmaster.R.style.ChipStyle)
+        val chip = Chip(context, null, R.style.ChipStyle)
         chip.text = text
         chip.isClickable = true
         chip.isCheckable = true
@@ -89,38 +89,51 @@ object Toolkit {
 
     fun getPeekHeight(context: Context, percent: Float): Int {
         if (percent < 0 || percent > 1) {
-            throw IllegalArgumentException("The percentage must be in the range of 0 to 1.")
+            ExceptionHolder.illegalArgument("The percentage must be in the range of 0 to 1.")
         }
         return (context.resources.displayMetrics.heightPixels * percent).toInt()
     }
 
-    fun isPasswordStrong(password: String): Boolean = password.length >= 8
-            && password.matches(".*[a-z].*".toRegex()) && password.matches(".*[A-Z].*".toRegex())
-            && password.matches(".*\\d.*".toRegex()) && password.matches(".*[!@#$%&*()_+=|<>?{}\\[\\]~-].*".toRegex())
-
     @StringRes
     fun evaluatePasswordSecurity(password: String): Pair<Int, Int> {
-        // Initialize with weak password
-        var result = Pair(R.string.password_weak, R.color.red_error_500)
+        val specialChars = MainApplication.instance.resources.getString(R.string.secure_pwd_special_characters)
+        val hasMinLength = password.length >= 8
+        val hasLowerCase = password.any { it.isLowerCase() }
+        val hasUpperCase = password.any { it.isUpperCase() }
+        val hasDigit = password.any { it.isDigit() }
+        val hasSpecialChar = password.any { specialChars.contains(it) }
 
-        // check for medium security: 8 or more characters with letters and numbers
-        if (password.length >= 8 &&
-            password.matches(".*[a-zA-Z].*".toRegex()) &&
-            password.matches(".*\\d.*".toRegex())
-        ) {
-            result = Pair(R.string.password_medium, R.color.orange)
+        return when {
+            hasMinLength && hasLowerCase && hasUpperCase && hasDigit && hasSpecialChar ->
+                Pair(R.string.password_strong, R.color.green_mantis_200) // Strong
+            hasMinLength && (hasLowerCase || hasUpperCase) && hasDigit ->
+                Pair(R.string.password_medium, R.color.orange) // Medium
+            else ->
+                Pair(R.string.password_weak, R.color.red_error_500) // Weak
         }
+    }
 
-        // check for strong security: 8 or more characters with lower & upper letters, numbers, and special characters
-        if (password.length >= 8 &&
-            password.matches(".*[a-z].*".toRegex()) &&
-            password.matches(".*[A-Z].*".toRegex()) &&
-            password.matches(".*\\d.*".toRegex()) &&
-            password.matches(".*[!@#$%&*()_+=|<>?{}\\[\\]~-].*".toRegex())
-        ) {
-            result = Pair(R.string.password_strong, R.color.green_mantis_200)
-        }
-        return result
+    fun generateSafePassword(context: Context): String {
+        val length = context.getString(R.string.secure_pwd_lenght).toInt()
+        val upperCaseChars = context.getString(R.string.secure_pwd_characters_uppercase)
+        val lowerCaseChars = context.getString(R.string.secure_pwd_characters_lowercase)
+        val numberChars = context.getString(R.string.secure_pwd_characters_numbers)
+        val specialChars = context.getString(R.string.secure_pwd_special_characters)
+
+        val allChars = upperCaseChars + lowerCaseChars + numberChars + specialChars
+
+        val passwordChars = mutableListOf<Char>().apply {
+            add(upperCaseChars.random())
+            add(lowerCaseChars.random())
+            add(numberChars.random())
+            add(specialChars.random())
+
+            repeat(length - 4) {
+                add(allChars.random())
+            }
+        }.shuffled()
+
+        return passwordChars.joinToString("")
     }
 
     fun parseStringToByteArray(ivString: String): ByteArray {

@@ -27,12 +27,12 @@ import com.miguelrodriguez19.mindmaster.MainActivity
 import com.miguelrodriguez19.mindmaster.R
 import com.miguelrodriguez19.mindmaster.databinding.FragmentSignUpBinding
 import com.miguelrodriguez19.mindmaster.model.firebase.FirestoreManagerFacade.createUser
-import com.miguelrodriguez19.mindmaster.model.utils.DateTimeUtils.defaultDateFormat
-import com.miguelrodriguez19.mindmaster.view.dialogs.AllDialogs.Companion.showAlertDialog
-import com.miguelrodriguez19.mindmaster.view.dialogs.AllDialogs.Companion.showDatePicker
+import com.miguelrodriguez19.mindmaster.model.utils.DateTimeUtils.DEFAULT_DATE_FORMAT
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.PASSWORD_PATTERN
 import com.miguelrodriguez19.mindmaster.model.utils.Toolkit.showToast
+import com.miguelrodriguez19.mindmaster.view.dialogs.AllDialogs.Companion.showAlertDialog
+import com.miguelrodriguez19.mindmaster.view.dialogs.AllDialogs.Companion.showDatePicker
 import java.time.LocalDate
 import java.time.Period
 import java.time.format.DateTimeFormatter
@@ -79,7 +79,7 @@ class SignUpFragment : Fragment() {
         etEmail.addTextChangedListener(emailWatcher)
         etBirthdate.setOnClickListener {
             showDatePicker(requireContext()) { date ->
-                val formatter = DateTimeFormatter.ofPattern(defaultDateFormat)
+                val formatter = DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)
                 val birthdate = LocalDate.parse(date, formatter)
                 val now = LocalDate.now()
                 val period = Period.between(birthdate, now)
