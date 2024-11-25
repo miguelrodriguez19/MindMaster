@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primaryColor">#4a75e6</color>
+    <color name="primaryColorDark">#3E60BA</color>
+    <color name="textColor">#BDBDBD</color>
+
+    <color name="blue_fog_100">#dfe0ff</color>
+    <color name="blue_light_200">#b2b8fb</color>
+    <color name="blue_primary_light_200">#9CB1E8</color>
+    <color name="blue_ribbon_500">#6686e6</color>
+    <color name="blue_san_juan_700">#334373</color>
+    <color name="blue_cello_900">#18264A</color>
+    <color name="red_bittersweet_200">#ff6b6b</color>
+    <color name="red_error_500">#BF3320</color>
+    <color name="orange_light_200">#ffa64d</color>
+    <color name="orange">#E88024</color>
+    <color name="orange_dark_700">#A65D24</color>
+    <color name="yellow_kournikova">#ffe66d</color>
+    <color name="green_mantis_200">#76b852</color>
+    <color name="green_jade_500">#4fb071</color>
+    <color name="green_hooker_700">#496f5d</color>
+    <color name="gray_scorpion_200">#5e5e5e</color>
+    <color name="gray_dove_500">#717171</color>
+    <color name="gray_dark_700">#393939</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="white_magnolia">#DBDBDB</color>
+    <color name="black">#FF000000</color>
+    <color name="black_translucent">#74000000</color>
+    <color name="transparent">#00000000</color>
+
+    <!-- Color Picker -->
+    <color name="red_standard">#D83333</color>
+    <color name="orange_standard">#DC7531</color>
+    <color name="yellow_standard">#DBCD30</color>
+    <color name="green_standard">#6BC72D</color>
+    <color name="turquoise_standard">#30DBBC</color>
+    <color name="blue_standard">#30B6DB</color>
+    <color name="navy_standard">#3039DB</color>
+    <color name="magenta_standard">#B630DB</color>
+    <color name="gray_standard">#9F9F9F</color>
+
+    <color name="red_extralight">#F09393</color>
+    <color name="orange_extralight">#F2BA94</color>
+    <color name="yellow_extralight">#F1E993</color>
+    <color name="green_extralight">#B3EC8D</color>
+    <color name="turquoise_extralight">#93F1E0</color>
+    <color name="blue_extralight">#93DDF1</color>
+    <color name="navy_extralight">#9397F1</color>
+    <color name="magenta_extralight">#DD93F1</color>
+    <color name="gray_extralight">#DFDFDF</color>
+
+    <color name="red_light">#E85E5E</color>
+    <color name="orange_light">#EA9760</color>
+    <color name="yellow_light">#E9DD5D</color>
+    <color name="green_light">#8DE255</color>
+    <color name="turquoise_light">#5DE9CF</color>
+    <color name="blue_light">#5DCBE9</color>
+    <color name="navy_light">#5D64E9</color>
+    <color name="magenta_light">#CB5DE9</color>
+    <color name="gray_light">#C6C6C6</color>
+
+
+
+    <color name="red_extradark">#702222</color>
+    <color name="orange_extradark">#754220</color>
+    <color name="yellow_extradark">#726B20</color>
+    <color name="green_extradark">#3D6522</color>
+    <color name="turquoise_extradark">#207263</color>
+    <color name="blue_extradark">#206072</color>
+    <color name="navy_extradark">#202472</color>
+    <color name="magenta_extradark">#602072</color>
+    <color name="gray_extradark">#585858</color>
+
+</resources>

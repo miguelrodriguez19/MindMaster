@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".views.expenses.fragments.ExpensesFragment">
+    tools:context=".view.fragments.expenses.ExpensesFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -34,7 +34,7 @@
                     android:background="@android:color/transparent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <com.miguelrodriguez19.mindmaster.views.expenses.adapters.NonSwipeableViewPager
+                <com.miguelrodriguez19.mindmaster.view.adapters.expenses.NonSwipeableViewPager
                     android:id="@+id/viewPager_graphs"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"

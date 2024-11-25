@@ -5,6 +5,10 @@
     <uses-permission android:name="android.permission.INTERNET" /> <!-- Http not secure -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
 
     <queries>
         <intent>
@@ -14,7 +18,7 @@
     </queries>
 
     <application
-        android:name=".models.utils.MainApplication"
+        android:name=".model.utils.MainApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -23,6 +27,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MindMaster"
         tools:targetApi="31">
+        <receiver
+            android:name=".model.notifications.NotificationReceiver"
+            android:enabled="true"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

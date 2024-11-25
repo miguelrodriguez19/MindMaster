@@ -201,6 +201,17 @@
     <string name="accept_permissions">Please accept permissions</string>
     <string name="see_faqs">See FAQs</string>
 
+    <!-- Notifications -->
+    <string name="default_notifications_title">Check Your Schedule</string>
+    <string name="default_notifications_message">Check your schedule, some of your activities are about to expire.</string>
+    <string name="event_notification_custom_title">Tomorrow you have %s</string>
+    <string name="event_notification_custom_message">%s starts tomorrow at %s.</string>
+    <string name="reminder_notification_custom_title">Remember %s</string>
+    <string name="reminder_notification_custom_message">Remember that tomorrow you have %s</string>
+    <string name="task_notification_custom_title">Tomorrow expires %s</string>
+    <string name="task_notification_custom_message">Your task %s expires tomorrow</string>
+
+
     <string-array name="priority_enum">
         <item>@string/priority_low</item>
         <item>@string/priority_medium</item>

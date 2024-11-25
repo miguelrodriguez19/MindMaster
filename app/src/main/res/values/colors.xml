@@ -2,6 +2,8 @@
 <resources>
     <color name="primaryColor">#4a75e6</color>
     <color name="primaryColorDark">#3E60BA</color>
+    <color name="textColor">#333333</color>
+
     <color name="blue_fog_100">#dfe0ff</color>
     <color name="blue_light_200">#b2b8fb</color>
     <color name="blue_primary_light_200">#9CB1E8</color>

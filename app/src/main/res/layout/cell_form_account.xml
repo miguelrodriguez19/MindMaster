@@ -13,6 +13,7 @@
         android:layout_marginTop="8dp"
         android:hint="@string/account_title_hint"
         app:boxStrokeErrorColor="@color/red_error_500"
+        app:hintTextColor="@color/textColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -24,7 +25,8 @@
             android:ellipsize="end"
             android:inputType="text"
             android:maxLines="1"
-            android:textAppearance="?attr/textAppearanceHeadline6" />
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            android:textColor="@color/textColor" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -33,11 +35,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        app:checkedButton="@+id/btn_typeEmail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/til_titleAccount"
         app:selectionRequired="true"
-        app:checkedButton="@+id/btn_typeEmail"
         app:singleSelection="true">
 
         <com.google.android.material.button.MaterialButton
@@ -45,21 +47,24 @@
             style="?attr/materialButtonOutlinedStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/email_label" />
+            android:text="@string/email_label"
+            android:textColor="@color/textColor" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_typeGoogle"
             style="?attr/materialButtonOutlinedStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/google" />
+            android:text="@string/google"
+            android:textColor="@color/textColor" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_typeOther"
             style="?attr/materialButtonOutlinedStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/other" />
+            android:text="@string/other"
+            android:textColor="@color/textColor" />
     </com.google.android.material.button.MaterialButtonToggleGroup>
 
     <LinearLayout
@@ -80,7 +85,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:hint="@string/username_label"
-            app:boxStrokeErrorColor="@color/red_error_500">
+            android:visibility="gone"
+            app:boxStrokeErrorColor="@color/red_error_500"
+            app:hintTextColor="@color/textColor">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_username"
@@ -89,7 +96,8 @@
                 android:ellipsize="end"
                 android:inputType="text"
                 android:maxLines="1"
-                android:textAppearance="?attr/textAppearanceSubtitle1" />
+                android:textAppearance="?attr/textAppearanceSubtitle1"
+                android:textColor="@color/textColor" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -101,7 +109,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:hint="@string/email_label"
-            app:boxStrokeErrorColor="@color/red_error_500">
+            app:boxStrokeErrorColor="@color/red_error_500"
+            app:hintTextColor="@color/textColor">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_email"
@@ -109,8 +118,8 @@
                 android:layout_height="match_parent"
                 android:ellipsize="end"
                 android:inputType="text"
-                android:maxLines="1"
-                android:textAppearance="?attr/textAppearanceSubtitle1" />
+                android:textAppearance="?attr/textAppearanceSubtitle1"
+                android:textColor="@color/textColor" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -129,10 +138,12 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="90"
                 android:hint="@string/password_label"
+                android:layout_marginBottom="10dp"
+                app:boxStrokeErrorColor="@color/red_error_500"
+                app:endIconMode="password_toggle"
                 app:errorIconDrawable="@null"
                 app:helperTextEnabled="true"
-                app:boxStrokeErrorColor="@color/red_error_500"
-                app:endIconMode="password_toggle">
+                app:hintTextColor="@color/textColor">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_password"
@@ -142,6 +153,7 @@
                     android:inputType="textPassword"
                     android:maxLines="1"
                     android:textAppearance="?attr/textAppearanceSubtitle1"
+                    android:textColor="@color/textColor"
                     android:textIsSelectable="true" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -158,29 +170,34 @@
                 app:iconSize="30dp"
                 app:iconTint="@color/primaryColor" />
         </LinearLayout>
+    </LinearLayout>
+    <!-- Description -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_description"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:hint="@string/description"
+        app:boxStrokeErrorColor="@color/red_error_500"
+        app:hintTextColor="@color/textColor"
+        app:layout_constraintTop_toBottomOf="@+id/ll_fields">
 
-        <!-- Description -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_description"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="@string/description"
-            app:boxStrokeErrorColor="@color/red_error_500">
+            android:inputType="textMultiLine"
+            android:maxHeight="160dp"
+            android:minHeight="30dp"
+            android:overScrollMode="ifContentScrolls"
+            android:scrollbars="vertical"
+            android:textAppearance="?attr/textAppearanceSubtitle1"
+            android:textColor="@color/textColor"
+            android:textIsSelectable="true" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_description"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:ellipsize="end"
-                android:inputType="textMultiLine"
-                android:maxLines="1"
-                android:textAppearance="?attr/textAppearanceSubtitle1"
-                android:textIsSelectable="true" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-        </com.google.android.material.textfield.TextInputLayout>
-    </LinearLayout>
 
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/materialDivider2"
@@ -189,18 +206,18 @@
         android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ll_fields" />
+        app:layout_constraintTop_toBottomOf="@+id/til_description" />
 
     <com.google.android.material.button.MaterialButton
-        android:layout_width="wrap_content"
         android:id="@+id/btn_deleteAccount"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
         style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="@string/delete"
         android:textAlignment="textEnd"
+        android:textColor="@color/textColor"
         android:textSize="15sp"
-        android:textColor="@color/gray_dove_500"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/materialDivider2" />
 
 
