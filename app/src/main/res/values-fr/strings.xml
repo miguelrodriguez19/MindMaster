@@ -203,7 +203,7 @@
     <string name="default_notifications_title">Vérifiez Votre Agenda</string>
     <string name="default_notifications_message">Vérifiez votre agenda, certaines de vos activités sont sur le point d\'expirer.</string>
     <string name="event_notification_custom_title">Demain, vous avez %s</string>
-    <string name="event_notification_custom_message">%s1 commence demain à %s2 heures.</string>
+    <string name="event_notification_custom_message">%s commence demain à %s heures.</string>
     <string name="reminder_notification_custom_title">Rappel %s</string>
     <string name="reminder_notification_custom_message">Rappelez-vous que demain vous avez %s</string>
     <string name="task_notification_custom_title">Demain expire %s</string>

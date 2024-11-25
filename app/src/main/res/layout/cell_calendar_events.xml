@@ -63,8 +63,9 @@
             <ImageView
                 android:id="@+id/iv_infoIcon"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_alignParentTop="true"
+                android:padding="4dp"
                 android:layout_centerHorizontal="true" />
 
             <TextView
@@ -74,7 +75,8 @@
                 android:layout_below="@+id/iv_infoIcon"
                 android:layout_centerHorizontal="true"
                 android:fontFamily="@font/popings_regular_400"
-                android:textSize="11sp" />
+                android:textSize="11sp"
+                android:visibility="gone"/>
 
         </RelativeLayout>
 

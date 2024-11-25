@@ -3,19 +3,23 @@
     <style name="main_titles" >
         <item name="android:fontFamily">@font/popings_medium_500</item>
         <item name="android:textSize">30sp</item>
+        <item name="android:textColor">@color/textColor</item>
     </style>
 
     <style name="secondary_main_titles" >
         <item name="android:fontFamily">@font/popings_medium_500</item>
         <item name="android:textSize">22sp</item>
+        <item name="android:textColor">@color/textColor</item>
     </style>
     <style name="secondary_titles" >
         <item name="android:fontFamily">@font/popings_regular_400</item>
         <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/textColor</item>
     </style>
     <style name="body_large" >
         <item name="android:fontFamily">@font/popings_regular_400</item>
         <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/textColor</item>
     </style>
     <style name="rounded_corners">
         <item name="cornerFamily">rounded</item>
@@ -54,6 +58,7 @@
         <item name="android:background">@drawable/ellipse</item>
         <item name="android:backgroundTint">@color/gray_light</item>
         <item name="elevation">5dp</item>
+        <item name="android:padding">8dp</item>
     </style>
 
 </resources>

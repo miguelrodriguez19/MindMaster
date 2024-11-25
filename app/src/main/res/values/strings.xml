@@ -205,7 +205,7 @@
     <string name="default_notifications_title">Check Your Schedule</string>
     <string name="default_notifications_message">Check your schedule, some of your activities are about to expire.</string>
     <string name="event_notification_custom_title">Tomorrow you have %s</string>
-    <string name="event_notification_custom_message">%s1 starts tomorrow at %s2.</string>
+    <string name="event_notification_custom_message">%s starts tomorrow at %s.</string>
     <string name="reminder_notification_custom_title">Remember %s</string>
     <string name="reminder_notification_custom_message">Remember that tomorrow you have %s</string>
     <string name="task_notification_custom_title">Tomorrow expires %s</string>

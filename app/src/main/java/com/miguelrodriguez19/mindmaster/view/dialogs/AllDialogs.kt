@@ -115,7 +115,7 @@ class AllDialogs {
                         selectedDate.set(Calendar.HOUR_OF_DAY, hourOfDay)
                         selectedDate.set(Calendar.MINUTE, minute)
 
-                        val dateFormat = SimpleDateFormat(DateTimeUtils.defaultDateTimeFormat, Locale.getDefault())
+                        val dateFormat = SimpleDateFormat(DateTimeUtils.DEFAULT_DATE_TIME_FORMAT, Locale.getDefault())
                         val selectedDateTime = dateFormat.format(selectedDate.time)
                         listener(selectedDateTime)
                     }
