@@ -42,9 +42,9 @@ jobs:
       - name: Update README.md with version
         run: |
           if [ "${{ github.ref }}" == "refs/heads/develop" ]; then
-              sed -i "s|![VERSION](https://img.shields.io/badge/Version.*)|![VERSION](https://img.shields.io/badge/Version-${VERSION_NAME}_beta-blue)|" README.md
+              sed -i "s|\\[VERSION\\](.*)|[VERSION](https://img.shields.io/badge/Version-$VERSION_NAME_beta-blue)|" README.md
           else
-              sed -i "s|![VERSION](https://img.shields.io/badge/Version.*)|![VERSION](https://img.shields.io/badge/Version-${VERSION_NAME}-blue)|" README.md
+              sed -i "s|\\[VERSION\\](.*)|[VERSION](https://img.shields.io/badge/Version-$VERSION_NAME-blue)|" README.md
           fi
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
@@ -54,6 +54,7 @@ jobs:
 
       # 7. Create Git Tag
       - name: Create Git Tag
+        if: success()
         run: |
           if [ "${{ github.ref }}" == "refs/heads/develop" ]; then
               git tag -a "v$VERSION_NAME_beta" -m "Beta release v.$VERSION_NAME"
@@ -68,9 +69,11 @@ jobs:
         if: ${{ github.ref == 'refs/heads/master' }}
         uses: actions/create-release@v1
         with:
-          tag_name: v$VERSION_NAME
-          release_name: Release v$VERSION_NAME
-          body: "## What's New\n- Updated version to $VERSION_NAME"
+          tag_name: "v$VERSION_NAME"
+          release_name: "Release v$VERSION_NAME"
+          body: |
+            ## What's New
+            - Updated version to $VERSION_NAME
           draft: false
           prerelease: false
         env:
