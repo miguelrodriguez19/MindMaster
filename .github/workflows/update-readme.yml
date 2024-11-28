@@ -15,14 +15,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Java's configuration to read gradle
+      # 2. Java's configuration to read Gradle
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '11'
 
-      # 3. Extract versionName from build.gradle
+      # 3. Grant execute permission to gradlew
+      # This ensures that the gradlew file can be executed without permission issues
+      - name: Grant execute permission to gradlew
+        run: chmod +x ./gradlew
+
+      # 4. Extract versionName from build.gradle
+      # This runs a custom Gradle task to extract the dynamically generated versionName
       - name: Extract versionName
         id: extract_version
         run: |
@@ -30,7 +36,8 @@ jobs:
           echo "Extracted VERSION_NAME=$VERSION_NAME"
           echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
 
-      # 4. Update README.md
+      # 5. Update README.md with the extracted version
+      # Replace the placeholder in README.md with the current versionName
       - name: Update README.md with version
         run: |
           sed -i "s|\\[VERSION\\](.*)|[VERSION](https://img.shields.io/badge/Version-$VERSION_NAME-blue)|" README.md
@@ -40,7 +47,8 @@ jobs:
           git commit -m "Update README.md with version $VERSION_NAME"
           git push
 
-      # 5. Create Git Tag
+      # 6. Create Git Tag
+      # Create and push a Git tag depending on the branch (beta for develop, stable for master)
       - name: Create Git Tag
         if: success()
         run: |
