@@ -1,0 +1,35 @@
+// Global variables for versionName and versionCode
+ext {
+    versionCode = calculateVersionCode()
+    versionName = calculateVersionName(versionCode)
+}
+
+// Function to read the version.properties
+def readVersionProperties() {
+    def versionFile = file('version.properties')
+    if (!versionFile.exists()) {
+        versionFile.createNewFile()
+        versionFile.text = 'versionMajor=2\nversionMinor=0\nversionCode=0'
+    }
+    def props = new Properties()
+    props.load(new FileInputStream(versionFile))
+    return props
+}
+
+// Function to calculate the versionCode
+def calculateVersionCode() {
+    def props = readVersionProperties()
+    def currentVersion = props['versionCode'].toInteger()
+    def newVersion = currentVersion + 1
+    props['versionCode'] = newVersion.toString()
+    props.store(new FileOutputStream(file('version.properties')), null)
+    return newVersion
+}
+
+// Function to calculate the versionName (e.g., 2.0.x where x = versionCode)
+def calculateVersionName(versionCode) {
+    def props = readVersionProperties()
+    def major = props['versionMajor']
+    def minor = props['versionMinor']
+    return "${major}.${minor}.${versionCode}"
+}

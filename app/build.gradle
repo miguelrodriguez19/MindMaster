@@ -5,7 +5,7 @@ plugins {
     id 'androidx.navigation.safeargs'
     id 'com.google.firebase.crashlytics'
 }
-
+apply from: 'versioning.gradle'
 android {
     namespace 'com.miguelrodriguez19.mindmaster'
     compileSdk 34
@@ -14,8 +14,8 @@ android {
         applicationId "com.miguelrodriguez19.mindmaster"
         minSdk 26
         targetSdk 33
-        versionCode 1
-        versionName "1.0.0"
+        versionCode versionCode // Define versionCode from the external file
+        versionName versionName // Define versionName from the external file
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
