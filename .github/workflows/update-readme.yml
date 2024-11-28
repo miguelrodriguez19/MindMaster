@@ -3,8 +3,8 @@ name: Update README with Version
 on:
   push:
     branches:
-      - master  # Run the action on the master branch
-      - develop  # Run the action on the develop branch
+      - master
+      - develop
 
 jobs:
   update-readme:
@@ -26,13 +26,14 @@ jobs:
       - name: Extract versionName
         id: extract_version
         run: |
-          VERSION_NAME=$(grep versionName app/build.gradle | awk -F'"' '{print $2}')
+          VERSION_NAME=$(./gradlew -q printVersionName)
+          echo "Extracted VERSION_NAME=$VERSION_NAME"
           echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
 
       # 4. Update README.md
       - name: Update README.md with version
         run: |
-          sed -i "s/\\[VERSION\\](.*)/[VERSION](https:\/\/img.shields.io\/badge\/Version-$VERSION_NAME-blue)/" README.md
+          sed -i "s|\\[VERSION\\](.*)|[VERSION](https://img.shields.io/badge/Version-$VERSION_NAME-blue)|" README.md
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
           git add README.md

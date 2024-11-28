@@ -44,6 +44,11 @@ android {
             useJUnitPlatform()
         }
     }
+    tasks.register("printVersionName") {
+        doLast {
+            println versionName
+        }
+    }
 }
 
 dependencies {
