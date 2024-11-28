@@ -1,0 +1,39 @@
+name: Validate Pull Request
+
+on:
+  pull_request:
+    branches:
+      - master
+      - develop
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. Set up JDK
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      # 3. Grant execute permission to gradlew
+      - name: Grant execute permission to gradlew
+        run: chmod +x ./gradlew
+
+      # 4. Run Gradle Build
+      - name: Run Gradle build
+        run: ./gradlew clean build
+
+      # 5. Run Unit Tests
+      - name: Run tests
+        run: ./gradlew test
+
+      # 6. Run Lint Check
+      - name: Run Lint
+        run: ./gradlew lint

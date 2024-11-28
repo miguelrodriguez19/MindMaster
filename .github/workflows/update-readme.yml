@@ -23,12 +23,10 @@ jobs:
           java-version: '17'
 
       # 3. Grant execute permission to gradlew
-      # This ensures that the gradlew file can be executed without permission issues
       - name: Grant execute permission to gradlew
         run: chmod +x ./gradlew
 
       # 4. Extract versionName from build.gradle
-      # This runs a custom Gradle task to extract the dynamically generated versionName
       - name: Extract versionName
         id: extract_version
         run: |
@@ -37,25 +35,40 @@ jobs:
           echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
 
       # 5. Update README.md with the extracted version
-      # Replace the placeholder in README.md with the current versionName
       - name: Update README.md with version
         run: |
-          sed -i "s|\\[VERSION\\](.*)|[VERSION](https://img.shields.io/badge/Version-$VERSION_NAME-blue)|" README.md
+          if [ "${{ github.ref }}" == "refs/heads/develop" ]; then
+              sed -i "s|\\[VERSION\\](.*)|[VERSION](https://img.shields.io/badge/Version-$VERSION_NAME-beta-blue)|" README.md
+          else
+              sed -i "s|\\[VERSION\\](.*)|[VERSION](https://img.shields.io/badge/Version-$VERSION_NAME-blue)|" README.md
+          fi
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git add README.md
-          git commit -m "Update README.md with version $VERSION_NAME"
-          git push
+          git add .
+          git commit -m "Update README.md and version files with version $VERSION_NAME" || echo "No changes to commit"
+          git push || echo "Nothing to push"
 
       # 6. Create Git Tag
-      # Create and push a Git tag depending on the branch (beta for develop, stable for master)
       - name: Create Git Tag
         if: success()
         run: |
           if [ "${{ github.ref }}" == "refs/heads/develop" ]; then
-            git tag -a "v$VERSION_NAME-beta" -m "Beta release version $VERSION_NAME"
-            git push origin "v$VERSION_NAME-beta"
+              git tag -a "v$VERSION_NAME-beta" -m "Beta release version $VERSION_NAME"
+              git push origin "v$VERSION_NAME-beta"
           else
-            git tag -a "v$VERSION_NAME" -m "Release version $VERSION_NAME"
-            git push origin "v$VERSION_NAME"
+              git tag -a "v$VERSION_NAME" -m "Release version $VERSION_NAME"
+              git push origin "v$VERSION_NAME"
           fi
+
+      # 7. Create GitHub Release
+      - name: Create GitHub Release
+        if: ${{ github.ref == 'refs/heads/master' }}
+        uses: actions/create-release@v1
+        with:
+          tag_name: "v$VERSION_NAME"
+          release_name: "Release v$VERSION_NAME"
+          body: |
+            ## What's New
+            - Updated version to $VERSION_NAME
+          draft: false
+          prerelease: false
