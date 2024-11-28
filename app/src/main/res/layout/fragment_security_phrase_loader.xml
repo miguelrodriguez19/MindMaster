@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:fillViewport="true"
-    tools:context=".views.welcome.SecurityPhraseLoaderFragment">
+    tools:context=".view.fragments.welcome.SecurityPhraseLoaderFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

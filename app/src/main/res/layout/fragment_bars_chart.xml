@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="250dp"
     android:padding="10dp"
-    tools:context=".views.expenses.fragments.BarsChartFragment">
+    tools:context=".view.fragments.expenses.BarsChartFragment">
 
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/bar_chart"

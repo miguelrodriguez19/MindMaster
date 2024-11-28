@@ -1,6 +1,6 @@
 ![Mind Master Logo](https://github.com/miguelrodriguez19/MindMaster/assets/94179603/926390bf-1e9b-4bae-a036-27c95e3d7047)
 
-[![Build Status](https://travis-ci.org/miguelrodriguez19/MindMaster.svg?branch=master)](https://travis-ci.org/miguelrodriguez19/MindMaster)
+[![VERSION](https://img.shields.io/badge/Version--blue)
 
 
 # Table of Contents

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="250dp"
     android:padding="10dp"
-    tools:context=".views.expenses.fragments.PieChartFragment">
+    tools:context=".view.fragments.expenses.PieChartFragment">
 
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/pie_chart"

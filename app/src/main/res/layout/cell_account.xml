@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -14,12 +15,12 @@
         android:maxLines="1"
         android:paddingStart="4dp"
         android:paddingEnd="4dp"
-        android:text="Account"
         android:textAppearance="?attr/textAppearanceSubtitle1"
-        app:layout_constraintEnd_toStartOf="@+id/btn_moreOptions"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Account" />
     <!--
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_moreOptions"
@@ -186,27 +187,35 @@
                 app:iconSize="23dp"
                 app:iconTint="@color/gray_dove_500" />
         </LinearLayout>
+    </LinearLayout>
 
-        <!-- Description -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_description"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+    <!-- Description -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_description"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:hint="@string/description"
+        app:boxStrokeErrorColor="@color/red_error_500"
+        app:layout_constraintTop_toBottomOf="@+id/ll_fields">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_weight="90"
-            android:hint="@string/description"
-            app:boxStrokeErrorColor="@color/red_error_500">
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:inputType="none"
+            android:maxHeight="160dp"
+            android:minHeight="50dp"
+            android:overScrollMode="ifContentScrolls"
+            android:scrollbars="vertical"
+            android:textAppearance="?attr/textAppearanceBody1"
+            android:textIsSelectable="true" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_description"
-                style="@style/cell_account_edittext"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
 
-        </com.google.android.material.textfield.TextInputLayout>
-
-    </LinearLayout>
 
     <!-- Divider -->
     <com.google.android.material.divider.MaterialDivider
@@ -216,6 +225,6 @@
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ll_fields" />
+        app:layout_constraintTop_toBottomOf="@+id/til_description" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
