@@ -28,7 +28,7 @@ jobs:
 
       # 4. Run Gradle Build
       - name: Run Gradle build
-        run: ./gradlew clean build
+        run: ./gradlew clean build --debug --stacktrace
 
       # 5. Run Unit Tests
       - name: Run tests

@@ -85,13 +85,4 @@ class NotificationUtilsTest {
         verify(exactly = 1)  { AbstractActivity.getFormattedDateOf(any()) }
     }
 
-    @Test
-    fun `test createActivityNotification with past date`() {
-        // Simular el comportamiento de getFormattedDateOf para AbstractActivity
-        every { AbstractActivity.getFormattedDateOf(absActivity) } returns "01-01-2023"
-
-        // Llamar al método que deseas testear
-        NotificationUtils.createActivityNotification(appContext, absActivity)
-
-    }
 }

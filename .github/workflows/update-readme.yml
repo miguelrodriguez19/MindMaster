@@ -53,8 +53,8 @@ jobs:
         if: success()
         run: |
           if [ "${{ github.ref }}" == "refs/heads/develop" ]; then
-              git tag -a "v$VERSION_NAME-beta" -m "Beta release version $VERSION_NAME"
-              git push origin "v$VERSION_NAME-beta"
+              git tag -a "v$VERSION_NAME_beta" -m "Beta release version $VERSION_NAME"
+              git push origin "v$VERSION_NAME_beta"
           else
               git tag -a "v$VERSION_NAME" -m "Release version $VERSION_NAME"
               git push origin "v$VERSION_NAME"

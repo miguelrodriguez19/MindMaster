@@ -13,6 +13,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
 
 /**
  * Example local unit test, which will execute on the development machine (host).
