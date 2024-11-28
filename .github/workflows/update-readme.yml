@@ -1,4 +1,4 @@
-name: Update README with Version
+name: Update README and Release
 
 on:
   push:
@@ -7,11 +7,11 @@ on:
       - develop
 
 jobs:
-  update-readme:
+  update-readme-and-release:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Repository checkout
+      # 1. Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -26,7 +26,11 @@ jobs:
       - name: Grant execute permission to gradlew
         run: chmod +x ./gradlew
 
-      # 4. Extract versionName from build.gradle
+      # 4. Build and validate
+      - name: Run Gradle build
+        run: ./gradlew clean build --stacktrace
+
+      # 5. Extract versionName from build.gradle
       - name: Extract versionName
         id: extract_version
         run: |
@@ -34,7 +38,7 @@ jobs:
           echo "Extracted VERSION_NAME=$VERSION_NAME"
           echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
 
-      # 5. Update README.md with the extracted version
+      # 6. Update README.md with the extracted version
       - name: Update README.md with version
         run: |
           if [ "${{ github.ref }}" == "refs/heads/develop" ]; then
@@ -44,28 +48,15 @@ jobs:
           fi
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git checkout -b "update-version-$VERSION_NAME"
           git add .
           git commit -m "Update README.md and version files with version $VERSION_NAME" || echo "No changes to commit"
-          git push origin "update-version-$VERSION_NAME"
-
-      # 6. Create Pull Request
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          branch: "update-version-$VERSION_NAME"
-          title: "Update README.md and version files to $VERSION_NAME"
-          body: |
-            This pull request updates the version in the README.md and other related files to $VERSION_NAME.
-          labels: version-update
+          git push || echo "Nothing to push"
 
       # 7. Create Git Tag
       - name: Create Git Tag
-        if: success()
         run: |
           if [ "${{ github.ref }}" == "refs/heads/develop" ]; then
-              git tag -a "v$VERSION_NAME_beta" -m "Beta release version $VERSION_NAME"
+              git tag -a "v$VERSION_NAME_beta" -m "Beta release v.$VERSION_NAME"
               git push origin "v$VERSION_NAME_beta"
           else
               git tag -a "v$VERSION_NAME" -m "Release version $VERSION_NAME"
@@ -74,13 +65,12 @@ jobs:
 
       # 8. Create GitHub Release
       - name: Create GitHub Release
+        if: ${{ github.ref == 'refs/heads/master' }}
         uses: actions/create-release@v1
         with:
           tag_name: v$VERSION_NAME
           release_name: Release v$VERSION_NAME
-          body: |
-            ## What's New
-            - Updated version to $VERSION_NAME
+          body: "## What's New\n- Updated version to $VERSION_NAME"
           draft: false
           prerelease: false
         env:
