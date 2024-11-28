@@ -38,7 +38,7 @@ jobs:
       - name: Update README.md with version
         run: |
           if [ "${{ github.ref }}" == "refs/heads/develop" ]; then
-              sed -i "s|\\[VERSION\\](.*)|[VERSION](https://img.shields.io/badge/Version-$VERSION_NAME-beta-blue)|" README.md
+              sed -i "s|\\[VERSION\\](.*)|[VERSION](https://img.shields.io/badge/Version-$VERSION_NAME_beta-blue)|" README.md
           else
               sed -i "s|\\[VERSION\\](.*)|[VERSION](https://img.shields.io/badge/Version-$VERSION_NAME-blue)|" README.md
           fi
