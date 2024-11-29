@@ -38,31 +38,41 @@ jobs:
           echo "Extracted VERSION_NAME=$VERSION_NAME"
           echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
 
-      # 6. Update README.md with the extracted version
-      - name: Update README.md with version
+      # 6. Create Git Tag
+      - name: Create Git Tag
+        id: create_tag
         run: |
+          TAG_NAME=""
           if [ "${{ github.ref }}" == "refs/heads/develop" ]; then
-              sed -i "s|\\[VERSION\\](.*)|[VERSION](https://img.shields.io/badge/Version-$VERSION_NAME_beta-blue)|" README.md
+              TAG_NAME="v$VERSION_NAME_beta"
           else
-              sed -i "s|\\[VERSION\\](.*)|[VERSION](https://img.shields.io/badge/Version-$VERSION_NAME-blue)|" README.md
+              TAG_NAME="v$VERSION_NAME"
+          fi
+          
+          # Check if the tag already exists
+          if git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
+              echo "Tag $TAG_NAME already exists. Skipping tag creation."
+          else
+              git tag -a "$TAG_NAME" -m "Release version $VERSION_NAME"
+              git push origin "$TAG_NAME"
+          fi
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+
+      # 7. Update README.md with the latest tag
+      - name: Update README.md with latest tag
+        run: |
+          LATEST_TAG=$(git describe --tags --abbrev=0)
+          echo "Updating README with tag: $LATEST_TAG"
+          if [[ $LATEST_TAG == *"_beta" ]]; then
+              sed -i "s|\\[VERSION\\](.*)|[VERSION](https://img.shields.io/badge/Version-${LATEST_TAG//v/}-blue)|" README.md
+          else
+              sed -i "s|\\[VERSION\\](.*)|[VERSION](https://img.shields.io/badge/Version-${LATEST_TAG//v/}-blue)|" README.md
           fi
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git add .
-          git commit -m "Update README.md and version files with version $VERSION_NAME" || echo "No changes to commit"
+          git add README.md
+          git commit -m "Update README.md with tag $LATEST_TAG" || echo "No changes to commit"
           git push || echo "Nothing to push"
-
-      # 7. Create Git Tag
-      - name: Create Git Tag
-        if: success()
-        run: |
-          if [ "${{ github.ref }}" == "refs/heads/develop" ]; then
-              git tag -a "v$VERSION_NAME_beta" -m "Beta release v.$VERSION_NAME"
-              git push origin "v$VERSION_NAME_beta"
-          else
-              git tag -a "v$VERSION_NAME" -m "Release version $VERSION_NAME"
-              git push origin "v$VERSION_NAME"
-          fi
 
       # 8. Create GitHub Release
       - name: Create GitHub Release
