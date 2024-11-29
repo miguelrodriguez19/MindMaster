@@ -48,7 +48,8 @@ jobs:
           else
               TAG_NAME="v$VERSION_NAME"
           fi
-          
+          echo "ENV:${{ github.ref }}"
+          echo "TAGNAME:$TAG_NAME"
           # Check if the tag already exists
           if git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
               echo "Tag $TAG_NAME already exists. Skipping tag creation."
