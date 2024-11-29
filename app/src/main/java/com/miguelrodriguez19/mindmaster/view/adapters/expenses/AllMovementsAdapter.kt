@@ -64,8 +64,10 @@ class AllMovementsAdapter(
             ArrayList((group.expensesList + group.incomeList).sortedWith(MovementComparator()))
         newList.removeAt(eventPosition)
 
-        val incomes = newList.stream().filter { it.type == MovementType.INCOME }.collect(Collectors.toList())
-        val expenses = newList.stream().filter { it.type == MovementType.EXPENSE }.collect(Collectors.toList())
+        val incomes = newList.stream().filter {
+            it.type == MovementType.INCOME }.collect(Collectors.toList())
+        val expenses = newList.stream().filter {
+            it.type == MovementType.EXPENSE }.collect(Collectors.toList())
 
         data[groupPosition] = group.copy(expensesList = expenses, incomeList = incomes)
         notifyItemChanged(groupPosition)

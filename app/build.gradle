@@ -49,6 +49,14 @@ android {
             println versionName
         }
     }
+    packagingOptions {
+        resources {
+            excludes += [
+                    "META-INF/LICENSE.md",
+                    "META-INF/LICENSE*"
+            ]
+        }
+    }
 }
 
 dependencies {
