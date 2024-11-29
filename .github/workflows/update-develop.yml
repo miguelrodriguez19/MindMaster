@@ -1,4 +1,4 @@
-name: Update Develop Branch
+name: Update Develop
 
 on:
   push:
