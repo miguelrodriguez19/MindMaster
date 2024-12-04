@@ -1,0 +1,62 @@
+name: Update CHANGELOG.md
+
+on:
+  workflow_run:
+    workflows:
+      - Update README and Release
+    types:
+      - completed
+
+jobs:
+  update-changelog:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. Check if ref is master
+      - name: Check Github Ref
+        run: |
+          if [[ "${GITHUB_REF}" != "refs/heads/master" ]]; then
+            echo "Ref is not master, its ${GITHUB_REF}. Skipping update."
+            exit 0
+          fi
+
+      # 3. Set up GitHub CLI
+      - name: Set up GitHub CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gh
+          echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> ~/.bashrc
+
+      # 4. Retrieve the latest release and update CHANGELOG.md
+      - name: Update CHANGELOG.md with latest release
+        run: |
+          # Get the latest release tag
+          LATEST_RELEASE=$(gh release view --json tagName -q ".tagName")
+          RELEASE_BODY=$(gh release view --json body -q ".body")
+
+          if [ -z "$LATEST_RELEASE" ] || [ -z "$RELEASE_BODY" ]; then
+            echo "No release information found. Skipping update."
+            exit 0
+          fi
+
+          echo "Latest Release: $LATEST_RELEASE"
+
+          # Get the current date
+          RELEASE_DATE=$(date +%Y-%m-%d)
+
+          # Prepare the new changelog entry
+          NEW_ENTRY="\n## [$LATEST_RELEASE] - $RELEASE_DATE\n\n$RELEASE_BODY\n\n"
+
+          # Insert the new entry at the top of the CHANGELOG.md after the header
+          sed -i "6 a $NEW_ENTRY" CHANGELOG.md
+
+          # Commit and push changes
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add CHANGELOG.md
+          git commit -m "Update CHANGELOG.md for release $LATEST_RELEASE" || echo "No changes to commit"
+          git push || echo "Nothing to push"

@@ -1,29 +1,102 @@
-#name: Update README and Release
+name: Update README and Release
 
-#on: push: branches: - master - develop
+on:
+  push:
+    branches:
+      - master
+      - develop
 
-#jobs:  update-readme-and-release:    runs-on: ubuntu-latest
+jobs:
+  update-readme-and-release:
+    runs-on: ubuntu-latest
 
-      #steps:
-        # 1. Checkout repository        - name: Checkout repository          uses: actions/checkout@v3
+    steps:
+      # 1. Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-        # 2. Java's configuration to read Gradle        - name: Set up JDK          uses: actions/setup-java@v3          with:            distribution: 'zulu'            java-version: '17'
+      # 2. Java's configuration to read Gradle
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
 
-        # 3. Grant execute permission to gradlew        - name: Grant execute permission to gradlew          run: chmod +x ./gradlew
+      # 3. Grant execute permission to gradlew
+      - name: Grant execute permission to gradlew
+        run: chmod +x ./gradlew
 
-        # 4. Build and validate        - name: Run Gradle build          run: ./gradlew clean build --stacktrace
+      # 4. Build and validate
+      - name: Run Gradle build
+        run: ./gradlew clean build --stacktrace
 
-        # 5. Extract versionName from build.gradle        - name: Extract versionName          id: extract_version          run: |            VERSION_NAME=$(./gradlew -q printVersionName)            echo "Extracted VERSION_NAME=$VERSION_NAME"            echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
+      # 5. Extract versionName from build.gradle
+      - name: Extract versionName
+        id: extract_version
+        run: |
+          VERSION_NAME=$(./gradlew -q printVersionName)
+          echo "Extracted VERSION_NAME=$VERSION_NAME"
+          echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
 
-        # 6. Create Git Tag        - name: Create Git Tag          id: create_tag          run: |
-            # Set up Git identity            git config --global user.name "GitHub Actions"            git config --global user.email "actions@github.com"
+      # 6. Create Git Tag
+      - name: Create Git Tag
+        id: create_tag
+        run: |
+          # Set up Git identity
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
 
-            # Determine the tag name            if [[ "${GITHUB_REF}" == "refs/heads/develop" ]]; then                TAG_NAME="v${VERSION_NAME}_Beta"            else                TAG_NAME="v${VERSION_NAME}"            fi                        echo "GITHUB_REF:${GITHUB_REF}"            echo "TAG_NAME before creating tag:${TAG_NAME}"
+          # Determine the tag name
+          if [[ "${GITHUB_REF}" == "refs/heads/develop" ]]; then
+              TAG_NAME="v${VERSION_NAME}_Beta"
+          else
+              TAG_NAME="v${VERSION_NAME}"
+          fi
+          
+          echo "GITHUB_REF:${GITHUB_REF}"
+          echo "TAG_NAME before creating tag:${TAG_NAME}"
+          
+          # Check if the tag already exists
+          if git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
+              echo "Tag $TAG_NAME already exists. Skipping tag creation."
+          else
+              git tag -a "$TAG_NAME" -m "Release version $VERSION_NAME"
+              git push origin "$TAG_NAME"
+          fi
 
-            # Check if the tag already exists            if git rev-parse "$TAG_NAME" >/dev/null 2>&1; then                echo "Tag $TAG_NAME already exists. Skipping tag creation."            else                git tag -a "$TAG_NAME" -m "Release version $VERSION_NAME"                git push origin "$TAG_NAME"            fi
+          # Export the tag name for later use
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
 
-            # Export the tag name for later use            echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+      # 7. Update README.md with the latest tag
+      - name: Update README.md with latest tag
+        run: |
+          LATEST_TAG=$(git describe --tags --abbrev=0)
+          echo "Updating README with tag: $LATEST_TAG"
+          if [[ $LATEST_TAG == *"_Beta" ]]; then
+              sed -i "s|\\[VERSION\\](.*)|[VERSION](https://img.shields.io/badge/Version-${LATEST_TAG//v/}-blue)|" README.md
+          else
+              sed -i "s|\\[VERSION\\](.*)|[VERSION](https://img.shields.io/badge/Version-${LATEST_TAG//v/}-blue)|" README.md
+          fi
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add README.md
+          git commit -m "Update README.md with tag $LATEST_TAG" || echo "No changes to commit"
+          git push || echo "Nothing to push"
 
-        # 7. Update README.md with the latest tag        - name: Update README.md with latest tag          run: |            LATEST_TAG=$(git describe --tags --abbrev=0)            echo "Updating README with tag: $LATEST_TAG"            if [[ $LATEST_TAG == *"_Beta" ]]; then                sed -i "s|\\[VERSION\\](.*)|[VERSION](https://img.shields.io/badge/Version-${LATEST_TAG//v/}-blue)|" README.md            else                sed -i "s|\\[VERSION\\](.*)|[VERSION](https://img.shields.io/badge/Version-${LATEST_TAG//v/}-blue)|" README.md            fi            git config --global user.name "GitHub Actions"            git config --global user.email "actions@github.com"            git add README.md            git commit -m "Update README.md with tag $LATEST_TAG" || echo "No changes to commit"            git push || echo "Nothing to push"
+      # 8. Create GitHub Release
+      - name: Create GitHub Release
+        if: ${{ github.ref == 'refs/heads/master' }}
+        uses: actions/create-release@v1
+        with:
+          tag_name: "v$VERSION_NAME"
+          release_name: "Release v$VERSION_NAME"
+          body: |
+            ## [v$VERSION_NAME] - $(date +'%Y-%m-%d')
+            
+            ### Changed
+            - Updated version to $VERSION_NAME
 
-        # 8. Create GitHub Release        - name: Create GitHub Release          if: ${{ github.ref == 'refs/heads/master' }}          uses: actions/create-release@v1          with:            tag_name: "v$VERSION_NAME"            release_name: "Release v$VERSION_NAME"            body: |              ## What's New              - Updated version to $VERSION_NAME            draft: false            prerelease: false          env:            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
