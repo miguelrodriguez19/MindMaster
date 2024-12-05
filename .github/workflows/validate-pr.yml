@@ -33,7 +33,7 @@ jobs:
 
       # 4. Run Gradle Build
       - name: Run Gradle build
-        run: ./gradlew clean build --debug --stacktrace
+        run: ./gradlew clean build
 
       # 5. Run Unit Tests
       - name: Run tests
@@ -42,18 +42,3 @@ jobs:
       # 6. Run Lint Check
       - name: Run Lint
         run: ./gradlew lint
-
-      # 7. Create Status Check for Success or Failure
-      - name: Create Status Check
-        if: always()
-        run: |
-          STATUS="failure"
-          if [ "${{ job.status }}" == "success" ]; then
-            STATUS="success"
-          fi
-
-          curl -X POST \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Accept: application/vnd.github+json" \
-            https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }} \
-            -d "{\"state\": \"$STATUS\", \"description\": \"Validation Workflow\", \"context\

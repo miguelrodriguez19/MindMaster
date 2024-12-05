@@ -17,39 +17,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Ensure Validate Pull Request succeeded
-      - name: Check Validate Pull Request Status
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        id: validate-status
-        run: |
-          STATUS=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            https://api.github.com/repos/${{ github.repository }}/commits/${{ github.sha }}/status \
-            | jq -r '.statuses[] | select(.context == "validate-pr") | .state')
-
-          echo "Validate PR Status: $STATUS"
-
-          if [ "$STATUS" != "success" ]; then
-            echo "Validate Pull Request did not succeed. Exiting..."
-            exit 1
-          fi
-
-      # 3. Java's configuration to read Gradle
+      # 2. Java's configuration to read Gradle
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '17'
 
-      # 4. Grant execute permission to gradlew
+      # 3. Grant execute permission to gradlew
       - name: Grant execute permission to gradlew
         run: chmod +x ./gradlew
 
-      # 5. Build and validate
+      # 4. Build and validate
       - name: Run Gradle build
         run: ./gradlew clean build --stacktrace
 
-      # 6. Extract versionName from build.gradle
+      # 5. Extract versionName from build.gradle
       - name: Extract versionName
         id: extract_version
         run: |
@@ -57,7 +40,7 @@ jobs:
           echo "Extracted VERSION_NAME=$VERSION_NAME"
           echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
 
-      # 7 Create Git Tag
+      # 6 Create Git Tag
       - name: Create Git Tag
         id: create_tag
         run: |
@@ -86,7 +69,7 @@ jobs:
           # Export the tag name for later use
           echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
 
-      # 8. Update README.md with the latest tag
+      # 7. Update README.md with the latest tag
       - name: Update README.md with latest tag
         run: |
           LATEST_TAG=$(git describe --tags --abbrev=0)
@@ -102,7 +85,7 @@ jobs:
           git commit -m "Update README.md with tag $LATEST_TAG" || echo "No changes to commit"
           git push || echo "Nothing to push"
 
-      # 9. Create GitHub Release
+      # 8. Create GitHub Release
       - name: Create GitHub Release
         if: ${{ github.ref == 'refs/heads/master' }}
         uses: actions/create-release@v1
