@@ -21,7 +21,7 @@ static def hasSignificantChanges() {
     def process = "git diff --name-only HEAD~1 HEAD".execute()
     def output = process.text.trim()
     def significantFiles = output.split('\n').findAll {
-        it.endsWith('.java') || it.endsWith('.kt') || it.endsWith('.xml')
+        it.endsWith('.java') || it.endsWith('.kt') || it.endsWith('.xml') || it.endsWith('.yml')
     }
     return !significantFiles.isEmpty()
 }
