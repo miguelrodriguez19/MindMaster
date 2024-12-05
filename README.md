@@ -1,7 +1,7 @@
 ![Mind Master Logo](https://github.com/miguelrodriguez19/MindMaster/assets/94179603/926390bf-1e9b-4bae-a036-27c95e3d7047)
 
 ![VERSION](https://img.shields.io/badge/Version-2.0.2_Beta-blue)
-![STATUS](https://img.shields.io/badge/Status-Working-25d812)
+![STATUS](https://img.shields.io/badge/Status-Failing-dd0f00)
 
 # Table of Contents
 1. [Introduction](#1-introduction)
