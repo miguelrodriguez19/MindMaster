@@ -16,33 +16,22 @@ def readVersionProperties() {
     return props
 }
 
-// Function to determine if there are significant changes (using git diff)
-static def hasSignificantChanges() {
-    def process = "git diff --name-only HEAD~1 HEAD".execute()
-    def output = process.text.trim()
-    def significantFiles = output.split('\n').findAll {
-        it.endsWith('.java') || it.endsWith('.kt') || it.endsWith('.xml') || it.endsWith('.yml')
-    }
-    return !significantFiles.isEmpty()
-}
-
 // Function to calculate the versionCode
 def calculateVersionCode() {
     def props = readVersionProperties()
     def currentBranch = System.getenv('GITHUB_REF')
 
-    if (currentBranch == 'refs/heads/develop') {
-        if (hasSignificantChanges()) {
-            def newVersionCode = props['versionCode'].toInteger() + 1
-            props['versionCode'] = newVersionCode.toString()
-            props.store(new FileOutputStream(file('version.properties')), null)
-            return newVersionCode
-        }
+    if (!currentBranch?.contains('master')) {
+        def newVersionCode = props['versionCode'].toInteger() + 1
+        props['versionCode'] = newVersionCode.toString()
+        props.store(new FileOutputStream(file('version.properties')), null)
+        return newVersionCode
     }
 
-    // Keep versionCode unchanged for master or if no significant changes
+    // Mantener versionCode para master
     return props['versionCode'].toInteger()
 }
+
 
 // Function to calculate the versionName (e.g., 2.0.23)
 def calculateVersionName() {

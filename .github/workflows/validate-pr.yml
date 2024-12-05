@@ -4,9 +4,6 @@ on:
   pull_request:
     branches:
       - master
-    types:
-      - opened
-      - reopened
   push:
     branches:
       - develop
@@ -15,13 +12,12 @@ jobs:
   validate-pr:
     runs-on: ubuntu-latest
 
-    outputs:
-      validation_result: ${{ steps.validate_status.outputs.status }}
-
     steps:
       # 1. Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       # 2. Set up JDK
       - name: Set up JDK
@@ -38,46 +34,40 @@ jobs:
       - name: Run Gradle build
         run: ./gradlew clean build
 
-      # 5. Run Unit Tests
+      # 5. Increment versionCode and versionName (Only after a successful build)
+      - name: Increment Version Code and Name
+        if: success() # This step runs only if the previous steps succeed
+        run: |
+          ./gradlew printVersionName
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add .
+          echo "Files staged for commit:"
+          git status --short
+          git commit -m "Increment versionCode and versionName"
+          git push origin HEAD || echo "No changes to push"
+
+      # 6. Run Unit Tests
       - name: Run tests
         run: ./gradlew test
 
-      # 6. Run Lint Check
+      # 7. Run Lint Check
       - name: Run Lint
         run: ./gradlew lint
 
-      # 7. Set Validation Result
-      - name: Set validation status
-        id: validate_status
+      # 8. Update Badge
+      - name: Update Badge
+        if: always() # We make sure it always runs, even in case of workflow error
         run: |
           if [[ "${{ job.status }}" == "success" ]]; then
-              echo "status=success" >> $GITHUB_ENV
+            sed -i "s|!\[STATUS\](.*)|![STATUS](https://img.shields.io/badge/Status-Working-25d812)|" README.md
           else
-              echo "status=failure" >> $GITHUB_ENV
+            sed -i "s|!\[STATUS\](.*)|![STATUS](https://img.shields.io/badge/Status-Failing-dd0f00)|" README.md
           fi
-
-  update_badge:
-    needs: validate-pr
-    runs-on: ubuntu-latest
-
-    steps:
-      # 1. Checkout repository
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      # 2. Update badge
-      - name: Update badge
-        run: |
-          VALIDATION_RESULT="${{ needs.validate-pr.outputs.validation_result }}"
-          echo "Updating README with validation result: $VALIDATION_RESULT"
-          if [[ "$VALIDATION_RESULT" == "success" ]]; then
-              sed -i "s|![STATUS](https://img.shields.io/badge/Status.*)|![STATUS](https://img.shields.io/badge/Status-Working-25d812)|" README.md
-          else
-              sed -i "s|![STATUS](https://img.shields.io/badge/Status.*)|![STATUS](https://img.shields.io/badge/Status-Failing-dd0f00)|" README.md
-          fi
-          
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git add README.md
-          git commit -m "Updating README with validation result." || echo "No changes to commit"
-          git push || echo "Nothing to push"
+          git add .
+          echo "Files staged for commit:"
+          git status --short
+          git commit -m "Update status badge in README.md" || echo "No changes to commit"
+          git push origin HEAD || echo "Nothing to push"
