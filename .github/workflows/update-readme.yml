@@ -1,13 +1,15 @@
 name: Update README and Release
 
 on:
-  push:
-    branches:
-      - master
-      - develop
+  workflow_run:
+    workflows:
+      - Validate Pull Request
+    types:
+      - completed
 
 jobs:
   update-readme-and-release:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -38,7 +40,7 @@ jobs:
           echo "Extracted VERSION_NAME=$VERSION_NAME"
           echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
 
-      # 6. Create Git Tag
+      # 6 Create Git Tag
       - name: Create Git Tag
         id: create_tag
         run: |
@@ -56,9 +58,9 @@ jobs:
           echo "GITHUB_REF:${GITHUB_REF}"
           echo "TAG_NAME before creating tag:${TAG_NAME}"
           
-          # Check if the tag already exists
-          if git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
-              echo "Tag $TAG_NAME already exists. Skipping tag creation."
+          # Check if the tag already exists in the remote repository
+          if git ls-remote --tags origin | grep -q "refs/tags/$TAG_NAME"; then
+              echo "Tag $TAG_NAME already exists in the remote repository. Skipping tag creation."
           else
               git tag -a "$TAG_NAME" -m "Release version $VERSION_NAME"
               git push origin "$TAG_NAME"

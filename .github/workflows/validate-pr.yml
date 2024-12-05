@@ -4,7 +4,9 @@ on:
   pull_request:
     branches:
       - master
-      - develop
+    types:
+      - opened
+      - reopened
   push:
     branches:
       - develop
@@ -31,7 +33,7 @@ jobs:
 
       # 4. Run Gradle Build
       - name: Run Gradle build
-        run: ./gradlew clean build --debug --stacktrace
+        run: ./gradlew clean build
 
       # 5. Run Unit Tests
       - name: Run tests
