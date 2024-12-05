@@ -83,10 +83,12 @@ jobs:
 
       # 7. Push changes to the current branch (e.g., develop)
       - name: Push changes
-        run: |
-          CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-          echo "Pushing changes to $CURRENT_BRANCH"
-          git push origin "$CURRENT_BRANCH" || echo "Nothing to push"
+        run: |          
+          # Determine the correct branch
+          BRANCH_NAME=$(git symbolic-ref --short HEAD || echo ${{ github.event.workflow_run.head_branch }})
+          echo "Pushing changes to branch: $BRANCH_NAME"
+
+          git push origin "$BRANCH_NAME" || echo "Nothing to push"
 
       # 8. Create GitHub Release
       - name: Create GitHub Release
