@@ -46,50 +46,65 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
 
-          # Determine the tag name
-          if [[ "${GITHUB_REF}" == "refs/heads/develop" ]]; then
-              TAG_NAME="v${VERSION_NAME}_Beta"
-          else
-              TAG_NAME="v${VERSION_NAME}"
-          fi
+          git fetch --tags
           
           echo "GITHUB_REF:${GITHUB_REF}"
-          echo "TAG_NAME before creating tag:${TAG_NAME}"
-          
-          # Check if the tag already exists in the remote repository
-          if git ls-remote --tags origin | grep -q "refs/tags/$TAG_NAME"; then
-              echo "Tag $TAG_NAME already exists in the remote repository. Skipping tag creation."
-          else
-              git tag -a "$TAG_NAME" -m "Release version $VERSION_NAME"
-              git push origin "$TAG_NAME"
+          TAG_NAME="v${{ env.VERSION_NAME }}"
+          if [[ "${GITHUB_REF}" == "refs/heads/develop" ]]; then
+            TAG_NAME="${TAG_NAME}_Beta"
           fi
           
+          echo "Checking if tag $TAG_NAME exists..."
+          if git tag -l | grep -q "^${TAG_NAME}$"; then
+            echo "Tag $TAG_NAME already exists. Skipping."
+          else
+            echo "Creating tag $TAG_NAME"
+            git tag -a "$TAG_NAME" -m "Release version $TAG_NAME"
+            git push origin "$TAG_NAME"
+          fi
+          
+          echo "TAG_NAME after creating tag:${TAG_NAME}"
+                    
           # Export the tag name for later use
           echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
 
       # 6. Update README.md with the latest tag
       - name: Update README.md with latest tag
         run: |
+          # Fetch the latest tag
+          git fetch --tags
           LATEST_TAG=$(git describe --tags --abbrev=0)
-          echo "Updating README with tag: $LATEST_TAG"
-          if [[ $LATEST_TAG == *"_Beta" ]]; then
-              sed -i "s|\\[VERSION\\](.*)|[VERSION](https://img.shields.io/badge/Version-${LATEST_TAG//v/}-blue)|" README.md
-          else
-              sed -i "s|\\[VERSION\\](.*)|[VERSION](https://img.shields.io/badge/Version-${LATEST_TAG//v/}-blue)|" README.md
+          
+          if [ -z "$LATEST_TAG" ]; then
+            echo "No tags found. Skipping update."
+            exit 0
           fi
+
+          echo "Updating README with tag: $LATEST_TAG"
+
+          # Update the badge in README.md
+          sed -i "s|!\[VERSION\](.*)|![VERSION](https://img.shields.io/badge/Version-${LATEST_TAG//v/}-blue)|" README.md
+
+          # Commit and push the changes
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git add README.md
+          git add .
+          
+          echo "Files staged for commit:"
+          git status --short
           git commit -m "Update README.md with tag $LATEST_TAG" || echo "No changes to commit"
           git push || echo "Nothing to push"
+          
+          # Export the latest tag used to coordinate with the release
+          echo "LATEST_TAG=LATEST_TAG" >> $GITHUB_ENV
 
       # 7. Create GitHub Release
       - name: Create GitHub Release
         if: ${{ github.ref == 'refs/heads/master' }}
         uses: actions/create-release@v1
         with:
-          tag_name: ${{ env.TAG_NAME }}
-          release_name: Release ${{ env.VERSION_NAME }}
+          tag_name: ${{ env.LATEST_TAG }}
+          release_name: Release ${{ env.LATEST_TAG }}
           body: ${{ env.RELEASE_BODY }}
           draft: false
           prerelease: false
