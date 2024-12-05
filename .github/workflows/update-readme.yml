@@ -19,6 +19,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      # 1.1 Fetch the latest changes
+      - name: Fetch latest changes
+        run: |
+          git fetch origin
+          git reset --hard origin/develop
+
       # 2. Java's configuration to read Gradle
       - name: Set up JDK
         uses: actions/setup-java@v3
@@ -38,33 +44,27 @@ jobs:
           echo "Extracted VERSION_NAME=$VERSION_NAME"
           echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
 
-      # 5 Create Git Tag
+      # 5. Create Git Tag
       - name: Create Git Tag
         id: create_tag
         run: |
-          # Set up Git identity
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-
-          # Determine the tag name
-          if [[ "${GITHUB_REF}" == "refs/heads/develop" ]]; then
+          CURRENT_BRANCH="${{ github.event.workflow_run.head_branch }}"
+          echo "CURRENT_BRANCH: $CURRENT_BRANCH"
+          
+          TAG_NAME="v${VERSION_NAME}
+          if [[ "$CURRENT_BRANCH" == "develop" ]]; then
               TAG_NAME="v${VERSION_NAME}_Beta"
-          else
-              TAG_NAME="v${VERSION_NAME}"
           fi
-          
-          echo "GITHUB_REF:${GITHUB_REF}"
-          echo "TAG_NAME before creating tag:${TAG_NAME}"
-          
-          # Check if the tag already exists in the remote repository
+
+          echo "TAG_NAME before creating tag: $TAG_NAME"
+
           if git ls-remote --tags origin | grep -q "refs/tags/$TAG_NAME"; then
               echo "Tag $TAG_NAME already exists in the remote repository. Skipping tag creation."
           else
               git tag -a "$TAG_NAME" -m "Release version $VERSION_NAME"
               git push origin "$TAG_NAME"
           fi
-          
-          # Export the tag name for later use
+
           echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
 
       # 6. Update README.md with the latest tag
@@ -72,20 +72,25 @@ jobs:
         run: |
           LATEST_TAG=$(git describe --tags --abbrev=0)
           echo "Updating README with tag: $LATEST_TAG"
-          if [[ $LATEST_TAG == *"_Beta" ]]; then
-              sed -i "s|\\[VERSION\\](.*)|[VERSION](https://img.shields.io/badge/Version-${LATEST_TAG//v/}-blue)|" README.md
-          else
-              sed -i "s|\\[VERSION\\](.*)|[VERSION](https://img.shields.io/badge/Version-${LATEST_TAG//v/}-blue)|" README.md
-          fi
+          sed -i "s|!\[VERSION\](.*)|![VERSION](https://img.shields.io/badge/Version-${LATEST_TAG//v/}-blue)|" README.md
+          
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git add README.md
+          git add .
+          echo "Files staged for commit:"
+          git status --short
           git commit -m "Update README.md with tag $LATEST_TAG" || echo "No changes to commit"
-          git push || echo "Nothing to push"
 
-      # 7. Create GitHub Release
+      # 7. Push changes to the current branch (e.g., develop)
+      - name: Push changes
+        run: |
+          CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          echo "Pushing changes to $CURRENT_BRANCH"
+          git push origin "$CURRENT_BRANCH" || echo "Nothing to push"
+
+      # 8. Create GitHub Release
       - name: Create GitHub Release
-        if: ${{ github.ref == 'refs/heads/master' }}
+        if: ${{ github.event.workflow_run.head_branch == 'master' }}
         uses: actions/create-release@v1
         with:
           tag_name: ${{ env.TAG_NAME }}
@@ -95,3 +100,4 @@ jobs:
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
