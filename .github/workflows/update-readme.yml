@@ -86,18 +86,16 @@ jobs:
           git push || echo "Nothing to push"
 
       # 8. Create GitHub Release
-      - name: Prepare Release Body
-        id: prepare_release_body
-        run: |
-          RELEASE_BODY="## [v${VERSION_NAME}] - $(date +'%Y-%m-%d')\n\n### Changed\n- Updated version to ${VERSION_NAME}"
-          echo "RELEASE_BODY=$RELEASE_BODY" >> $GITHUB_ENV
-
       - name: Create GitHub Release
         if: ${{ github.ref == 'refs/heads/master' }}
         uses: actions/create-release@v1
         with:
-          tag_name: "v$VERSION_NAME"
-          release_name: "Release v$VERSION_NAME"
+          tag_name: ${{ env.TAG_NAME }}
+          release_name: Release ${{ env.VERSION_NAME }}
           body: ${{ env.RELEASE_BODY }}
+          draft: false
+          prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
