@@ -28,11 +28,7 @@ jobs:
       - name: Grant execute permission to gradlew
         run: chmod +x ./gradlew
 
-      # 4. Build and validate
-      - name: Run Gradle build
-        run: ./gradlew clean build --stacktrace
-
-      # 5. Extract versionName from build.gradle
+      # 4. Extract versionName from build.gradle
       - name: Extract versionName
         id: extract_version
         run: |
@@ -40,7 +36,7 @@ jobs:
           echo "Extracted VERSION_NAME=$VERSION_NAME"
           echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
 
-      # 6 Create Git Tag
+      # 5 Create Git Tag
       - name: Create Git Tag
         id: create_tag
         run: |
@@ -69,7 +65,7 @@ jobs:
           # Export the tag name for later use
           echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
 
-      # 7. Update README.md with the latest tag
+      # 6. Update README.md with the latest tag
       - name: Update README.md with latest tag
         run: |
           LATEST_TAG=$(git describe --tags --abbrev=0)
@@ -85,7 +81,7 @@ jobs:
           git commit -m "Update README.md with tag $LATEST_TAG" || echo "No changes to commit"
           git push || echo "Nothing to push"
 
-      # 8. Create GitHub Release
+      # 7. Create GitHub Release
       - name: Create GitHub Release
         if: ${{ github.ref == 'refs/heads/master' }}
         uses: actions/create-release@v1
