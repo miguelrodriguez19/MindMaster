@@ -1,13 +1,15 @@
 name: Update README and Release
 
 on:
-  push:
-    branches:
-      - master
-      - develop
+  workflow_run:
+    workflows:
+      - Validate Pull Request
+    types:
+      - completed
 
 jobs:
   update-readme-and-release:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -15,22 +17,39 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Java's configuration to read Gradle
+      # 2. Ensure Validate Pull Request succeeded
+      - name: Check Validate Pull Request Status
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: validate-status
+        run: |
+          STATUS=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/${{ github.repository }}/commits/${{ github.sha }}/status \
+            | jq -r '.statuses[] | select(.context == "validate-pr") | .state')
+
+          echo "Validate PR Status: $STATUS"
+
+          if [ "$STATUS" != "success" ]; then
+            echo "Validate Pull Request did not succeed. Exiting..."
+            exit 1
+          fi
+
+      # 3. Java's configuration to read Gradle
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '17'
 
-      # 3. Grant execute permission to gradlew
+      # 4. Grant execute permission to gradlew
       - name: Grant execute permission to gradlew
         run: chmod +x ./gradlew
 
-      # 4. Build and validate
+      # 5. Build and validate
       - name: Run Gradle build
         run: ./gradlew clean build --stacktrace
 
-      # 5. Extract versionName from build.gradle
+      # 6. Extract versionName from build.gradle
       - name: Extract versionName
         id: extract_version
         run: |
@@ -38,7 +57,7 @@ jobs:
           echo "Extracted VERSION_NAME=$VERSION_NAME"
           echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
 
-      # 6. Create Git Tag
+      # 7 Create Git Tag
       - name: Create Git Tag
         id: create_tag
         run: |
@@ -56,9 +75,9 @@ jobs:
           echo "GITHUB_REF:${GITHUB_REF}"
           echo "TAG_NAME before creating tag:${TAG_NAME}"
           
-          # Check if the tag already exists
-          if git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
-              echo "Tag $TAG_NAME already exists. Skipping tag creation."
+          # Check if the tag already exists in the remote repository
+          if git ls-remote --tags origin | grep -q "refs/tags/$TAG_NAME"; then
+              echo "Tag $TAG_NAME already exists in the remote repository. Skipping tag creation."
           else
               git tag -a "$TAG_NAME" -m "Release version $VERSION_NAME"
               git push origin "$TAG_NAME"
@@ -67,7 +86,7 @@ jobs:
           # Export the tag name for later use
           echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
 
-      # 7. Update README.md with the latest tag
+      # 8. Update README.md with the latest tag
       - name: Update README.md with latest tag
         run: |
           LATEST_TAG=$(git describe --tags --abbrev=0)
@@ -83,7 +102,7 @@ jobs:
           git commit -m "Update README.md with tag $LATEST_TAG" || echo "No changes to commit"
           git push || echo "Nothing to push"
 
-      # 8. Create GitHub Release
+      # 9. Create GitHub Release
       - name: Create GitHub Release
         if: ${{ github.ref == 'refs/heads/master' }}
         uses: actions/create-release@v1
