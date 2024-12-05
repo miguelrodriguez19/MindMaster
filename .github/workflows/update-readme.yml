@@ -65,7 +65,7 @@ jobs:
               git tag -a "$TAG_NAME" -m "Release version $VERSION_NAME"
               git push origin "$TAG_NAME"
           fi
-
+          
           # Export the tag name for later use
           echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
 
@@ -86,19 +86,18 @@ jobs:
           git push || echo "Nothing to push"
 
       # 8. Create GitHub Release
+      - name: Prepare Release Body
+        id: prepare_release_body
+        run: |
+          RELEASE_BODY="## [v${VERSION_NAME}] - $(date +'%Y-%m-%d')\n\n### Changed\n- Updated version to ${VERSION_NAME}"
+          echo "RELEASE_BODY=$RELEASE_BODY" >> $GITHUB_ENV
+
       - name: Create GitHub Release
         if: ${{ github.ref == 'refs/heads/master' }}
         uses: actions/create-release@v1
         with:
           tag_name: "v$VERSION_NAME"
           release_name: "Release v$VERSION_NAME"
-          body: |
-            ## [v$VERSION_NAME] - $(date +'%Y-%m-%d')
-            
-            ### Changed
-            - Updated version to $VERSION_NAME
-
-          draft: false
-          prerelease: false
+          body: ${{ env.RELEASE_BODY }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
