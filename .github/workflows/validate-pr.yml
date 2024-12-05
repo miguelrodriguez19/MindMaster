@@ -15,6 +15,9 @@ jobs:
   validate-pr:
     runs-on: ubuntu-latest
 
+    outputs:
+      validation_result: ${{ steps.validate_status.outputs.status }}
+
     steps:
       # 1. Checkout repository
       - name: Checkout repository
@@ -42,3 +45,38 @@ jobs:
       # 6. Run Lint Check
       - name: Run Lint
         run: ./gradlew lint
+
+      # 7. Set Validation Result
+      - name: Set validation status
+        id: validate_status
+        run: |
+          if [[ "${{ job.status }}" == "success" ]]; then
+              echo "status=success" >> $GITHUB_ENV
+          else
+              echo "status=failure" >> $GITHUB_ENV
+
+  update_badge:
+    needs: validate-pr
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. Update badge
+      - name: Update badge
+        run: |
+          VALIDATION_RESULT="${{ needs.validate-pr.outputs.validation_result }}"
+          echo "Updating README with validation result: $VALIDATION_RESULT"
+          if [[ "$VALIDATION_RESULT" == "success" ]]; then
+              sed -i "s|![STATUS](https://img.shields.io/badge/Status.*)|![STATUS](https://img.shields.io/badge/Status-Working-25d812)|" README.md
+          else
+              sed -i "s|![STATUS](https://img.shields.io/badge/Status.*)|![STATUS](https://img.shields.io/badge/Status-Failing-dd0f00)|" README.md
+          fi
+          
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add README.md
+          git commit -m "Updating README with validation result." || echo "No changes to commit"
+          git push || echo "Nothing to push"
