@@ -64,6 +64,20 @@ jobs:
       - name: Update Badge
         if: always() # We make sure it always runs, even in case of workflow error
         run: |
+          # Determine the correct branch
+          BRANCH_NAME=$(git symbolic-ref --short HEAD || echo ${{ github.head_ref }})
+          if [[ -z "$BRANCH_NAME" ]]; then
+            echo "Unable to determine branch name. Exiting."
+            exit 1
+          fi
+          echo "Detected branch: $BRANCH_NAME"
+          
+          # Fetch the latest changes from the remote repository
+          git fetch origin
+          
+          git checkout "$BRANCH_NAME"
+          git pull origin "$BRANCH_NAME" || echo "Branch is already up-to-date."
+          
           if [[ "${{ job.status }}" == "success" ]]; then
             sed -i "s|!\[STATUS\](.*)|![STATUS](https://img.shields.io/badge/Status-Working-25d812)|" README.md
           else
@@ -75,9 +89,6 @@ jobs:
           echo "Files staged for commit:"
           git status --short
           git commit -m "Update status badge in README.md" || echo "No changes to commit"
-          
-          # Determine the correct branch
-          BRANCH_NAME=$(git symbolic-ref --short HEAD || echo ${{ github.event.workflow_run.head_branch }})
+                 
           echo "Pushing changes to branch: $BRANCH_NAME"
-
           git push origin "$BRANCH_NAME" || echo "No changes to push"
