@@ -23,11 +23,19 @@ jobs:
       - name: Fetch latest changes
         run: |
           # Determine the correct branch
-          BRANCH_NAME=$(git symbolic-ref --short HEAD || echo ${{ github.event.workflow_run.head_branch }})
-          echo "Fetching changes. Branch name: $BRANCH_NAME"
+          BRANCH_NAME=$(git symbolic-ref --short HEAD || echo ${{ github.head_ref }})
+          if [[ -z "$BRANCH_NAME" ]]; then
+            echo "Unable to determine branch name. Exiting."
+            exit 1
+          fi
+          echo "Detected branch: $BRANCH_NAME"
 
           git fetch origin
+          git checkout "$BRANCH_NAME"
           git reset --hard origin/"$BRANCH_NAME"
+          
+          # Extract branch name as CURRENT_BRANCH
+          echo "CURRENT_BRANCH=$BRANCH_NAME" >> $GITHUB_ENV
 
       # 2. Java's configuration to read Gradle
       - name: Set up JDK
@@ -52,11 +60,8 @@ jobs:
       - name: Create Git Tag
         id: create_tag
         run: |
-          CURRENT_BRANCH="${{ github.event.workflow_run.head_branch }}"
-          echo "CURRENT_BRANCH: $CURRENT_BRANCH"
-          
           TAG_NAME="v${VERSION_NAME}
-          if [[ "$CURRENT_BRANCH" == "develop" ]]; then
+          if [[ "${CURRENT_BRANCH}" == "develop" ]]; then
               TAG_NAME="v${VERSION_NAME}_Beta"
           fi
 
@@ -88,11 +93,7 @@ jobs:
       # 7. Push changes to the current branch (e.g., develop)
       - name: Push changes
         run: |          
-          # Determine the correct branch
-          CURRENT_BRANCH=$(git symbolic-ref --short HEAD || echo ${{ github.event.workflow_run.head_branch }})
-          echo "Pushing changes to branch: $CURRENT_BRANCH"
-
-          git push origin "$CURRENT_BRANCH" || echo "Nothing to push"
+          git push origin "${CURRENT_BRANCH}" || echo "Nothing to push"
 
       # 8. Create GitHub Release
       - name: Create GitHub Release

@@ -22,16 +22,25 @@ jobs:
       # 2. Check if ref is master and update it
       - name: Check Github Ref
         run: |
-          CURRENT_BRANCH="${{ github.event.workflow_run.head_branch }}"
-          echo "CURRENT_BRANCH: $CURRENT_BRANCH"
+          # Determine the correct branch
+          BRANCH_NAME=$(git symbolic-ref --short HEAD || echo ${{ github.head_ref }})
+          if [[ -z "$BRANCH_NAME" ]]; then
+            echo "Unable to determine branch name. Exiting."
+            exit 1
+          fi
+          echo "Detected branch: $BRANCH_NAME"
           
           if [[ "$CURRENT_BRANCH" != "master" ]]; then
             echo "Ref is not master, its ${GITHUB_REF}. Skipping update."
             exit 0
           fi
-          
+
           git fetch origin
-          git reset --hard origin/master
+          git checkout "$BRANCH_NAME"
+          git reset --hard origin/"$BRANCH_NAME"
+          
+          # Extract branch name as CURRENT_BRANCH
+          echo "CURRENT_BRANCH=$BRANCH_NAME" >> $GITHUB_ENV
 
       # 3. Set up GitHub CLI with GH_TOKEN
       - name: Set up GitHub CLI
@@ -84,9 +93,6 @@ jobs:
           git status --short
           git commit -m "Update CHANGELOG.md for release $LATEST_RELEASE" || echo "No changes to commit"
           
-          # Determine the correct branch
-          BRANCH_NAME=$(git symbolic-ref --short HEAD || echo ${{ github.event.workflow_run.head_branch }})
-          echo "Pushing changes to branch: $BRANCH_NAME"
-
-          git push origin "$BRANCH_NAME" || echo "No changes to push"
+          echo "Pushing to: ${CURRENT_BRANCH}"
+          git push origin "${CURRENT_BRANCH}" || echo "No changes to push"
 
