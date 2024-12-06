@@ -89,3 +89,4 @@ jobs:
           echo "Pushing changes to branch: $BRANCH_NAME"
 
           git push origin "$BRANCH_NAME" || echo "No changes to push"
+
