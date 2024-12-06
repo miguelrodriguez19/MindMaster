@@ -22,8 +22,12 @@ jobs:
       # 1.1 Fetch the latest changes
       - name: Fetch latest changes
         run: |
+          # Determine the correct branch
+          BRANCH_NAME=$(git symbolic-ref --short HEAD || echo ${{ github.event.workflow_run.head_branch }})
+          echo "Fetching changes. Branch name: $BRANCH_NAME"
+
           git fetch origin
-          git reset --hard origin/develop
+          git reset --hard origin/"$BRANCH_NAME"
 
       # 2. Java's configuration to read Gradle
       - name: Set up JDK
@@ -83,9 +87,11 @@ jobs:
 
       # 7. Push changes to the current branch (e.g., develop)
       - name: Push changes
-        run: |
-          CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-          echo "Pushing changes to $CURRENT_BRANCH"
+        run: |          
+          # Determine the correct branch
+          CURRENT_BRANCH=$(git symbolic-ref --short HEAD || echo ${{ github.event.workflow_run.head_branch }})
+          echo "Pushing changes to branch: $CURRENT_BRANCH"
+
           git push origin "$CURRENT_BRANCH" || echo "Nothing to push"
 
       # 8. Create GitHub Release
