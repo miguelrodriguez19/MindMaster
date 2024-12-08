@@ -2,11 +2,12 @@ name: Validate Pull Request
 
 on:
   pull_request:
+    types: [opened, reopened]
     branches:
       - master
-  push:
-    branches:
-      - develop
+  #push:
+  #  branches:
+  #    - develop
 
 jobs:
   validate-pr:
@@ -72,7 +73,8 @@ jobs:
           echo "Files staged for commit:"
           git status --short
           git commit -m "Increment versionCode and versionName"
-
+          
+          git pull origin "${CURRENT_BRANCH}" || echo "Nothing to pull"
           git push origin "${CURRENT_BRANCH}" || echo "No changes to push"
 
       # 6. Run Unit Tests
@@ -100,4 +102,5 @@ jobs:
           git commit -m "Update status badge in README.md" || echo "No changes to commit"
                  
           echo "Pushing changes to branch: $BRANCH_NAME"
+          git pull origin "${CURRENT_BRANCH}" || echo "Nothing to pull"
           git push origin "${CURRENT_BRANCH}" || echo "No changes to push"
