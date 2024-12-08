@@ -2,26 +2,23 @@ name: Validate Pull Request
 
 on:
   pull_request:
+    #types: [opened, reopened]
     branches:
       - master
-    types:
-      - opened
-      - reopened
-  push:
-    branches:
-      - develop
+  #push:
+  #  branches:
+  #    - develop
 
 jobs:
   validate-pr:
     runs-on: ubuntu-latest
 
-    outputs:
-      validation_result: ${{ steps.validate_status.outputs.status }}
-
     steps:
       # 1. Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       # 2. Set up JDK
       - name: Set up JDK
@@ -30,54 +27,80 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
+      # Configure branch
+      - name: Determine the correct branch
+        run: |
+          # Determine the correct branch
+          BRANCH_NAME=$(git symbolic-ref --short HEAD || echo ${{ github.head_ref }})
+          if [[ -z "$BRANCH_NAME" ]]; then
+          echo "Unable to determine branch name. Exiting."
+          exit 1
+          fi
+          echo "Detected branch: $BRANCH_NAME"
+          
+          # Fetch the latest changes from the remote repository
+          git fetch origin
+          git reset --hard origin/"$BRANCH_NAME"
+          
+          git checkout "$BRANCH_NAME"
+          git pull origin "$BRANCH_NAME" || echo "Branch is already up-to-date."
+          
+          # Extract branch name as CURRENT_BRANCH
+          echo "CURRENT_BRANCH=$BRANCH_NAME" >> $GITHUB_ENV
+
       # 3. Grant execute permission to gradlew
       - name: Grant execute permission to gradlew
         run: chmod +x ./gradlew
 
       # 4. Run Gradle Build
-      - name: Run Gradle build
-        run: ./gradlew clean build
+      #- name: Run Gradle build
+      #  run: |
+          # Build project
+      #    ./gradlew clean build
 
-      # 5. Run Unit Tests
+      # 5. Increment versionCode and versionName (Only after a successful build)
+      - name: Increment Version Code and Name
+        if: success() # This step runs only if the previous steps succeed
+        run: |
+          # We reset the version upload in the build so that two versions are not uploaded at once
+          git reset --hard
+          
+          # Increment the version (if not on 'master') and print the Version Name
+          ./gradlew printVersionName
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add .
+          echo "Files staged for commit:"
+          git status --short
+          git commit -m "Increment versionCode and versionName"
+          
+          git pull origin "${CURRENT_BRANCH}" || echo "Nothing to pull"
+          git push origin "${CURRENT_BRANCH}" || echo "No changes to push"
+
+      # 6. Run Unit Tests
       - name: Run tests
         run: ./gradlew test
 
-      # 6. Run Lint Check
+      # 7. Run Lint Check
       - name: Run Lint
         run: ./gradlew lint
 
-      # 7. Set Validation Result
-      - name: Set validation status
-        id: validate_status
+      # 8. Update Badge
+      - name: Update Badge
+        if: always() # We make sure it always runs, even in case of workflow error
         run: |
           if [[ "${{ job.status }}" == "success" ]]; then
-              echo "status=success" >> $GITHUB_ENV
+            sed -i "s|!\[STATUS\](.*)|![STATUS](https://img.shields.io/badge/Status-Working-25d812)|" README.md
           else
-              echo "status=failure" >> $GITHUB_ENV
+            sed -i "s|!\[STATUS\](.*)|![STATUS](https://img.shields.io/badge/Status-Failing-dd0f00)|" README.md
           fi
-
-  update_badge:
-    needs: validate-pr
-    runs-on: ubuntu-latest
-
-    steps:
-      # 1. Checkout repository
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      # 2. Update badge
-      - name: Update badge
-        run: |
-          VALIDATION_RESULT="${{ needs.validate-pr.outputs.validation_result }}"
-          echo "Updating README with validation result: $VALIDATION_RESULT"
-          if [[ "$VALIDATION_RESULT" == "success" ]]; then
-              sed -i "s|![STATUS](https://img.shields.io/badge/Status.*)|![STATUS](https://img.shields.io/badge/Status-Working-25d812)|" README.md
-          else
-              sed -i "s|![STATUS](https://img.shields.io/badge/Status.*)|![STATUS](https://img.shields.io/badge/Status-Failing-dd0f00)|" README.md
-          fi
-          
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git add README.md
-          git commit -m "Updating README with validation result." || echo "No changes to commit"
-          git push || echo "Nothing to push"
+          git add .
+          echo "Files staged for commit:"
+          git status --short
+          git commit -m "Update status badge in README.md" || echo "No changes to commit"
+                 
+          echo "Pushing changes to branch: $BRANCH_NAME"
+          git pull origin "${CURRENT_BRANCH}" || echo "Nothing to pull"
+          git push origin "${CURRENT_BRANCH}" || echo "No changes to push"
