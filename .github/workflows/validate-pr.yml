@@ -61,6 +61,10 @@ jobs:
       - name: Increment Version Code and Name
         if: success() # This step runs only if the previous steps succeed
         run: |
+          # We reset the version upload in the build so that two versions are not uploaded at once
+          git reset --hard
+          
+          # Increment the version (if not on 'master') and print the Version Name
           ./gradlew printVersionName
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
@@ -69,7 +73,7 @@ jobs:
           git status --short
           git commit -m "Increment versionCode and versionName"
 
-          git push origin "$BRANCH_NAME" || echo "No changes to push"
+          git push origin "${CURRENT_BRANCH}" || echo "No changes to push"
 
       # 6. Run Unit Tests
       - name: Run tests
@@ -96,4 +100,4 @@ jobs:
           git commit -m "Update status badge in README.md" || echo "No changes to commit"
                  
           echo "Pushing changes to branch: $BRANCH_NAME"
-          git push origin "$BRANCH_NAME" || echo "No changes to push"
+          git push origin "${CURRENT_BRANCH}" || echo "No changes to push"
