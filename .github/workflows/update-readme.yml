@@ -92,7 +92,9 @@ jobs:
 
       # 7. Push changes to the current branch (e.g., develop)
       - name: Push changes
-        run: |          
+        run: |   
+          git pull origin "${CURRENT_BRANCH}" || echo "Nothing to pull"
+          echo "Pushing changes to: ${CURRENT_BRANCH}"
           git push origin "${CURRENT_BRANCH}" || echo "Nothing to push"
 
       # 8. Create GitHub Release
